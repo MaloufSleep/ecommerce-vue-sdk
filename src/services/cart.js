@@ -1,8 +1,5 @@
-import Dinero from 'dinero.js'
-import minorCurrency from '@/utils/conversions/minorCurrency'
 
-
-export class CartService {
+export class CartService{
 
     #api
     #store
@@ -12,96 +9,66 @@ export class CartService {
         this.#store = store
     }
 
-    findItem(id,list){
-        let index = this.#store.state.cart.items[list].findIndex(el => el.id == id)
-        if(index >= 0){
-            return {
-                index,
-                item: this.#store.state.cart.items[list][index]
-            }
-        }
-        return undefined
+    findItem(product_id){
+        return this.#store.state.cart.items.find(el => el.product_id == product_id)
+    }
+
+    getReference(){
+        return this.#store.state.cart.reference || null
+    }
+
+    setCartInStore(cart){
+        this.#store.commit('cart/setCart', cart)
     }
 
     addItem(item){
-        item.quantity = Math.round(Math.abs(item.quantity))
-        item.price = minorCurrency(Math.abs(item.price))
-        item.price = Dinero({amount: item.price}).getAmount()
-
-        let addedItem = this.findItem(item.id, 'added')
-        if(addedItem){
-            item.quantity += addedItem.item.quantity
-            this.#store.commit('cart/updateCartItem', {index: addedItem.index, item})
-        }else{
-            this.#store.commit('cart/newCartItem', item)
-        }
+        return this.#api.cart.addItem(item, this.getReference()).then(res => {
+            console.log(res.data)
+            this.setCartInStore(res.data)
+            return res.data
+        })
     }
 
-    removeItem(id){
-        let item = this.findItem(id, 'added')
-        if(item){
-            this.#store.commit('cart/deleteCartItem', item.index)
-            this.#store.commit('cart/newRemovedItem', item.item)
-        }
+    updateItem(item){
+        return this.#api.cart.updateItem(this.getReference(), item).then(res => {
+            this.setCartInStore(res.data)
+            return res.data
+        })
     }
 
-    updateQuantity(id, quantity){
-        quantity = Math.round(Math.abs(quantity))
-        let item = this.findItem(id, 'added')
-        if(item){
-            item.item.quantity = quantity
-            this.#store.commit('cart/updateCartItem', item)
-        }
+    removeItem(product_id){
+        let item = this.findItem(product_id)
+        if(!item) throw `removeItem: unable to find item with product_id: ${product_id}`
+
+        return this.#api.cart.removeItem(this.getReference(), product_id).then(res => {
+            this.setCartInStore(res.data)
+            return res.data
+        })
     }
 
-    adjustQuantity(id, adjustment){
-        adjustment = Math.round(adjustment)
-        let item = this.findItem(id, 'added')
-        if(item){
-            if(adjustment < 0 && item.item.quantity <= Math.abs(adjustment)){
-                console.error('Adjusted quantity is less than quantity in cart')
-                return
-            }
-            item.item.quantity += adjustment
-            this.#store.commit('cart/updateCartItem', item)
-        }
+    updateQuantity(product_id, quantity){
+        quantity = Math.round(quantity)
+        if(quantity <= 0) throw `updateQuantity: invalid quantity of ${quantity} passed`
+
+        let item = this.findItem(product_id)
+        if(!item) throw `updateQuantity: No item in the cart matching a product_id of ${product_id}`
+
+        return this.#api.cart.updateItem(this.getReference(), {
+            product_id,
+            quantity
+        }).then(res => {
+            this.setCartInStore(res.data)
+            return res.data
+        })
     }
 
-    saveItem(id){
-        let item = this.findItem(id, 'added')
-        if(item){
-            this.#store.commit('cart/deleteCartItem', item.index)
-            this.#store.commit('cart/newSavedItem', item.item)
-        }
-    }
+    saveItem(product_id){
+        let item = this.findItem(product_id)
+        if(!item) throw `saveItem: unable to find item with product_id: ${product_id}`
 
-    addSavedItem(id){
-        let item = this.findItem(id, 'saved')
-        if(item){
-            this.#store.commit('cart/deleteSavedItem', item.index)
-            this.addItem(item.item)
-        }
-    }
-
-    deleteSavedItem(id){
-        let item = this.findItem(id, 'saved')
-        if(item){
-            this.#store.commit('cart/deleteSavedItem', item.index)
-        }
-    }
-
-    addRemovedItem(id){
-        let item = this.findItem(id, 'removed')
-        if(item){
-            this.#store.commit('cart/deleteRemovedItem', item.index)
-            this.addItem(item.item)
-        }
-    }
-
-    deleteRemovedItem(id){
-        let item = this.findItem(id, 'removed')
-        if(item){
-            this.#store.commit('cart/deleteRemovedItem', item.index)
-        }
+        return this.#api.cart.saveItem(this.getReference(), product_id).then(res => {
+            this.setCartInStore(res.data)
+            return res.data
+        })
     }
 }

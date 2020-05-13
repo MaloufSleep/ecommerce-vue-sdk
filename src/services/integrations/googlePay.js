@@ -1,6 +1,10 @@
 
 export class GooglePayService {
 
+    #api
+    #store
+
+    #ready = false
     #baseRequest
     #tokenizationSpecification
     #allowedCardNetworks
@@ -10,8 +14,8 @@ export class GooglePayService {
     #paymentsClient
 
     constructor(api, store, config){
-        this.api = api
-        this.store = store
+        this.#api = api
+        this.#store = store
 
         this.#baseRequest = {
             apiVersion: 2,
@@ -42,9 +46,14 @@ export class GooglePayService {
         }, this.#baseCardPaymentMethod)
     }
 
+    get ready(){
+        return this.#ready
+    }
+
     initializePaymentsClient(){
         if(!window.google){throw "GooglePayService: Google Pay not loaded"}
         this.#paymentsClient = new window.google.payments.api.PaymentsClient({environment: 'TEST'})
+        this.#ready = true
     }
 
     isReadyToPay(){

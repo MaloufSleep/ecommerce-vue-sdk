@@ -21,7 +21,7 @@ export default {
     methods: {
         onLoad(){
             this.$services.googlePay.initializePaymentsClient()
-            this.$eventBus.$emit('googlePay:loaded')
+            this.$root.$emit('googlePay:loaded')
         }
     }
 }

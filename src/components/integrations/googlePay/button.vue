@@ -17,9 +17,9 @@ export default {
             if(window.google){
                 this.googlePayLoaded()
             }else{
-                this.$eventBus.$on('googlePay:loaded', () => {
+                this.$root.$on('googlePay:loaded', () => {
                     this.googlePayLoaded()
-                    this.$eventBus.$off('googlePay:loaded')
+                    this.$root.$off('googlePay:loaded')
                 })
             }
         },

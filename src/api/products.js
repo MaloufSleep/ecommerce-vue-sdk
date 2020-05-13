@@ -3,33 +3,26 @@ import { Resource } from './resource'
 export class Products extends Resource {
 
     /**
-     * @param {*} options
-     */
-    setOptions(options){
-        this.options = options
-    }
-
-    /**
      * Get products for a list of product IDs
      * @param {int[]} ids
-     * @param {*=} options 
+     * @param {object=} options 
      */
     forIds(ids, options = null){
-        let params = options ? options : this.options ? this.options : {}
+        let params = options || {}
         params.products = ids;
-        return this.axios.post('api2/ecommerce/products/forIds', params)
+        return this.axios.post(this.basePath + 'forIds', params)
     }
 
 
     /**
      * Get products for a product list
      * @param {int=} list
-     * @param {*=} options 
+     * @param {object=} options 
      */
     forList(list = null, options = null){
-        let params = options ? options : this.options ? this.options : {}
+        let params = options || {}
         if(list != null) params.list_id = list;
-        return this.axios.post('api2/ecommerce/products/forList', params)
+        return this.axios.post(this.basePath + 'forList', params)
     }
 
 
@@ -38,6 +31,6 @@ export class Products extends Resource {
      * @param {int} id 
      */
     adjustedInventory(id){
-        return this.axios.get('api2/ecommerce/products/inventory', id)
+        return this.axios.get(this.basePath + 'inventory', id)
     }
 }

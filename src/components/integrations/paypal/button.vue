@@ -27,19 +27,24 @@ export default {
     methods: {
         verifyPaypalLoaded(){
             if(window.paypal){
-                this.paypalLoaded()
+                this.renderButton()
             }else{
-                this.$eventBus.$on('paypal:loaded', () => {
-                    this.paypalLoaded()
-                    this.$eventBus.$off('paypal:loaded')
+                this.$root.$on('paypal:loaded', () => {
+                    this.renderButton()
+                    this.$root.$off('paypal:loaded')
                 })
             }
         },
-        paypalLoaded(){
-            this.renderButton()
-        },
         renderButton(){
-            let btnConfig = {fundingSource: this.source, style: {}}
+            let btnConfig = {
+                fundingSource: this.source, 
+                style: {},
+                createOrder: this.createOrder,
+                onApprove: this.onApprove,
+                onShippingChange: this.onShippingChange,
+                onError: this.onError,
+                onCancel: this.onCancel
+            }
             if(this.label) btnConfig.style.label = this.label
             if(this.color) btnConfig.style.color = this.color
             if(this.height) btnConfig.style.height = this.height
@@ -50,6 +55,43 @@ export default {
             if(button.isEligible()){
                 button.render(`#${this.id}`)
             }
+        },
+        createOrder(data, actions){
+            console.log('createOrder')
+            return this.$services.paypal.createOrder(data, actions).then(res => {
+                console.log(res)
+                return res
+            }).catch(err => {
+                console.error(err)
+            })
+        },
+        onApprove(data, actions){
+            console.log('onApprove')
+            return this.$services.paypal.onApprove(data, actions).then(res => {
+                console.log(res)
+                return res
+            }).catch(err => {
+                console.error(err)
+            })
+        },
+        onShippingChange(data, actions){
+            console.log('onShippingChange')
+            return this.$services.paypal.onShippingChange(data, actions).then(res => {
+                console.log(res)
+            }).catch(err => {
+                this.$emit('error', err)
+                console.error(err)
+            })
+        },
+        onError(err){
+            console.log('onError')
+            console.error(err)
+            this.$emit('error', err)
+        },
+        onCancel(data){
+            console.log('onCancel')
+            console.log(data)
+            this.$emit('cancelled', data)
         }
     },
     mounted(){

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Products } from './products'
+import { Cart } from './cart'
 
 
 export class APIClient {
@@ -12,13 +13,13 @@ export class APIClient {
         const axiosInstance = axios.create({
             baseURL: config.endpoint,
             headers: {
-                'X-Store-Token': config.token
+                'X-Store-Public-Key': config.token
             }
         })
-        this.axios = axiosInstance
 
         // create each of the resources
-        this.products = new Products(this.axios)
+        this.products = new Products(axiosInstance, 'api2/ecommerce/products/')
+        this.cart = new Cart(axiosInstance, 'api2/ecommerce/cart/')
     }
 
 }

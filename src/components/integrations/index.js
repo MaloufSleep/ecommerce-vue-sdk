@@ -1,8 +1,9 @@
 import PayPal from './paypal/paypal.vue'
 import PayPalButton from './paypal/button.vue'
 import Synchrony from './synchrony/synchrony.vue'
-import GooglePay from './googlePay/google.vue'
+import GooglePay from './googlePay/googlePay.vue'
 import GooglePayButton from './googlePay/button.vue'
+import AuthorizeNet from './authorizeNet/authorizeNet.vue'
 
 export default Vue => {
     Vue.component(PayPal.name, PayPal)
@@ -10,4 +11,5 @@ export default Vue => {
     Vue.component(Synchrony.name, Synchrony)
     Vue.component(GooglePay.name, GooglePay)
     Vue.component(GooglePayButton.name, GooglePayButton)
+    Vue.component(AuthorizeNet.name, AuthorizeNet)
 }

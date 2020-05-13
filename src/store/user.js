@@ -1,7 +1,5 @@
 const state = () => {
-    return  {
-        user: {}
-    }
+    return  {}
 }
 
 const getters = {

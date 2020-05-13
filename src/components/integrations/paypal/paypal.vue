@@ -6,7 +6,8 @@
 export default {
     name: 'ec-paypal',
     metaInfo(){
-        const src = `https://www.paypal.com/sdk/js?client-id=${this.clientId}`
+        const clientId = this.$services.paypal.clientId
+        const src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
         return {
             script: [
                 {
@@ -18,15 +19,9 @@ export default {
             ]
         }
     },
-    props: {
-        clientId: {
-            type: String,
-            default: 'sb'
-        }
-    },
     methods: {
         onLoad(){
-            this.$eventBus.$emit('paypal:loaded')
+            this.$root.$emit('paypal:loaded')
         }
     }
 }

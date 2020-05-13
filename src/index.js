@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import { APIClient } from '@/api/client'
 import { Services } from '@/services'
 import Store from '@/store'
@@ -7,28 +6,21 @@ import Dinero from 'dinero.js'
 import * as Components from '@/components'
 import * as Filters from '@/utils/filters'
 
-// create global event bus
-const EventBus = new Vue()
-
 // add styles to build process
 import './styles/main.scss'
 
 export default {
     install(Vue, options = {}){
-        // Ensure store has been created
-        if(!options.store){
-            throw "Vuex store is a required option"
-        }
 
         // Add the modules to the store
         for(let [key,value] of Object.entries(Store.Modules)){
-            options.store.registerModule(key, value)
+            options.store.instance.registerModule(key, value)
         }
 
         // If persisting to local storage
-        if(options.persist){
+        if(options.store.persist){
             const persist = Store.Persistence()
-            persist(options.store)
+            persist(options.store.instance)
         }
 
         // Create API client
@@ -38,8 +30,7 @@ export default {
         })
 
         // Add to Vue prototype
-        Vue.prototype.$services = new Services(api, options)
-        Vue.prototype.$eventBus = EventBus
+        Vue.prototype.$services = new Services(api, options.store.instance, options)
 
         // Add components
         Object.values(Components).forEach(component => {

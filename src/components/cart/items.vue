@@ -1,25 +1,33 @@
 <template>
     <div>
-        <slot v-bind:cart="{ items, totals, adjustQuantity, updateQuantity, removeItem }">
-            <h3>Cart</h3>
-            <div v-for="item in items.added" :key="item.id">
-                <p>{{ item.name }}</p>
-                <p>{{ item.price | currency }}</p>
-                <div>
-                    <button @click="adjustQuantity(item.id, 1)">Increase</button>
-                    <button @click="adjustQuantity(item.id, -1)">Decrease</button>
-                    <button @click="removeItem(item.id)">Remove</button>
+        <slot v-bind:cart="cart">
+            <h2>Items</h2>
+            <div class="items">
+                <transition name="fade">
+                    <div v-if="loading" class="loader"></div>
+                </transition>
+                <div v-if="cart.items.length == 0">
+                    <p>There are no items in your cart!</p>
+                </div>
+                <div v-for="item in cart.items" :key="item.id">
+                    <h4>{{ item.product.oproduct_name }}</h4>
+                    <p>Unit Price: {{ item.unit_price | currency }}</p>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <button @click="adjustQuantity(item, -1)">Decrease</button>
+                    <button @click="adjustQuantity(item, 1)">Increase</button>
+                    <button @click="removeItem(item)">Remove</button>
                 </div>
             </div>
-            <br>
-            <h3>Totals</h3>
+            <br><hr><br>
+            <h2>Totals</h2>
             <div>
-                <p>Subtotal: {{ totals.subtotal }}</p>
-                <p>Discount: {{ totals.discount }}</p>
-                <p>Tax: {{ totals.tax }}
-                <p>Shipping: {{ totals.shipping }}<p>
-                <p>Total: {{ totals.total }}</p>
+                <p>Subtotal: {{ cart.totals.subtotal | currency}}</p>
+                <p>Discount: {{ cart.totals.discount | currency}}</p>
+                <p>Tax: {{ cart.totals.tax | currency}}
+                <p>Shipping: {{ cart.totals.shipping | currency}}<p>
+                <p>Total: {{ cart.totals.total | currency}}</p>
             </div>
+            <br><br>
         </slot>
     </div>
 </template>
@@ -29,23 +37,58 @@ import { mapState, mapGetters } from 'vuex'
 
 export default {
     name: 'ec-cart-items',
+    data(){
+        return {
+            loading: false
+        }
+    },
     computed: {
-        ...mapState('cart',['items']),
-        ...mapGetters('cart',['totals']),
+        ...mapState(['cart']),
+        ...mapGetters('cart',['itemCount']),
     },
     methods: {
-        adjustQuantity(id, amount){
-            this.$services.cart.adjustQuantity(id, amount)
+        adjustQuantity(item, amount){
+            this.loading = true
+            this.$services.cart.updateQuantity(item.product_id, item.quantity + amount).then(res => {
+                console.log(res)
+                this.loading = false
+            }).catch(err => {
+                console.error(err)
+                this.loading = false
+            })
+            
         },
-        updateQuantity(id, quantity){
-            this.$services.cart.updateQuantity(id, quantity)
-        },
-        removeItem(id){
-            this.$services.cart.removeItem(id)
+        removeItem(item){
+            this.loading = true
+            this.$services.cart.removeItem(item.product_id).then(res => {
+                console.log(res)
+                this.loading = false
+            }).catch(err => {
+                console.error(err)
+                this.loading = false
+            })
+            
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+    .items{
+        position: relative;
+    }
+    .loader {
+        position: absolute;
+        width: 100%; height: 100%;
+        background: white;
+        z-index: 101;
+        opacity: 0.8;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .2s;
+    }
+    .fade-enter, .fade-leave-to{
+        opacity: 0;
+    }
 </style>
