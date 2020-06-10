@@ -17,7 +17,8 @@ module.exports = {
         },
         performance: {
             hints: false
-        }
+        },
+        target: 'node',
     },
     chainWebpack(config){
         const types = ['vue-modules','vue','normal-modules','normal']
