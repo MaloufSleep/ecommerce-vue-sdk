@@ -1,5 +1,5 @@
 import { APIClient } from '@/api/client'
-import { Services } from '@/services'
+import Services from '@/services'
 import Store from '@/store'
 import Dinero from 'dinero.js'
 
@@ -8,6 +8,10 @@ import * as Filters from '@/utils/filters'
 
 // add styles to build process
 import './styles/main.scss'
+
+export { APIClient }
+export * from '@/components'
+export * from '@/utils/filters'
 
 export default {
     install(Vue, options = {}){
@@ -26,7 +30,8 @@ export default {
         // Create API client
         const api = new APIClient({
             endpoint: options.api.endpoint,
-            token: options.api.token
+            reference: options.api.reference,
+            locale: options.api.locale
         })
 
         // Add to Vue prototype
@@ -46,8 +51,4 @@ export default {
         Dinero.defaultCurrency = options.currency || 'USD'
     }
 }
-
-export { APIClient }
-export * from '@/components'
-export * from '@/utils/filters'
 

@@ -31,8 +31,8 @@ export class Cart extends Resource {
      * @param {string} reference
      * @param {object} item
      */
-    addItem(item, reference = null){
-        let params = {item}
+    addItem(reference, item){
+        let params = { item }
         if(reference) params.reference = reference
         return this.axios.post(this.basePath + 'item/add/', params)
     }
@@ -42,10 +42,10 @@ export class Cart extends Resource {
      * @param {string} reference
      * @param {object} item
      */
-    updateItem(reference, item){
+    updateItem(reference, id, updates){
         return this.axios.post(this.basePath + 'item/update/', {
             reference,
-            item
+            item: Object.assign({ id }, updates)
         })
     }
 
@@ -55,25 +55,12 @@ export class Cart extends Resource {
      * @param {int} product_id
      * @param {int=} type_id
      */
-    removeItem(reference, product_id, type_id = 1){
+    removeItem(reference, id){
         return this.axios.post(this.basePath + 'item/remove/', {
             reference,
             item: {
-                product_id,
-                type_id
+                id
             }
-        })
-    }
-
-    /**
-     * Save an item for later
-     * @param {string} reference
-     * @param {int} product_id
-     */
-    saveItem(reference, product_id){
-        return this.axios.post(this.basePath + 'item/save/', {
-            reference,
-            product_id
         })
     }
 }

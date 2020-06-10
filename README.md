@@ -9,7 +9,8 @@ yarn add https://github.com/MaloufSleep/ecommerce-vue-sdk.git
 
 ## Configuration
 The default export is a Vue plugin that can be used in any Vue project. Simply import the module and add it to the Vue instance.
-```
+
+```js
 // app.js
 import Ecommerce from '@malouf/ecommerce-vue-sdk'
 
@@ -23,7 +24,8 @@ Some parameters are required for the plugin to operate correctly. These will be 
 A Vuex store is required. The plugin will add modules to this store.
 - **instance (Vuex Store Object, Required)** - Vuex store instance.
 - **persist (Boolean, Required)** - Persistence via local storage (vuex-persistedstate) is provided by the plugin. Setting the `persist` parameter to `true` enables persistence. When using a static site generating framework (Gridsome or Nuxt), make sure this is set to false while the application is being rendered server-side.
-```
+
+```js
 // app.js
 import Vuex from 'vuex'
 
@@ -41,13 +43,15 @@ const params = {
 #### API (Object)
 The API client will be configured and attached to the included services for making network requests for products, cart actions, and checkout.
 - **endpoint (String, Required)** - The base url endpoint for all API calls
-- **token (Sting)** - The site's public token
-```
+- **reference (Sting)** - The site's uuid reference
+- **locale (String)** - The site's locale following the BCP 47 language tag
+```js
 // app.js
 const params = {
     api: {
         endpoint: process.env.VUE_APP_API_ENDPOINT,
-		token: process.env.VUE_APP_API_TOKEN
+        reference: process.env.VUE_APP_SITE_REFERENCE, 
+        token: process.env.VUE_APP_SITE_LOCALE
     }
 }
 ```

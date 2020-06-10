@@ -4,10 +4,9 @@
 
 <script>
 export default {
-    name: 'ec-paypal',
+    name: 'ec-google-pay-script',
     metaInfo(){
-        const clientId = this.$services.paypal.clientId
-        const src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
+        const src = 'https://pay.google.com/gp/p/js/pay.js'
         return {
             script: [
                 {
@@ -21,7 +20,7 @@ export default {
     },
     methods: {
         onLoad(){
-            this.$root.$emit('paypal:loaded')
+            this.$emit('loaded')
         }
     }
 }

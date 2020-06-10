@@ -4,9 +4,9 @@
 
 <script>
 export default {
-    name: 'ec-synchrony',
+    name: 'ec-authorize-net',
     metaInfo(){
-        const src = 'https://ubuy.syf.com/digitalbuy/js/merchant_ff.js'
+        const src = `https://jstest.authorize.net/v1/Accept.js`
         return {
             script: [
                 {
@@ -20,7 +20,7 @@ export default {
     },
     methods: {
         onLoad(){
-            this.$root.$emit('synchrony:loaded')
+            this.$emit('loaded')
         }
     }
 }

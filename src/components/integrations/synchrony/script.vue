@@ -4,9 +4,9 @@
 
 <script>
 export default {
-    name: 'ec-google-pay',
+    name: 'ec-synchrony',
     metaInfo(){
-        const src = 'https://pay.google.com/gp/p/js/pay.js'
+        const src = 'https://ubuy.syf.com/digitalbuy/js/merchant_ff.js'
         return {
             script: [
                 {
@@ -20,8 +20,7 @@ export default {
     },
     methods: {
         onLoad(){
-            this.$services.googlePay.initializePaymentsClient()
-            this.$root.$emit('googlePay:loaded')
+            this.$emit('loaded')
         }
     }
 }

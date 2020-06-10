@@ -2,7 +2,6 @@ import axios from 'axios'
 import { Products } from './products'
 import { Cart } from './cart'
 
-
 export class APIClient {
     /*
         Constructor
@@ -13,7 +12,10 @@ export class APIClient {
         const axiosInstance = axios.create({
             baseURL: config.endpoint,
             headers: {
-                'X-Store-Public-Key': config.token
+                'X-Site-Reference': config.reference,
+                'X-Site-Locale': config.locale,
+                'Content-Type': 'application/json',
+                accept: 'application/json',
             }
         })
 

@@ -4,9 +4,10 @@
 
 <script>
 export default {
-    name: 'ec-authorize-net',
+    name: 'ec-paypal-script',
     metaInfo(){
-        const src = `https://jstest.authorize.net/v1/Accept.js`
+        const clientId = this.$services.paypal.clientId
+        const src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
         return {
             script: [
                 {
@@ -20,7 +21,7 @@ export default {
     },
     methods: {
         onLoad(){
-            this.$root.$emit('authorizeNet:loaded')
+            this.$emit('loaded')
         }
     }
 }

@@ -9,65 +9,64 @@ export class CartService{
         this.#store = store
     }
 
-    findItem(product_id){
-        return this.#store.state.cart.items.find(el => el.product_id == product_id)
+    findItemById(id){
+        return this.#store.state.cart.items.find(el => el.id == id)
+    }
+
+    findItemByProductId(product_id){
+        return this.#store.state.cart.items.find(el => el.product_id == product_id) 
     }
 
     getReference(){
         return this.#store.state.cart.reference || null
     }
 
-    setCartInStore(cart){
+    setCart(cart){
         this.#store.commit('cart/setCart', cart)
     }
 
     addItem(item){
-        return this.#api.cart.addItem(item, this.getReference()).then(res => {
-            console.log(res.data)
-            this.setCartInStore(res.data)
+        return this.#api.cart.addItem(this.getReference(), item).then(res => {
+            this.setCart(res.data)
             return res.data
         })
     }
 
-    updateItem(item){
-        return this.#api.cart.updateItem(this.getReference(), item).then(res => {
-            this.setCartInStore(res.data)
+    updateItem(id, updates){
+        return this.#api.cart.updateItem(this.getReference(), id, updates).then(res => {
+            this.setCart(res.data)
             return res.data
         })
     }
 
-    removeItem(product_id){
-        let item = this.findItem(product_id)
-        if(!item) throw `removeItem: unable to find item with product_id: ${product_id}`
+    removeItem(id){
+        let item = this.findItemById(id)
+        if(!item) throw `removeItem: unable to find item with id: ${id}`
 
-        return this.#api.cart.removeItem(this.getReference(), product_id).then(res => {
-            this.setCartInStore(res.data)
+        return this.#api.cart.removeItem(this.getReference(), id).then(res => {
+            this.setCart(res.data)
             return res.data
         })
     }
 
-    updateQuantity(product_id, quantity){
-        quantity = Math.round(quantity)
-        if(quantity <= 0) throw `updateQuantity: invalid quantity of ${quantity} passed`
+    updateQuantity(id, quantity){
+        quantity = Math.abs(Math.round(quantity))
 
-        let item = this.findItem(product_id)
-        if(!item) throw `updateQuantity: No item in the cart matching a product_id of ${product_id}`
+        let item = this.findItemById(id)
+        if(!item) throw `updateQuantity: unable to find item with id: ${id}`
 
-        return this.#api.cart.updateItem(this.getReference(), {
-            product_id,
-            quantity
-        }).then(res => {
-            this.setCartInStore(res.data)
+        return this.#api.cart.updateItem(this.getReference(), id, {quantity}).then(res => {
+            this.setCart(res.data)
             return res.data
         })
     }
 
-    saveItem(product_id){
-        let item = this.findItem(product_id)
-        if(!item) throw `saveItem: unable to find item with product_id: ${product_id}`
+    saveItem(id){
+        let item = this.findItemById(id)
+        if(!item) throw `saveItem: unable to find item with id: ${id}`
 
-        return this.#api.cart.saveItem(this.getReference(), product_id).then(res => {
-            this.setCartInStore(res.data)
+        return this.#api.cart.updateItem(this.getReference(), id, {type_id: 2}).then(res => {
+            this.setCart(res.data)
             return res.data
         })
     }

@@ -3,13 +3,13 @@ export class PaypalService {
 
     #api
     #store
-
     #clientId
 
     constructor(api, store, config){
         this.#api = api
         this.#store = store
-        this.#clientId = config.clientId 
+        this.#clientId = config.clientId
+        this.loaded = false
     }
 
     get clientId(){

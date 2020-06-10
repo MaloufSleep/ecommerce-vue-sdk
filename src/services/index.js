@@ -3,7 +3,14 @@ import { GooglePayService } from './integrations/googlePay'
 import { PaypalService } from './integrations/paypal'
 import { AuthorizeNetService } from './integrations/authorizeNet'
 
-export class Services {
+export {
+    CartService,
+    GooglePayService,
+    PaypalService,
+    AuthorizeNetService
+}
+
+export default class Services {
 
     constructor(api, store, options){
         this.cart = new CartService(api, store)

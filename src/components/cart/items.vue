@@ -2,7 +2,7 @@
     <div>
         <slot v-bind:cart="cart">
             <h2>Items</h2>
-            <div class="items">
+            <div class="items" v-if="cart.items">
                 <transition name="fade">
                     <div v-if="loading" class="loader"></div>
                 </transition>
@@ -10,7 +10,7 @@
                     <p>There are no items in your cart!</p>
                 </div>
                 <div v-for="item in cart.items" :key="item.id">
-                    <h4>{{ item.product.oproduct_name }}</h4>
+                    <h4>{{ item.name }}</h4>
                     <p>Unit Price: {{ item.unit_price | currency }}</p>
                     <p>Quantity: {{ item.quantity }}</p>
                     <button @click="adjustQuantity(item, -1)">Decrease</button>
@@ -21,11 +21,11 @@
             <br><hr><br>
             <h2>Totals</h2>
             <div>
-                <p>Subtotal: {{ cart.totals.subtotal | currency}}</p>
-                <p>Discount: {{ cart.totals.discount | currency}}</p>
-                <p>Tax: {{ cart.totals.tax | currency}}
-                <p>Shipping: {{ cart.totals.shipping | currency}}<p>
-                <p>Total: {{ cart.totals.total | currency}}</p>
+                <p>Subtotal: {{ cart.subtotal | currency}}</p>
+                <p>Discount: {{ cart.discount | currency}}</p>
+                <p>Tax: {{ cart.tax | currency}}
+                <p>Shipping: {{ cart.shipping | currency}}<p>
+                <p>Total: {{ cart.total | currency}}</p>
             </div>
             <br><br>
         </slot>
@@ -49,7 +49,7 @@ export default {
     methods: {
         adjustQuantity(item, amount){
             this.loading = true
-            this.$services.cart.updateQuantity(item.product_id, item.quantity + amount).then(res => {
+            this.$services.cart.updateQuantity(item.id, item.quantity + amount).then(res => {
                 console.log(res)
                 this.loading = false
             }).catch(err => {
@@ -60,7 +60,7 @@ export default {
         },
         removeItem(item){
             this.loading = true
-            this.$services.cart.removeItem(item.product_id).then(res => {
+            this.$services.cart.removeItem(item.id).then(res => {
                 console.log(res)
                 this.loading = false
             }).catch(err => {

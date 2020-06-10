@@ -9,7 +9,7 @@
     ],
     "scripts": {
         "build": "vue-cli-service build --target lib --name ecommerce-vue-sdk src/index.js && rm ./dist/demo.html",
-        "watch": "vue-cli-service build --watch --target lib --name ecommerce-vue-sdk src/index.js",
+        "dev": "vue-cli-service build --watch --target lib --name ecommerce-vue-sdk src/index.js",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {

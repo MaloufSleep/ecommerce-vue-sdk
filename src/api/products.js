@@ -9,28 +9,18 @@ export class Products extends Resource {
      */
     forIds(ids, options = null){
         let params = options || {}
-        params.products = ids;
+        params.products = ids
         return this.axios.post(this.basePath + 'forIds', params)
     }
 
-
     /**
      * Get products for a product list
-     * @param {int=} list
+     * @param {int} list
      * @param {object=} options 
      */
-    forList(list = null, options = null){
+    forList(list, options = null){
         let params = options || {}
-        if(list != null) params.list_id = list;
+        params.list_id = list
         return this.axios.post(this.basePath + 'forList', params)
-    }
-
-
-    /**
-     * Get adjusted inventory for a specific product
-     * @param {int} id 
-     */
-    adjustedInventory(id){
-        return this.axios.get(this.basePath + 'inventory', id)
     }
 }

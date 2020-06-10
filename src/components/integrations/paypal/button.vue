@@ -21,21 +21,25 @@ export default {
     },
     data(){
         return {
-            id: uniqueId('paypal-btn-')
+            id: uniqueId('paypal-btn-'),
+            rendered: false,
+            paypalService: this.$services.paypal
+        }
+    },
+    computed: {
+        loaded: function(){
+            return this.paypalService.loaded
+        }
+    },
+    watch: {
+        loaded: function(newVal){
+            if(newVal) this.renderButton()
         }
     },
     methods: {
-        verifyPaypalLoaded(){
-            if(window.paypal){
-                this.renderButton()
-            }else{
-                this.$root.$on('paypal:loaded', () => {
-                    this.renderButton()
-                    this.$root.$off('paypal:loaded')
-                })
-            }
-        },
         renderButton(){
+            if(this.rendered) return
+
             let btnConfig = {
                 fundingSource: this.source, 
                 style: {},
@@ -95,7 +99,7 @@ export default {
         }
     },
     mounted(){
-        this.verifyPaypalLoaded()
+        if(this.paypalService.loaded) this.renderButton()
     }
 }
 </script>
