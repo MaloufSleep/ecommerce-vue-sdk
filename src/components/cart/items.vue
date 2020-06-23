@@ -11,7 +11,7 @@
                 </div>
                 <div v-for="item in cart.items" :key="item.id">
                     <h4>{{ item.name }}</h4>
-                    <p>Unit Price: {{ item.unit_price | currency }}</p>
+                    <p>Unit Price: {{ item.price | currency }}</p>
                     <p>Quantity: {{ item.quantity }}</p>
                     <button @click="adjustQuantity(item, -1)">Decrease</button>
                     <button @click="adjustQuantity(item, 1)">Increase</button>

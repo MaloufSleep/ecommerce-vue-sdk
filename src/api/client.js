@@ -19,9 +19,12 @@ export class APIClient {
             }
         })
 
+        // base path
+        this.basePath = 'api-v2/ecommerce'
+
         // create each of the resources
-        this.products = new Products(axiosInstance, 'api2/ecommerce/products/')
-        this.cart = new Cart(axiosInstance, 'api2/ecommerce/cart/')
+        this.products = new Products(axiosInstance, `${this.basePath}/products`)
+        this.cart = new Cart(axiosInstance, `${this.basePath}/cart`)
     }
 
 }

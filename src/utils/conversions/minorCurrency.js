@@ -16,7 +16,7 @@ export default function convertToMinorCurrency(value){
         // attempt float
         let parsedFloat = parseFloat(value)
         if(!isNaN(parsedFloat)){
-            return convertFloat(parseFloat)
+            return convertFloat(parsedFloat)
         }
 
         // attempt int

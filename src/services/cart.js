@@ -17,8 +17,8 @@ export class CartService{
         return this.#store.state.cart.items.find(el => el.product_id == product_id) 
     }
 
-    getReference(){
-        return this.#store.state.cart.reference || null
+    getUuid(){
+        return this.#store.state.cart.uuid || null
     }
 
     setCart(cart){
@@ -26,14 +26,14 @@ export class CartService{
     }
 
     addItem(item){
-        return this.#api.cart.addItem(this.getReference(), item).then(res => {
+        return this.#api.cart.addItem(this.getUuid(), item).then(res => {
             this.setCart(res.data)
             return res.data
         })
     }
 
     updateItem(id, updates){
-        return this.#api.cart.updateItem(this.getReference(), id, updates).then(res => {
+        return this.#api.cart.updateItem(this.getUuid(), id, updates).then(res => {
             this.setCart(res.data)
             return res.data
         })
@@ -43,7 +43,7 @@ export class CartService{
         let item = this.findItemById(id)
         if(!item) throw `removeItem: unable to find item with id: ${id}`
 
-        return this.#api.cart.removeItem(this.getReference(), id).then(res => {
+        return this.#api.cart.removeItem(this.getUuid(), id).then(res => {
             this.setCart(res.data)
             return res.data
         })
@@ -55,7 +55,7 @@ export class CartService{
         let item = this.findItemById(id)
         if(!item) throw `updateQuantity: unable to find item with id: ${id}`
 
-        return this.#api.cart.updateItem(this.getReference(), id, {quantity}).then(res => {
+        return this.#api.cart.updateItem(this.getUuid(), id, {quantity}).then(res => {
             this.setCart(res.data)
             return res.data
         })
@@ -65,7 +65,7 @@ export class CartService{
         let item = this.findItemById(id)
         if(!item) throw `saveItem: unable to find item with id: ${id}`
 
-        return this.#api.cart.updateItem(this.getReference(), id, {type_id: 2}).then(res => {
+        return this.#api.cart.updateItem(this.getUuid(), id, {type: 'saved'}).then(res => {
             this.setCart(res.data)
             return res.data
         })

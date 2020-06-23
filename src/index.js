@@ -48,6 +48,7 @@ export default {
         })
         
         // Configure currency
+        Dinero.globalLocale = options.locale || 'en-us'
         Dinero.defaultCurrency = options.currency || 'USD'
     }
 }

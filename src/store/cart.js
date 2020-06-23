@@ -1,5 +1,3 @@
-import Dinero from 'dinero.js'
-
 const state = () => {
     return  {}
 }
@@ -16,9 +14,6 @@ const getters = {
 const mutations = {
     setCart(state, cart){
         Object.assign(state, cart)
-        // this can probably be moved
-        Dinero.globalLocale = cart.locale
-        Dinero.defaultCurrency = cart.currency
     }
 }
 
