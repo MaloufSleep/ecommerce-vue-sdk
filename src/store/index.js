@@ -3,6 +3,7 @@ import SecureLS from "secure-ls";
 
 import cart from './cart'
 import user from './user'
+import checkout from './checkout'
 
 function Persistence(){
     const ls = new SecureLS({ isCompression: true });
@@ -18,7 +19,8 @@ function Persistence(){
 
 const Modules = {
     cart,
-    user
+    user,
+    checkout
 }
 
 export default {
