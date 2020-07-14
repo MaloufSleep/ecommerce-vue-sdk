@@ -23,7 +23,7 @@
                 <input type="text" class="mc-form-control" :id="`mc-qty_${i}`" v-model="item.quantity">
                 <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
               </div>
-              <p>{{ item.price | currency }}</p>
+              <p>{{ item.prices.active | currency }}</p>
             </div>
           </div>
         </div>
@@ -32,20 +32,16 @@
     <br><hr><br>
 
     <slot
-      :subtotal="cart.subtotal"
-      :discount="cart.discount"
-      :tax="cart.tax"
-      :shipping="cart.shipping"
-      :total="cart.total"
+      :totals="cart.totals"
       name="totals"
     >
       <h2>Totals</h2>
       <div>
-        <p>Subtotal: {{ cart.subtotal | currency}}</p>
-        <p>Discount: {{ cart.discount | currency}}</p>
-        <p>Tax: {{ cart.tax | currency}}
-        <p>Shipping: {{ cart.shipping | currency}}<p>
-        <p>Total: {{ cart.total | currency}}</p>
+        <p>Subtotal: {{ cart.totals.subtotal | currency}}</p>
+        <p>Discount: {{ cart.totals.discount | currency}}</p>
+        <p>Tax: {{ cart.totals.tax | currency}}
+        <p>Shipping: {{ cart.totals.shipping | currency}}<p>
+        <p>Total: {{ cart.totals.total | currency}}</p>
       </div>
     </slot>
   </div>
