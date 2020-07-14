@@ -21,10 +21,10 @@ export class Cart extends Resource {
     /**
      * Add an item to the cart
      * @param {string} uuid - cart uuid
-     * @param {object} item - item to be added
+     * @param {object[]} items - items to be added
      */
-    addItem(uuid, item){
-        return this.axios.post(`${this.basePath}/${uuid ? uuid : ''}`, item)
+    addItems(uuid, items){
+        return this.axios.post(`${this.basePath}/${uuid || ''}`, {items})
     }
 
     /**
@@ -34,15 +34,33 @@ export class Cart extends Resource {
      * @param {object} updates
      */
     updateItem(uuid, id, updates){
-        return this.axios.put(`${this.basePath}/${uuid}/item/${id}/update`, updates)
+        return this.axios.put(`${this.basePath}/${uuid}/items/${id}/update`, updates)
     }
 
     /**
      * Remove an item from the cart
      * @param {string} uuid - cart uuid
-     * @param {int} id - item id
+     * @param {int[]} ids - item ids
      */
-    removeItem(uuid, id){
-        return this.axios.delete(`${this.basePath}/${uuid}/item/${id}/remove`)
+    removeItems(uuid, ids){
+        return this.axios.delete(`${this.basePath}/${uuid}/items/remove`, {items: ids})
+    }
+
+    /**
+     * Set the shipping address for the cart
+     * @param {string} uuid - cart uuid
+     * @param {object} address - shipping address
+     */
+    setShippingAddress(uuid, address){
+        return this.axios.post(`${this.basePath}/${uuid}/shipping/address`, address)
+    }
+
+    /**
+     * Set the shipping service for the cart
+     * @param {string} uuid - cart uuid
+     * @param {int} id - shipping service ID
+     */
+    setShippingService(uuid, id){
+        return this.axios.post(`${this.basePath}/${uuid}/shipping/services/${id}`)
     }
 }

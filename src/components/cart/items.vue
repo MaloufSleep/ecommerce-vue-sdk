@@ -14,7 +14,7 @@
             <img :src="item.image">
           </div>
           <div class="mc-item-info">
-            <h4>{{ item.product.oproduct_name }}</h4>
+            <h4>{{ item.product.properties.Title || item.product.name }}</h4>
             <div class="mc-qty-wrap">
               <div class="mc-input-group">
                 <span>Qty</span>
@@ -41,11 +41,11 @@
     >
       <h2>Totals</h2>
       <div>
-        <p>Subtotal: {{ subtotal | currency}}</p>
-        <p>Discount: {{ discount | currency}}</p>
-        <p>Tax: {{ tax | currency}}
-        <p>Shipping: {{ shipping | currency}}<p>
-        <p>Total: {{ total | currency}}</p>
+        <p>Subtotal: {{ cart.subtotal | currency}}</p>
+        <p>Discount: {{ cart.discount | currency}}</p>
+        <p>Tax: {{ cart.tax | currency}}
+        <p>Shipping: {{ cart.shipping | currency}}<p>
+        <p>Total: {{ cart.total | currency}}</p>
       </div>
     </slot>
   </div>

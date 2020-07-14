@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { Products } from './products'
 import { Cart } from './cart'
 
 export class APIClient {
-    /*
-        Constructor
-        Accepts a config object used to setup axios
-    */
+
+    /**
+     * Constructs a new APIClient object
+     * @param {object} config - configuration object
+     */
     constructor(config){
         // create axios instance with base url and store token from config
         const axiosInstance = axios.create({
@@ -23,8 +23,7 @@ export class APIClient {
         this.basePath = 'api-v2/ecommerce'
 
         // create each of the resources
-        this.products = new Products(axiosInstance, `${this.basePath}/products`)
-        this.cart = new Cart(axiosInstance, `${this.basePath}/cart`)
+        this.cart = new Cart(axiosInstance, `${this.basePath}/carts`)
     }
 
 }

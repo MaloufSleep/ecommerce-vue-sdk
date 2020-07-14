@@ -22,7 +22,7 @@ export default function convertToMinorCurrency(value){
         // attempt int
         let parsedInt = parseInt(value)
         if(!isNaN(parsedInt)){
-            return parsedInt * 100
+            return parsedInt
         }
     }
     
@@ -31,7 +31,7 @@ export default function convertToMinorCurrency(value){
         if(!isInteger(value)){
             return convertFloat(value)
         }
-        return value * 100;
+        return value
     }
     
     throw 'convertToMinorCurrency: Invalid type passed. Float or Integer required.'
