@@ -23,25 +23,27 @@
                 <input type="text" class="mc-form-control" :id="`mc-qty_${i}`" v-model="item.quantity">
                 <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
               </div>
-              <p>{{ item.prices.active | currency }}</p>
+              <p class="mc-product-price">{{ item.prices.active | currency }}</p>
             </div>
           </div>
         </div>
       </div>
     </slot>
-    <br><hr><br>
 
     <slot
       :totals="cart.totals"
       name="totals"
     >
-      <h2>Totals</h2>
-      <div>
-        <p>Subtotal: {{ cart.totals.subtotal | currency}}</p>
-        <p>Discount: {{ cart.totals.discount | currency}}</p>
-        <p>Tax: {{ cart.totals.tax | currency}}
-        <p>Shipping: {{ cart.totals.shipping | currency}}<p>
-        <p>Total: {{ cart.totals.total | currency}}</p>
+      <hr>
+      <div v-if="cart.totals" class="mc-totals-wrap">
+        <h2>Totals</h2>
+        <div class="mc-totals">
+          <p><span class="mc-total-property">Subtotal:</span> <span class="mc-total-value">{{ cart.totals.subtotal | currency}}</span></p>
+          <p><span class="mc-total-property">Discount:</span> <span class="mc-total-value">{{ cart.totals.discount | currency}}</span></p>
+          <p><span class="mc-total-property">Tax:</span> <span class="mc-total-value">{{ cart.totals.tax | currency }}</span></p>
+          <p><span class="mc-total-property">Shipping:</span> <span class="mc-total-value">{{ cart.totals.shipping | currency}}</span></p>
+          <p><span class="mc-total-property">Total:</span> <span class="mc-total-value">{{ cart.totals.total | currency}}</span></p>
+        </div>
       </div>
     </slot>
   </div>
@@ -115,8 +117,25 @@ export default {
     display: flex;
     flex-direction: column;
     padding-left: 1rem;
+    flex: 1;
   }
 }
+
+.mc-totals-wrap {
+  padding: 1rem;
+
+  & .mc-totals {
+
+    & > p {
+      display: flex;
+
+      & .mc-total-property {
+        flex: 1;
+      }
+    }
+  }
+}
+
 .mc-loader {
   position: absolute;
   width: 100%; height: 100%;
@@ -235,6 +254,7 @@ export default {
   background: gray;
   height: 85px;
   width: 85px;
+  flex: 0 0 85px;
   display: inline-block;
 
   & > img {
@@ -243,12 +263,12 @@ export default {
 }
 
 .sr-only {
-  position:absolute;
-  left:-10000px;
-  top:auto;
-  width:1px;
-  height:1px;
-  overflow:hidden;
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 .fade-enter-active, .fade-leave-active {

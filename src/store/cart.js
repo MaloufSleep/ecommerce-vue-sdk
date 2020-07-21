@@ -1,5 +1,7 @@
 const state = () => {
-    return  {}
+    return  {
+        items: []
+    }
 }
 
 const getters = {
