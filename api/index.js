@@ -1,22 +1,27 @@
 import axios from 'axios'
 import { Cart } from './cart'
 
-export class APIClient {
+export default class APIClient {
 
     /**
      * Constructs a new APIClient object
      * @param {object} config - configuration object
      */
-    constructor(config){
+    constructor(endpoint, region_id){
         // create axios instance with base url and store token from config
         const axiosInstance = axios.create({
-            baseURL: config.endpoint,
+            baseURL: endpoint,
             headers: {
-                'X-Site-Reference': config.reference,
-                'X-Site-Locale': config.locale,
+                'X-Site-Region': region_id,
                 'Content-Type': 'application/json',
                 accept: 'application/json',
             }
+        })
+
+        axiosInstance.interceptors.response.use(function(response){ 
+            return response
+        }, function(error){
+            return Promise.reject(error.response)
         })
 
         // base path

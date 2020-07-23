@@ -20,38 +20,33 @@ Vue.use(Ecommerce, params)
 ### Parameters
 Some parameters are required for the plugin to operate correctly. These will be passed as the second parameter to the `Vue.use()` function.
 
-#### Store (Object, Required)
-A Vuex store is required. The plugin will add modules to this store.
-- **instance (Vuex Store Object, Required)** - Vuex store instance.
-- **persist (Boolean, Required)** - Persistence via local storage (vuex-persistedstate) is provided by the plugin. Setting the `persist` parameter to `true` enables persistence. When using a static site generating framework (Gridsome or Nuxt), make sure this is set to false while the application is being rendered server-side.
+#### isClient (Boolean, optional)
+For server side rendering (Gridsome/Nuxt), include this parameter in order for the plugin to determine when client specific functionality can be included. `true` indicates client, `false` indicates server.
 
 ```js
 // app.js
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
-const store = new Vuex.Store()
-
 const params = {
-    store: {
-        instance: store,
-        persist: true // For SSR, use isClient or process.client
-    }
+    isClient: context.isClient
 }
 ```
 
-#### API (Object)
+#### API (Object, required)
 The API client will be configured and attached to the included services for making network requests for products, cart actions, and checkout.
-- **endpoint (String, Required)** - The base url endpoint for all API calls
-- **reference (Sting)** - The site's uuid reference
-- **locale (String)** - The site's locale following the BCP 47 language tag
+- **endpoint (String, Required)** - The base url for all API calls
+- **region (Sting, Required)** - The site region uuid
+
+```env
+// .env
+VUE_APP_API_ENDPOINT=https://www.mygreatsite.com
+VUE_APP_SITE_REGION=75240c8e-a987-476d-9319-ae3f3f8c2f67
+```
+
 ```js
 // app.js
 const params = {
     api: {
         endpoint: process.env.VUE_APP_API_ENDPOINT,
-        reference: process.env.VUE_APP_SITE_REFERENCE, 
-        token: process.env.VUE_APP_SITE_LOCALE
+        region: process.env.VUE_APP_SITE_REGION
     }
 }
 ```

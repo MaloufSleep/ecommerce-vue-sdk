@@ -1,5 +1,5 @@
 import Dinero from 'dinero.js'
-import minorCurrency from '@/utils/conversions/minorCurrency'
+import minorCurrency from '../utils/conversions/minorCurrency'
 
 function currency(value){
     value = minorCurrency(value)

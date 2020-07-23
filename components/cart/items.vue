@@ -1,26 +1,30 @@
 <template>
   <div class="mc-cart-wrap">
-    <slot :items="cart.items" name="items">
+    <slot :items="items()" name="items">
       <div class="mc-items">
         <transition name="fade">
           <div v-if="loading" class="mc-loader"></div>
         </transition>
-        <div v-if="!cart.items || cart.items.length == 0" class="mc-empty-cart">
+        <div v-if="!itemCount()" class="mc-empty-cart">
           <p>There are no items in your cart!</p>
         </div>
-        <div v-else v-for="(item, i) in cart.items" :key="item.id" class="mc-item">
+        <div v-else v-for="(item, i) in items()" :key="item.id" class="mc-item">
           <button class="mc-btn-remove" @click="removeItem(item)"><span class="sr-only">Remove</span></button>
           <div class="mc-item-img-wrap">
-            <img :src="item.image">
+            <g-link :to="item.link">
+              <img :src="item.image">
+            </g-link>
           </div>
           <div class="mc-item-info">
-            <h4>{{ item.product.properties.Title || item.product.name }}</h4>
+            <g-link :to="item.link">
+              <h4>{{ item.product.properties.Title || item.product.name }}</h4>
+            </g-link>
             <div class="mc-qty-wrap">
               <div class="mc-input-group">
                 <span>Qty</span>
                 <button class="mc-qty-btn mc-cart-btn mc-btn-minus" @click="adjustQuantity(item, -1)"><span class="sr-only">Decrease</span></button>
                 <label :for="`mc-qty_${i}`" class="sr-only">Item Quantity</label>
-                <input type="text" class="mc-form-control" :id="`mc-qty_${i}`" v-model="item.quantity">
+                <input type="text" class="mc-form-control" :id="`mc-qty_${i}`" @change="updateQuantity(item)" v-model="item.quantity">
                 <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
               </div>
               <p class="mc-product-price">{{ item.prices.active | currency }}</p>
@@ -50,40 +54,31 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'ec-cart-items',
     data(){
-        return {
-            loading: false
-        }
+        return {}
     },
     computed: {
-        ...mapState(['cart']),
-        ...mapGetters('cart',['itemCount']),
+        ...mapState('cart',['loading','cart']),
+        ...mapGetters('cart',['items','itemCount']),
     },
     methods: {
+        ...mapActions('cart', {
+          removeItemAction: 'removeItem',
+          updateQuantityAction: 'updateQuantity'
+        }),
         adjustQuantity(item, amount){
-            this.loading = true
-            this.$services.cart.updateQuantity(item.id, item.quantity + amount).then(res => {
-                console.log(res)
-                this.loading = false
-            }).catch(err => {
-                console.error(err)
-                this.loading = false
-            })
+          this.updateQuantityAction({id: item.id, quantity: item.quantity + amount})
             
         },
+        updateQuantity(item){
+          this.updateQuantityAction({id: item.id, quantity: item.quantity})
+        },
         removeItem(item){
-            this.loading = true
-            this.$services.cart.removeItem(item.id).then(res => {
-                console.log(res)
-                this.loading = false
-            }).catch(err => {
-                console.error(err)
-                this.loading = false
-            })
+          this.removeItemAction(item.id)
             
         }
     }
@@ -257,7 +252,7 @@ export default {
   flex: 0 0 85px;
   display: inline-block;
 
-  & > img {
+  & img {
     width: 100%;
   }
 }

@@ -1,7 +1,6 @@
 const state = () => {
     return  {
-        locale: 'en-us',
-        currency: 'USD'
+        site: {}
     }
 }
 
@@ -9,11 +8,8 @@ const getters = {
 }
 
 const mutations = {
-    setLocale(state, locale){
-        state.locale = locale
-    },
-    setCurrency(state, currency){
-        state.currency = currency
+    setSite(state, site){
+        state.site = Object.assign({}, state.site, site)
     }
 }
 

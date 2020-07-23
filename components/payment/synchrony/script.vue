@@ -4,13 +4,18 @@
 
 <script>
 export default {
-    name: 'ec-synchrony',
+    name: 'ec-synchrony-script',
+    props: {
+        production: {
+            type: Boolean,
+            default: false
+        }
+    },
     metaInfo(){
-        const src = 'https://ubuy.syf.com/digitalbuy/js/merchant_ff.js'
         return {
             script: [
                 {
-                    src,
+                    src: this.production ? 'https://buy.syf.com/digitalbuy/js/merchant_ff.js' : 'https://ubuy.syf.com/digitalbuy/js/merchant_ff.js',
                     async: true,
                     defer: true,
                     callback: this.onLoad
@@ -20,7 +25,7 @@ export default {
     },
     methods: {
         onLoad(){
-            this.$emit('loaded')
+            this.$emit('onLoad')
         }
     }
 }
