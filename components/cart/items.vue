@@ -67,7 +67,7 @@ export default {
     },
     methods: {
         ...mapActions('cart', {
-          removeItemAction: 'removeItem',
+          removeItemsAction: 'removeItems',
           updateQuantityAction: 'updateQuantity'
         }),
         adjustQuantity(item, amount){
@@ -78,7 +78,7 @@ export default {
           this.updateQuantityAction({id: item.id, quantity: item.quantity})
         },
         removeItem(item){
-          this.removeItemAction(item.id)
+          this.removeItemsAction(item.id)
             
         }
     }

@@ -85,12 +85,13 @@ const actions = {
     
     /**
      * Removes an item from the cart
-     * @param {int} id 
+     * @param {int|array<int>} ids
      */
-    removeItem(context, id){
+    removeItems(context, ids){
         if(!context.state.cart.uuid) throw 'Failed to remove item. Cart does not exist.'
         context.commit('setLoading', true)
-        return this._vm.$api.cart.removeItem(context.state.cart.uuid, id).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        if(!Array.isArray(ids)) ids = [ids]
+        return this._vm.$api.cart.removeItems(context.state.cart.uuid, ids).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
 
     /**
