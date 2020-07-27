@@ -15,7 +15,7 @@ export class Cart extends Resource {
      * @param {string} uuid - cart uuid
      */
     clear(uuid){
-        return this.axios.post(`${this.basePath}/${uuid}/clear`)
+        return this.axios.delete(`${this.basePath}/${uuid}/items`)
     }
 
     /**
@@ -43,7 +43,7 @@ export class Cart extends Resource {
      * @param {int[]} ids - item ids
      */
     removeItems(uuid, ids){
-        return this.axios.delete(`${this.basePath}/${uuid}/items`, {items: ids})
+        return this.axios.post(`${this.basePath}/${uuid}/items/remove`, {items: ids})
     }
 
     /**

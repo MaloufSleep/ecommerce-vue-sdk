@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
+
 export default {
     name: 'ec-authorize-net-script',
     props: {
@@ -19,14 +21,19 @@ export default {
                     async: true,
                     defer: true,
                     callback: this.onLoad,
-                    charset: 'utf-8'
+                    charset: 'utf-8',
+                    skip: this.loaded
                 }
             ]
         }
     },
+    computed: {
+        ...mapState('payment/authorizeNet', ['loaded'])
+    },
     methods: {
+        ...mapMutations('payment/authorizeNet',['setLoaded']),
         onLoad(){
-            this.$emit('onLoad')
+            this.setLoaded(true)
         }
     }
 }

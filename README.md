@@ -4,7 +4,7 @@
 ## Installation
 To install, require the package in your project via yarn
 ```
-yarn add https://github.com/MaloufSleep/ecommerce-vue-sdk.git
+yarn add git+ssh://git@github.com:MaloufSleep/ecommerce-vue-sdk.git
 ```
 
 ## Configuration
@@ -20,13 +20,13 @@ Vue.use(Ecommerce, params)
 ### Parameters
 Some parameters are required for the plugin to operate correctly. These will be passed as the second parameter to the `Vue.use()` function.
 
-#### isClient (Boolean, optional)
-For server side rendering (Gridsome/Nuxt), include this parameter in order for the plugin to determine when client specific functionality can be included. `true` indicates client, `false` indicates server.
+#### isClient (Boolean, required)
+Required to enable Vuex persistence and startup checks. For client-side only applications, set to `true`. For server-side rendering (Gridsome/Nuxt), set this to the `isClient` variable, typically found in the `context` object.
 
 ```js
 // app.js
 const params = {
-    isClient: context.isClient
+    isClient: context.isClient // set to `true` for client-side only applications
 }
 ```
 

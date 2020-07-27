@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
+
 export default {
     name: 'ec-synchrony-script',
     props: {
@@ -18,14 +20,19 @@ export default {
                     src: this.production ? 'https://buy.syf.com/digitalbuy/js/merchant_ff.js' : 'https://ubuy.syf.com/digitalbuy/js/merchant_ff.js',
                     async: true,
                     defer: true,
-                    callback: this.onLoad
+                    callback: this.onLoad,
+                    skip: this.loaded
                 }
             ]
         }
     },
+    computed: {
+        ...mapState('payment/synchrony', ['loaded'])
+    },
     methods: {
+        ...mapMutations('payment/synchrony', ['setLoaded']),
         onLoad(){
-            this.$emit('onLoad')
+            this.setLoaded(true)
         }
     }
 }

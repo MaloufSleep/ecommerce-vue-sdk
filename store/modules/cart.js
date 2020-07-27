@@ -39,7 +39,9 @@ const actions = {
             return onSuccess(res, context)
         }).catch(err => {
             // TODO: verify this error means cart should be deleted
-            context.commit('deleteCart', {})
+            if(err){
+                context.commit('deleteCart', {})
+            }
             return onFailure(err, context)
         })
     },
