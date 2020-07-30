@@ -1,15 +1,9 @@
 // Synchrony
-import SynchronyScript from './synchrony/script.vue'
-
-// Authorize.Net
-import AuthorizeNetScript from './authorizeNet/script.vue'
+import Synchrony from './synchrony/synchrony.vue'
 
 export default Vue => {
     // Synchrony
-    Vue.component(SynchronyScript.name, SynchronyScript)
-    
-    // Authorize.Net
-    Vue.component(AuthorizeNetScript.name, AuthorizeNetScript)
+    Vue.component(Synchrony.name, Synchrony)
 }
 
 /*

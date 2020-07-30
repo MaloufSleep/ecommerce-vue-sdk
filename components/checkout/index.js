@@ -1,7 +1,7 @@
-import ShipForm from './shippingForm.vue'
-import PayForm from './paymentForm.vue'
+import ShippingForm from './forms/shippingAddress.vue'
+import CardForm from './forms/card.vue'
 
 export default Vue => {
-    Vue.component(ShipForm.name, ShipForm)
-    Vue.component(PayForm.name, PayForm)
+    Vue.component(ShippingForm.name, ShippingForm)
+    Vue.component(CardForm.name, CardForm)
 }

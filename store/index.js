@@ -1,11 +1,13 @@
 import createPersistedState from 'vuex-persistedstate'
 import SecureLS from "secure-ls";
+import store from './store'
 
-import cart from './modules/cart'
-import checkout from './modules/checkout'
-import site from './modules/site'
-import payment from './modules/payment'
-import user from './modules/user'
+const persistedPaths = [
+    'site',
+    'user',
+    'cart.cart',
+    'checkout',
+]
 
 export const createPersistence = (store) => {
     const ls = new SecureLS({isCompression: true})
@@ -16,23 +18,10 @@ export const createPersistence = (store) => {
             setItem: (key, value) => ls.set(key, value),
             removeItem: key => ls.remove(key)
         },
-        paths: [
-            'site',
-            'user',
-            'cart.cart',
-            'checkout',
-        ]
+        paths: persistedPaths
     })(store)
 }
 
 export const createStore = (Vuex) => {
-    return new Vuex.Store({
-        modules: {
-            cart,
-            checkout,
-            site,
-            payment,
-            user
-        }
-    })
+    return new Vuex.Store(store)
 }

@@ -7,7 +7,8 @@ const state = () => {
 
 const getters = {
     itemCount: state => (type = 'active') => state.cart.items?.[type]?.reduce((total, item) => total + item.quantity, 0) || 0,
-    items: state => (type = 'active') => state.cart.items?.[type] || []
+    items: state => (type = 'active') => state.cart.items?.[type] || [],
+    uuid: state => state.cart.uuid
 }
 
 const mutations = {
@@ -23,11 +24,15 @@ const mutations = {
 }
 
 const actions = {
+    launched(context){
+        context.dispatch('verify')
+    },
+
     /**
      * Verifies the age of the cart and refreshes if too old
      */
     verify(context){
-        if(!(context.state.cart.modified || context.state.cart.created)) return Promise.resolve({})
+        if(!(context.state.cart.updated || context.state.cart.created)) return Promise.resolve({})
 
         // Two hour stale check
         const now = new Date
@@ -35,11 +40,11 @@ const actions = {
         if((now.getTime() - modified.getTime()) < (2 * 60 * 60 * 1000)) return Promise.resolve(context.state.cart)
 
         context.commit('setLoading', true)
-        return this._vm.$api.cart.get(context.state.cart.uuid).then(res => {
+        return this._vm.$api.cart.get(context.getters.uuid).then(res => {
             return onSuccess(res, context)
         }).catch(err => {
             // TODO: verify this error means cart should be deleted
-            if(err){
+            if(err.response){
                 context.commit('deleteCart', {})
             }
             return onFailure(err, context)
@@ -50,18 +55,18 @@ const actions = {
      * Get the cart
      */
     get(context){
-        if(!context.state.cart.uuid) throw 'Failed to get cart. Cart does not exist.'
+        if(!context.getters.uuid) throw 'Failed to get cart. Cart does not exist.'
         context.commit('setLoading', true)
-        return this._vm.$api.cart.get(context.state.cart.uuid).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        return this._vm.$api.cart.get(context.getters.uuid).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
 
     /**
      * Clear the cart
      */
     clear(context){
-        if(!context.state.cart.uuid) throw 'Failed to clear cart. Cart does not exist.'
+        if(!context.getters.uuid) throw 'Failed to clear cart. Cart does not exist.'
         context.commit('setLoading', true)
-        return this._vm.$api.cart.clear(context.state.cart.uuid).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        return this._vm.$api.cart.clear(context.getters.uuid).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
 
     /**
@@ -71,7 +76,7 @@ const actions = {
     addItems(context, items){
         context.commit('setLoading', true)
         if(!Array.isArray(items)) items = [items]
-        return this._vm.$api.cart.addItems(context.state.cart.uuid || null, items).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        return this._vm.$api.cart.addItems(context.getters.uuid || null, items).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
 
     /**
@@ -80,9 +85,9 @@ const actions = {
      * @param {object} item 
      */
     updateItem(context, {id, item}){
-        if(!context.state.cart.uuid) throw 'Failed to update item. Cart does not exist.'
+        if(!context.getters.uuid) throw 'Failed to update item. Cart does not exist.'
         context.commit('setLoading', true)
-        return this._vm.$api.cart.updateItem(context.state.cart.uuid, id, item).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        return this._vm.$api.cart.updateItem(context.getters.uuid, id, item).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
     
     /**
@@ -90,10 +95,10 @@ const actions = {
      * @param {int|array<int>} ids
      */
     removeItems(context, ids){
-        if(!context.state.cart.uuid) throw 'Failed to remove item. Cart does not exist.'
+        if(!context.getters.uuid) throw 'Failed to remove item. Cart does not exist.'
         context.commit('setLoading', true)
         if(!Array.isArray(ids)) ids = [ids]
-        return this._vm.$api.cart.removeItems(context.state.cart.uuid, ids).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        return this._vm.$api.cart.removeItems(context.getters.uuid, ids).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
 
     /**
@@ -102,10 +107,10 @@ const actions = {
      * @param {int} quantity 
      */
     updateQuantity(context, {id, quantity}){
-        if(!context.state.cart.uuid) throw 'Failed to update quantity. Cart does not exist.'
+        if(!context.getters.uuid) Promise.reject('Failed to update quantity. Cart does not exist.')
         quantity = Math.abs(Math.round(quantity))
         context.commit('setLoading', true)
-        return this._vm.$api.cart.updateItem(context.state.cart.uuid, id, {quantity}).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        return this._vm.$api.cart.updateItem(context.getters.uuid, id, {quantity}).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
 
     /**
@@ -113,9 +118,9 @@ const actions = {
      * @param {int} id - cart item ID
      */
     saveItem(context, id){
-        if(!context.state.cart.uuid) throw 'Failed to save item. Cart does not exist.'
+        if(!context.getters.uuid) Promise.reject('Failed to save item. Cart does not exist.')
         context.commit('setLoading', true)
-        return this._vm.$api.cart.updateItem(context.state.cart.uuid, id, {type: 'saved'}).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        return this._vm.$api.cart.updateItem(context.getters.uuid, id, {type: 'saved'}).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
 
     /**
@@ -123,9 +128,9 @@ const actions = {
      * @param {object} address
      */
     setShippingAddress(context, address){
-        if(!context.state.cart.uuid) throw 'Failed to set shipping address. Cart does not exist.'
+        if(!context.getters.uuid) Promise.reject('Failed to set shipping address. Cart does not exist.')
         context.commit('setLoading', true)
-        return this._vm.$api.cart.setShippingAddress(context.state.cart.uuid, address).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+        return this._vm.$api.cart.setShippingAddress(context.getters.uuid, address).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
     },
 
     /**
@@ -133,10 +138,18 @@ const actions = {
      * @param {int} id - shipping service ID
      */
     setShippingService(context, id){
-        if(!context.state.cart.uuid) throw 'Failed to set shipping service. Cart does not exist.'
+        if(!context.getters.uuid) throw 'Failed to set shipping service. Cart does not exist.'
         context.commit('setLoading', true)
-        return this._vm.$api.cart.setShippingService(context.state.cart.uuid, id).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
-    }
+        return this._vm.$api.cart.setShippingService(context.getters.uuid, id).then(res => onSuccess(res, context)).catch(err => onFailure(err, context))
+    },
+
+    /**
+     * Called when an order has been completed
+     * @param {object} response - response from the processing call
+     */
+    setCart(context, cart){
+        context.commit('setCart', cart)
+    },
 }
 
 const onSuccess = (response, context) => {
@@ -147,10 +160,8 @@ const onSuccess = (response, context) => {
 
 const onFailure = (error, context) => {
     context.commit('setLoading')
-    return Promise.reject(error)
+    throw error
 }
-
-
 
 export default {
     state,

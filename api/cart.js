@@ -1,13 +1,15 @@
-import { Resource } from './resource'
+export class Cart {
 
-export class Cart extends Resource {
+    constructor(axios){
+        this.axios = axios
+    }
 
     /**
      * Get the cart 
      * @param {string} uuid - cart uuid
      */
     get(uuid){
-        return this.axios.get(`${this.basePath}/${uuid}`)
+        return this.axios.get(`carts/${uuid}`)
     }
 
     /**
@@ -15,7 +17,7 @@ export class Cart extends Resource {
      * @param {string} uuid - cart uuid
      */
     clear(uuid){
-        return this.axios.delete(`${this.basePath}/${uuid}/items`)
+        return this.axios.delete(`carts/${uuid}/items`)
     }
 
     /**
@@ -24,7 +26,7 @@ export class Cart extends Resource {
      * @param {object[]} items - items to be added
      */
     addItems(uuid, items){
-        return this.axios.post(`${this.basePath}/${uuid || ''}`, {items})
+        return this.axios.post(`carts/${uuid || ''}`, {items})
     }
 
     /**
@@ -34,7 +36,7 @@ export class Cart extends Resource {
      * @param {object} updates
      */
     updateItem(uuid, id, updates){
-        return this.axios.put(`${this.basePath}/${uuid}/items/${id}/update`, updates)
+        return this.axios.put(`carts/${uuid}/items/${id}/update`, updates)
     }
 
     /**
@@ -43,7 +45,7 @@ export class Cart extends Resource {
      * @param {int[]} ids - item ids
      */
     removeItems(uuid, ids){
-        return this.axios.post(`${this.basePath}/${uuid}/items/remove`, {items: ids})
+        return this.axios.post(`carts/${uuid}/items/remove`, {items: ids})
     }
 
     /**
@@ -52,7 +54,7 @@ export class Cart extends Resource {
      * @param {object} address - shipping address
      */
     setShippingAddress(uuid, address){
-        return this.axios.post(`${this.basePath}/${uuid}/shipping/address`, address)
+        return this.axios.post(`carts/${uuid}/shipping/address`, address)
     }
 
     /**
@@ -61,6 +63,6 @@ export class Cart extends Resource {
      * @param {int} id - shipping service ID
      */
     setShippingService(uuid, id){
-        return this.axios.post(`${this.basePath}/${uuid}/shipping/services/${id}`)
+        return this.axios.post(`carts/${uuid}/shipping/services/${id}`)
     }
 }

@@ -8,10 +8,13 @@ import * as Filters from './filters'
 export default {
     install(Vue, options = {}){
 
+        // check if running in browser
+        const isClient = (typeof window !== 'undefined')
+
         // create store and add to Vue instance
         Vue.use(Vuex)
         Vue.prototype.$store = createStore(Vuex)
-        if(options.isClient) createPersistence(Vue.prototype.$store)
+        if(isClient) createPersistence(Vue.prototype.$store)
 
         // create new API client
         const api = new APIClient(
@@ -34,9 +37,9 @@ export default {
             Vue.use(filter)
         })
 
-        // check for stale cart
-        if(options.isClient){
-            Vue.prototype.$store.dispatch('cart/verify')
+        // notify modules that application launched
+        if(isClient){
+            Vue.prototype.$store.dispatch('launched')
         }
     }
 }

@@ -20,16 +20,6 @@ Vue.use(Ecommerce, params)
 ### Parameters
 Some parameters are required for the plugin to operate correctly. These will be passed as the second parameter to the `Vue.use()` function.
 
-#### isClient (Boolean, required)
-Required to enable Vuex persistence and startup checks. For client-side only applications, set to `true`. For server-side rendering (Gridsome/Nuxt), set this to the `isClient` variable, typically found in the `context` object.
-
-```js
-// app.js
-const params = {
-    isClient: context.isClient // set to `true` for client-side only applications
-}
-```
-
 #### API (Object, required)
 The API client will be configured and attached to the included services for making network requests for products, cart actions, and checkout.
 - **endpoint (String, Required)** - The base url for all API calls
