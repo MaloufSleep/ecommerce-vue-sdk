@@ -15,12 +15,12 @@ class Card {
     /**
      * Submit a card payment with a nonce
      * @param {string} uuid - cart uuid
-     * @param {object} billingAddress - billing address
+     * @param {object} address - billing address
      */
-    nonce(uuid, nonce, billingAddress){
+    nonce(uuid, nonce, address){
         return this.axios.post(`carts/${uuid}/payment/card/nonce`, {
             nonce,
-            billingAddress
+            address
         })
     }
 }

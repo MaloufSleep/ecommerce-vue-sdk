@@ -1,19 +1,22 @@
 const state = () => {
-    return  {
-        loaded: false,
-    }
+    return  {}
 }
 
 const getters = {
 }
 
 const mutations = {
-    setLoaded(state, loaded = false){
-        state.loaded = loaded
-    }
 }
 
 const actions = {
+    authenticate(context){
+        return this._vm.$api.payment.synchrony.authenticate(context.rootGetters('cart/uuid')).catch(err => {
+            if(err.response?.data?.cart){
+                context.dispatch('cart/setCart', err.response.data.cart, {root: true})
+            }
+            throw err
+        })
+    }
 }
 
 export default {

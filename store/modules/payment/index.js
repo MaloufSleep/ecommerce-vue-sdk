@@ -1,19 +1,28 @@
-import authorizeNet from './authorizeNet'
 import synchrony from './synchrony'
 
 const modules = {
-    authorizeNet,
     synchrony
 }
 
 const state = () => {
-    return  {}
+    return  {
+        scripts: {
+            authnet: false,
+            synchrony: false
+        }
+    }
 }
 
 const getters = {
+    getScriptLoaded: state => (script) => {
+        return state.scripts[script] || false
+    }
 }
 
 const mutations = {
+    setScriptLoaded(state, script){
+        state.scripts[script] = true
+    }
 }
 
 const actions = {

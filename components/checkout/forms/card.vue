@@ -37,9 +37,9 @@ export default {
                     src: this.production ? `https://js.authorize.net/v1/Accept.js` : `https://jstest.authorize.net/v1/Accept.js`,
                     async: true,
                     defer: true,
-                    callback: this.onScriptLoad,
                     charset: 'utf-8',
-                    skip: this.loaded,
+                    callback: this.setScriptLoaded('authnet'),
+                    skip: this.getScriptLoaded('authnet'),
                     once: true,
                     body: true,
                 }
@@ -56,35 +56,39 @@ export default {
             },
             address: {
                 sameAsShipping: true,
-                firstName: '',
-                lastName: '',
+                first_name: '',
+                last_name: '',
                 phone: '',
-                street1: '',
-                street2: '',
+                email: '',
+                street_1: '',
+                street_2: '',
                 locality: '',
                 region: '',
                 postcode: '',
-                country: ''
+                country: 'US'
             }
         }
     },
     computed: {
-        ...mapGetters('cart', ['uuid']),
-        ...mapState('payment/authorizeNet',['loaded']),
+        ...mapGetters('cart', ['cart']),
+        ...mapGetters('payment', ['getScriptLoaded']),
         canSubmit(){
             return window.Accept
-        },
+        }
     },
     methods: {
-        ...mapMutations('payment/authorizeNet',['setLoaded']),
+        ...mapMutations('payment', ['setScriptLoaded']),
         ...mapActions('checkout', ['orderCompleted']),
         ...mapActions('cart', ['setCart']),
         onInput(value, obj, prop){
             console.log(value, obj, prop)
             this[obj][prop] = value
         },
-        onScriptLoad(){
-            this.setLoaded(true)
+        getAddress(){
+            if(this.address.sameAsShipping){
+                return this.cart.shipping_address
+            }
+            return this.address
         },
         getNonce(){
             // build request parameters
@@ -111,14 +115,14 @@ export default {
             })
         },
         submit(){
-            if(!this.canSubmit) return Promise.reject('Unable to process payment, card information invalid or Accept.js not loaded.')
+            if(!this.canSubmit) return Promise.reject('Unable to process payment, Accept.js not available.')
             
             // get nonce and submit payment
             return this.getNonce().catch(err => {
                 console.error(err)
                 throw err
             }).then(res => {
-                return this.$api.payment.card.nonce(this.cart.uuid, res.opaqueData.dataValue, this.getBillingAddress)
+                return this.$api.payment.card.nonce(this.cart.uuid, res.opaqueData.dataValue, this.getAddress())
             }).catch(err => {
                 console.error(err)
                 if(err.response?.data?.cart) this.setCart(err.response.data.cart)
@@ -126,6 +130,7 @@ export default {
             }).then(res => {
                 console.log(res)
                 this.orderCompleted(res)
+                return res
             })
         }
     }

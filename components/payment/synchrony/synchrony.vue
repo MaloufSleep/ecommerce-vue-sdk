@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import Dinero from 'dinero.js'
 
 export default {
@@ -29,8 +29,8 @@ export default {
                     src: this.production ? 'https://buy.syf.com/digitalbuy/js/merchant_ff.js' : 'https://ubuy.syf.com/digitalbuy/js/merchant_ff.js',
                     async: true,
                     defer: true,
-                    callback: this.onLoad,
-                    skip: this.loaded,
+                    callback: this.setScriptLoaded('synchrony'),
+                    skip: this.getScriptLoaded('synchrony'),
                     once: true,
                     body: true,
                 }
@@ -39,22 +39,16 @@ export default {
     },
     data(){
         return {
-            auth: {
-                clientToken: '',
-                clientTransId: '',
-            }
+            auth: {}
         }
     }, 
     computed: {
-        ...mapState('payment/synchrony', ['loaded']),
+        ...mapGetters('payment', ['getScriptLoaded']),
         ...mapState('cart',['cart'])
     },
     methods: {
-        ...mapMutations('payment/synchrony', ['setLoaded']),
-        ...mapActions('cart', ['setCart']),
-        onLoad(){
-            this.setLoaded(true)
-        },
+        ...mapMutations('payment', ['setScriptLoaded']),
+        ...mapActions('payment/synchrony', ['authenticate']),
         getTransactionDetails(){
             return {
                 processInd: 3,
@@ -78,9 +72,8 @@ export default {
         },
         submit(){
             if(!window.syfDBuy) return Promise.reject('Digital Buy is not available.')
-            return this.$api.payment.synchrony.authenticate(this.cart.uuid).catch(err => {
+            return this.authenticate().catch(err => {
                 console.error(err)
-                if(err.response?.data?.cart) this.setCart(err.response.data.cart)
                 throw err
             }).then(res => {
                 console.log(res)

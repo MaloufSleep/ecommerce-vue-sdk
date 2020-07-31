@@ -16,15 +16,16 @@ export default {
   data () {
     return {
       address: {
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         phone: '',
-        street1: '',
-        street2: '',
+        email: '',
+        street_1: '',
+        street_2: '',
         locality: '',
         region: '',
         postcode: '',
-        country: ''
+        country: 'US'
       }
     }
   },
@@ -38,6 +39,11 @@ export default {
     },
     onChange(event, prop){
       this.address[prop] = event.target.value
+    }
+  },
+  created(){
+    if(this.cart.shipping_address){
+      this.address = this.cart.shipping_address
     }
   }
 }
