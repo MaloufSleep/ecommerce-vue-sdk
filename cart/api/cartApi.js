@@ -1,4 +1,4 @@
-export class Cart {
+export default class CartAPI {
 
     constructor(axios){
         this.axios = axios
@@ -65,4 +65,5 @@ export class Cart {
     setShippingService(uuid, id){
         return this.axios.post(`carts/${uuid}/shipping/services/${id}`)
     }
+
 }
