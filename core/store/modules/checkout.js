@@ -1,15 +1,12 @@
 const state = () => { 
     return {
-        cart: {}
+        order: {}
     }
 }
 const getters = {}
 const mutations = {
-    set(state, cart){
-        state.cart = Object.assign({}, state.cart, cart)
-    },
-    delete(state){
-        state.cart = {}
+    setOrder(state, order){
+        state.order = Object.assign({}, state.order, order)
     }
 }
 const actions = {}

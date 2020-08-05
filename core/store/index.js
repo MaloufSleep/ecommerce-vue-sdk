@@ -1,23 +1,25 @@
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import SecureLS from "secure-ls";
+import isClient from '../../common/utils/isClient'
 
 // modules
 import site from './modules/site'
 import cart from './modules/cart'
+import checkout from './modules/checkout'
 
-export default function(context){
-    context.Vue.use(Vuex)
+export default function(Vue){
+    Vue.use(Vuex)
     const store = new Vuex.Store({
         modules: {
             site,
-            cart
+            cart,
+            checkout
         }
     })
 
     // prevent localStorage with SSR
-    const isClient = (typeof window !== 'undefined')
-    if(isClient){
+    if(isClient()){
         const ls = new SecureLS({isCompression: true})
         createPersistedState({
             key: '__ecommerce__',

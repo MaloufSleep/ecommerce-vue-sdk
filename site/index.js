@@ -15,5 +15,5 @@ export default function(context){
     if(!context.config.intl.region) throw "A default region is required."
     service.setRegion(context.config.intl.region, context.config.intl.lang)
 
-    return service
+    context.site = service
 }

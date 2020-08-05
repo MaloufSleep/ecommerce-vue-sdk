@@ -8,35 +8,30 @@ yarn add git+ssh://git@github.com:MaloufSleep/ecommerce-vue-sdk.git
 ```
 
 ## Configuration
-The default export is a Vue plugin that can be used in any Vue project. Simply import the module and add it to the Vue instance.
+To configure the SDK, import the default exported class and the configuration object. Construct the configuration object with the necessary params, then pass the `Ecommerce` object into Vue.
 
 ```js
 // app.js
 import Ecommerce from '@malouf/ecommerce-vue-sdk'
+import EcommerceConfig from '@malouf/ecommerce-vue-sdk/core/config'
 
-Vue.use(Ecommerce, params)
+import region from '../path/to/region.json'
+
+const config = new EcommerceConfig()
+config.endpoint = process.env.VUE_APP_API_ENDPOINT
+config.intl.region = region
+config.intl.lang = 'en'
+
+Vue.use(new Ecommerce(config))
 ```
 
 ### Parameters
-Some parameters are required for the plugin to operate correctly. These will be passed as the second parameter to the `Vue.use()` function.
+Some parameters are required for the plugin to operate correctly.
 
-#### API (Object, required)
-The API client will be configured and attached to the included services for making network requests for products, cart actions, and checkout.
-- **endpoint (String, Required)** - The base url for all API calls
-- **region (Sting, Required)** - The site region uuid
+#### endpoint (String, required)
+The API endpoint that will be the base for all API requests.
 
-```env
-// .env
-VUE_APP_API_ENDPOINT=https://www.mygreatsite.com
-VUE_APP_SITE_REGION=75240c8e-a987-476d-9319-ae3f3f8c2f67
-```
-
-```js
-// app.js
-const params = {
-    api: {
-        endpoint: process.env.VUE_APP_API_ENDPOINT,
-        region: process.env.VUE_APP_SITE_REGION
-    }
-}
-```
+#### intl (Object, required)
+The international object contains the parameters necessary to configure the app for multi-region use.
+- **region (Object, required)** - the default region
+- **lang (String, required)** - the default language

@@ -48,22 +48,4 @@ export default class CartAPI {
         return this.axios.post(`carts/${uuid}/items/remove`, {items: ids})
     }
 
-    /**
-     * Set the shipping address for the cart
-     * @param {string} uuid - cart uuid
-     * @param {object} address - shipping address
-     */
-    setShippingAddress(uuid, address){
-        return this.axios.post(`carts/${uuid}/shipping/address`, address)
-    }
-
-    /**
-     * Set the shipping service for the cart
-     * @param {string} uuid - cart uuid
-     * @param {int} id - shipping service ID
-     */
-    setShippingService(uuid, id){
-        return this.axios.post(`carts/${uuid}/shipping/services/${id}`)
-    }
-
 }
