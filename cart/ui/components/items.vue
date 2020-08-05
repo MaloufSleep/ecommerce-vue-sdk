@@ -5,7 +5,7 @@
         <transition name="fade">
           <div v-if="loading" class="mc-loader"></div>
         </transition>
-        <div v-if="!cart.itemCount()" class="mc-empty-cart">
+        <div v-if="!cart.itemCount" class="mc-empty-cart">
           <p>There are no items in your cart!</p>
         </div>
         <div v-else v-for="(item, i) in cart.getItems()" :key="item.id" class="mc-item">

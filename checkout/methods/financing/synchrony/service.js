@@ -5,7 +5,7 @@ export default class SynchronyService {
         this.synchrony = synchrony
     }
 
-    launchCombinedModal(customer, promotion, callback){
+    launchCombinedModal(promotion){
         const amount = this.repository.getCartTotal()
         const shippingAddress = this.repository.getShippingAddress()
         if(!amount) return Promise.reject('Cart total amount not defined')

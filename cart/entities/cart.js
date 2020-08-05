@@ -3,8 +3,12 @@ export default class Cart {
         Object.assign(this, data)
     }
 
-    itemCount(){
+    get itemCount(){
         return this.items?.active?.reduce((total, item) => total + item.quantity, 0) || 0
+    }
+
+    get total(){
+        return this.totals?.total || 0
     }
 
     getItems(type = 'active'){

@@ -5,10 +5,7 @@ export default class SiteService {
     }
 
     getRegion(){
-        return {
-            region: this.repository.getRegion(),
-            language: this.repository.getLanguage()
-        }
+        return Object.assign({}, this.repository.getRegion(), {language: this.repository.getLanguage()})
     }
 
     setRegion(region, language){
