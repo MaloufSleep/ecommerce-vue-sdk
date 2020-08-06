@@ -17,7 +17,7 @@
           </div>
           <div class="mc-item-info">
             <g-link :to="item.link">
-              <h4>{{ item.product.properties.Title || item.product.name }}</h4>
+              <h4>{{ item.product.properties.ShortTitle || item.product.properties.Title || item.product.name }}</h4>
             </g-link>
             <div class="mc-qty-wrap">
               <div class="mc-input-group">
@@ -135,7 +135,10 @@ export default {
 
 .mc-loader {
   position: absolute;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: white;
   z-index: 101;
   opacity: 0.8;
