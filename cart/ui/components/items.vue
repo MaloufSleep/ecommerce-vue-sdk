@@ -24,7 +24,7 @@
                 <span>Qty</span>
                 <button class="mc-qty-btn mc-cart-btn mc-btn-minus" @click="adjustQuantity(item, -1)"><span class="sr-only">Decrease</span></button>
                 <label :for="`mc-qty_${i}`" class="sr-only">Item Quantity</label>
-                <input type="text" class="mc-form-control" :id="`mc-qty_${i}`" @change="updateQuantity(item)" v-model="item.quantity">
+                <input v-mask="'###'" type="text" class="mc-form-control" :id="`mc-qty_${i}`" @change="updateQuantity($event, item.id)" :value="item.quantity">
                 <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
               </div>
               <p class="mc-product-price">{{ item.prices.active | currency }}</p>
@@ -54,9 +54,13 @@
 </template>
 
 <script>
+import {mask} from 'vue-the-mask'
 
 export default {
     name: 'ec-cart-items',
+    directives: {
+      mask
+    },
     data(){
         return {
             loading: false
@@ -75,9 +79,14 @@ export default {
             this.setLoading(true)
             this.$ecommerce.cart.updateItem(item.id, {quantity: item.quantity + amount}).finally(this.setLoading)
         },
-        updateQuantity(item){
+        updateQuantity(event, id){
+            let quantity = parseInt(event.target.value)
+            if(!quantity){
+              this.$forceUpdate()
+              return
+            }
             this.setLoading(true)
-            this.$ecommerce.cart.updateItem(item.id, {quantity: item.quantity}).finally(this.setLoading)
+            this.$ecommerce.cart.updateItem(id, {quantity: quantity}).finally(this.setLoading)
         },
         removeItem(item){
             this.setLoading(true)
