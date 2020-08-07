@@ -35,11 +35,11 @@
     </slot>
 
     <slot
-      :totals="cart.totals"
-      name="totals"
+      :cart="cart"
+      name="cart"
     >
       <hr>
-      <div v-if="cart.totals" class="mc-totals-wrap">
+      <div v-if="cart.itemCount > 0" class="mc-totals-wrap">
         <h2>Totals</h2>
         <div class="mc-totals">
           <p><span class="mc-total-property">Subtotal:</span> <span class="mc-total-value">{{ cart.totals.subtotal | currency}}</span></p>

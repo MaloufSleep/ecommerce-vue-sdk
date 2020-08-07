@@ -4,7 +4,7 @@ export default class Cart {
     }
 
     get itemCount(){
-        return this.items?.active?.reduce((total, item) => total + item.quantity, 0) || 0
+        return this.getItems().reduce((total, item) => total + item.quantity, 0) || 0
     }
 
     get total(){
