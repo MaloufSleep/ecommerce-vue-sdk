@@ -19,6 +19,9 @@
             <g-link :to="item.link">
               <h4>{{ item.product.properties.ShortTitle || item.product.properties.Title || item.product.name }}</h4>
             </g-link>
+            <div class="mc-variation-list">
+              {{ getVariationString(item) }}
+            </div>
             <div class="mc-qty-wrap">
               <div class="mc-input-group">
                 <span>Qty</span>
@@ -55,6 +58,7 @@
 
 <script>
 import {mask} from 'vue-the-mask'
+import { startCase } from 'lodash'
 
 export default {
     name: 'ec-cart-items',
@@ -91,7 +95,24 @@ export default {
         removeItem(item){
             this.setLoading(true)
             this.$ecommerce.cart.removeItems(item.id).finally(this.setLoading)
-        }
+        },
+        getVariationString(item) {
+          const variations = item.product.variations ? Object.values(item.product.variations) : []
+          let varString = ''
+
+          if (variations && variations.length > 0) {
+            for (let [ind, variation] of variations.entries()) {
+              varString += startCase(variation)
+              if (ind < variations.length - 1) {
+                varString += ', '
+              }
+            }
+
+            return varString
+          }
+
+          return ''
+        },
     }
 }
 </script>
@@ -102,7 +123,7 @@ export default {
 }
 .mc-items {
   position: relative;
-  padding: 1rem;
+  padding: 14px;
 
   & .mc-item {
     border: 1px solid gray;
@@ -110,12 +131,16 @@ export default {
     align-items: center;
     flex-direction: row;
     position: relative;
-    padding: 1rem;
+    padding: 14px;
     margin-bottom: 1rem;
 
     & h4 {
       font-size: 18px;
       font-weight: bold;
+    }
+
+    & .mc-variation-list {
+      margin-bottom: 0.3rem;
     }
   }
 
@@ -247,7 +272,7 @@ export default {
   }
 
   & .mc-cart-btn, .mc-form-control {
-    padding: .375rem;
+    padding: 4px;
     height: 23px;
     width: 23px;
     line-height: 1px;
@@ -255,7 +280,7 @@ export default {
 
   & .mc-form-control {
     font-size: 0.9rem;
-    width: 2.5rem;
+    width: 35px;
   }
 }
 
