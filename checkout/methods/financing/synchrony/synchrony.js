@@ -34,8 +34,6 @@ export default class Synchrony {
     launchModal(params, process){
         params.processInd = process
         params.merchantID = this.merchantId
-
-        console.log(params);
         return new Promise((resolve, reject) => {
             window.syfDBuy.calldBuyProcess(null, params)
             resolve(true)

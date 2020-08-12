@@ -1,6 +1,6 @@
 <template>
   <div class="mc-cart-wrap">
-    <slot :items="cart.getItems()" name="items">
+    <slot name="items" :items="cart.getItems()">
       <div class="mc-items">
         <transition name="fade">
           <div v-if="loading" class="mc-loader"></div>
@@ -36,11 +36,9 @@
         </div>
       </div>
     </slot>
-
-    <slot
-      :cart="cart"
-      name="cart"
-    >
+    <slot v-if="cart.shipping_address" name="address" :address="cart.shipping_address"></slot>
+    <slot v-if="cart.shipping_service" name="shipping" :service="cart.shipping_service"></slot>
+    <slot :cart="cart" name="cart">
       <hr>
       <div v-if="cart.itemCount > 0" class="mc-totals-wrap">
         <h2>Totals</h2>
