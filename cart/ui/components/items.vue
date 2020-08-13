@@ -3,7 +3,9 @@
     <slot name="items" :items="cart.getItems()">
       <div class="mc-items">
         <transition name="fade">
-          <div v-if="loading" class="mc-loader"></div>
+          <div v-if="loading" class="mc-loader">
+            <loading-icon class="mc-loading-icon" />
+          </div>
         </transition>
         <div v-if="!cart.itemCount" class="mc-empty-cart">
           <p>There are no items in your cart!</p>
@@ -57,11 +59,15 @@
 <script>
 import {mask} from 'vue-the-mask'
 import { startCase } from 'lodash'
+import LoadingIcon from './LoadingIcon'
 
 export default {
     name: 'ec-cart-items',
     directives: {
       mask
+    },
+    components: {
+      LoadingIcon
     },
     data(){
         return {
@@ -174,6 +180,13 @@ export default {
   background: white;
   z-index: 101;
   opacity: 0.8;
+
+  & .mc-loading-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .mc-btn-remove {
