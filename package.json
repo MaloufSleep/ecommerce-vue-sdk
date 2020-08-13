@@ -1,8 +1,10 @@
 {
     "name": "@malouf/ecommerce-vue-sdk",
+    "description": "Ecommerce SDK for Vue.js applications",
     "version": "0.1.0",
     "private": true,
     "main": "index.js",
+    "files": ["*"],
     "dependencies": {
         "axios": "^0.19.2",
         "core-js": "^3.6.4",
