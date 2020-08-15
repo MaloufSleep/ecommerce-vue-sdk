@@ -7,7 +7,7 @@ export default function(context, paymentService){
 
     const api = new Api(context.api)
     const repository = new Repository(context.store, api)
-    const synchrony = Synchrony.fromPaymentService(paymentService)
+    const synchrony = Synchrony.fromPaymentService(paymentService, context.config.paymentEnvironment)
     const service = new Service(repository, synchrony)
 
     context.checkout.synchrony = service
