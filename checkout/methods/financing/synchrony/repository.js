@@ -16,7 +16,10 @@ export default class SynchronyRepository {
     }
 
     authenticate(){
-        return this.api.authenticate(this.store.state.cart.cart?.uuid)
+        return this.api.authenticate(this.store.state.cart.cart?.uuid).then(res => {
+            this.store.commit('cart/set', res.data.cart)
+            return res
+        })
     }
 
     getStatus(token){
