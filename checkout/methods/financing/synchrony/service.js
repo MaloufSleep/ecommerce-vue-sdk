@@ -15,7 +15,7 @@ export default class SynchronyService {
             custFirstName: shippingAddress.first_name,
             custLastName: shippingAddress.last_name,
             custZipCode: shippingAddress.postcode,
-            iniPurAmt: amount.toUnit(),
+            iniPurAmt: Math.ceil((amount.getAmount()/100)/500) * 500,
             custAddress1: shippingAddress.street_1,
             custAddress2: shippingAddress.street_2,
             phoneNumber: shippingAddress.phone,
