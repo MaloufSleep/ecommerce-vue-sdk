@@ -9,8 +9,11 @@ export default class CheckoutApi {
      * @param {string} uuid - cart uuid
      * @param {object} address - shipping address
      */
-    setShippingAddress(uuid, address){
-        return this.axios.post(`carts/${uuid}/shipping/address`, address)
+    setShippingAddress(uuid, address, subscribe){
+        return this.axios.post(`carts/${uuid}/shipping/address`, {
+            address,
+            subscribe
+        })
     }
 
     /**
