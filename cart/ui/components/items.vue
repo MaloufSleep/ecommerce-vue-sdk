@@ -53,6 +53,9 @@
         </div>
       </div>
     </slot>
+    <div v-if="error">
+      <p class="text-center" style="color: red">{{ error }}</p>
+    </div>
   </div>
 </template>
 
@@ -71,7 +74,8 @@ export default {
     },
     data(){
         return {
-            loading: false
+            loading: false,
+            error: null
         }
     },
     computed: {
@@ -84,17 +88,23 @@ export default {
             this.loading = value
         },
         adjustQuantity(item, amount){
+            this.error = null
             this.setLoading(true)
-            this.$ecommerce.cart.updateItem(item.id, {quantity: item.quantity + amount}).finally(this.setLoading)
+            this.$ecommerce.cart.updateItem(item.id, {quantity: item.quantity + amount}).catch(err => {
+              this.error = err.message
+            }).finally(this.setLoading)
         },
         updateQuantity(event, id){
+            this.error = null
             let quantity = parseInt(event.target.value)
             if(!quantity){
               this.$forceUpdate()
               return
             }
             this.setLoading(true)
-            this.$ecommerce.cart.updateItem(id, {quantity: quantity}).finally(this.setLoading)
+            this.$ecommerce.cart.updateItem(id, {quantity: quantity}).catch(err => {
+              this.error = err.message
+            }).finally(this.setLoading)
         },
         removeItem(item){
             this.setLoading(true)

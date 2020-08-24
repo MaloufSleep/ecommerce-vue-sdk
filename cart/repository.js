@@ -40,12 +40,22 @@ export default class CartRepository {
     addItems(items){
         return this.api.addItems(this.store.state.cart.cart?.uuid, items).then(res => {
             return this.set(res.data.data)
+        }).catch(err => {
+            if(err.response?.data?.data?.cart){
+                this.set(err.response.data.data.cart)
+            }
+            throw err.response?.data
         })
     }
 
     updateItem(id, updates){
         return this.api.updateItem(this.store.state.cart.cart.uuid, id, updates).then(res => {
             return this.set(res.data.data)
+        }).catch(err => {
+            if(err.response?.data?.data?.cart){
+                this.set(err.response.data.data.cart)
+            }
+            throw err.response?.data
         })
     }
 
