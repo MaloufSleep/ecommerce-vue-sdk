@@ -8,14 +8,12 @@ export default class AuthNetCardService {
 
     process(card, address){
         return this.authNet.getNonceForCard(card.number, card.month, card.year, card.code, card.name || '').then(res => {
-            if(!res.nonce) throw "Failed to aquire nonce for card processing"
+            if(!res.nonce) throw res
             return res.nonce
-        }).catch(err => {
-            throw err.message?.text
         }).then(res => {
             return this.repository.processNonce(res, address)
         }).catch(err => {
-            throw err.response?.data?.errors?.error?.[0]?.errorText
+            throw err.response?.data?.errors?.error?.[0]?.errorText || err.message?.text
         })
     }
 
