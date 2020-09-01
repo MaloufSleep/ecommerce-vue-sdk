@@ -34,7 +34,7 @@ export default class CartRepository {
 
     set(cart){
         this.store.commit('cart/set', cart)
-        return cart
+        return this.get()
     }
 
     addItems(items){

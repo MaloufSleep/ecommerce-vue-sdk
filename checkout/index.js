@@ -7,7 +7,7 @@ import paymentMethodsFactory from './methods/factory'
 export default function(context){
 
     const api = new Api(context.api)
-    const repository = new Repository(context.store, api)
+    const repository = new Repository(context.store, api, context.site.repository, context.cart.repository)
     const service = new Service(repository)
     context.checkout = service
 

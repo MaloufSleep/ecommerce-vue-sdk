@@ -2,34 +2,41 @@ import Dinero from 'dinero.js'
 
 export default class SynchronyRepository {
 
-    constructor(store, api){
+    constructor(store, api, cartRepository, checkoutRepository){
         this.store = store
         this.api = api
+        this.cartRepository = cartRepository
+        this.checkoutRepository = checkoutRepository
     }
 
     getCartTotal(){
-        return new Dinero({amount: this.store.state.cart.cart?.totals?.total})
+        const cart = this.cartRepository.get()
+        return new Dinero({amount: cart?.totals?.total})
     }
 
     getShippingAddress(){
-        return this.store.state.cart.cart?.shipping_address
+        const cart = this.cartRepository.get()
+        return cart?.shipping_address
     }
 
     authenticate(){
-        return this.api.authenticate(this.store.state.cart.cart?.uuid).then(res => {
-            this.store.commit('cart/set', res.data.cart)
+        const cart = this.cartRepository.get()
+        return this.api.authenticate(cart?.uuid).then(res => {
+            if(res.data?.cart) this.cartRepository.set(res.data.cart)
             return res
         })
     }
 
     getStatus(token){
-        return this.api.getStatus(this.store.state.cart.cart?.uuid, token)
+        const cart = this.cartRepository.get()
+        return this.api.getStatus(cart?.uuid, token)
     }
 
     process(token){
-        return this.api.process(this.store.state.cart.cart?.uuid, token).then(res => {
-            this.store.commit('cart/set', res.data.cart)
-            this.store.commit('checkout/setOrder', res.data.order)
+        const cart = this.cartRepository.get()
+        return this.api.process(cart?.uuid, token).then(res => {
+            this.cartRepository.set(res.data.cart)
+            this.checkoutRepository.setOrder(res.data.order)
             return res
         })
     }
