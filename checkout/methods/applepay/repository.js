@@ -44,10 +44,15 @@ export default class ApplePayRepository {
      * @param {object} shippingAddress 
      */
     process(token, billingAddress, shippingAddress){
-        return this.api.process(token, billingAddress, shippingAddress).then(data => {
+        const cart = this.cartRepository.get()
+        return this.api.process(cart?.uuid, token, billingAddress, shippingAddress)
+        .then(data => {
             this.cartRepository.set(data.cart)
             this.checkoutRepository.setOrder(data.order)
             return data
+        }).catch(err => {
+            if(err.cart) this.cartRepository.set(err.cart)
+            throw err
         })
     }
 

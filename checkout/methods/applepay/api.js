@@ -20,15 +20,16 @@ export default class ApplePayApi {
         })
     }
 
-    process(uuid, token, billing_address, shipping_address){
-        return this.axios.post(`carts/${uuid}/payment/apple-pay/complete`, {
+    process(uuid, token, billingContact, shippingContact){
+        return this.axios.post(`carts/${uuid}/payment/apple-pay/process`, {
             token,
-            billing_address,
-            shipping_address
+            billingContact,
+            shippingContact
         }).then(res => {
             return res.data
         }).catch(err => {
-            throw err.response.data
+            if(err.response?.data) throw err.response.data
+            throw err
         })
     }
 

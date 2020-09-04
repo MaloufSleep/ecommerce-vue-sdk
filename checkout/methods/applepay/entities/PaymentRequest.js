@@ -12,7 +12,7 @@ export class PaymentRequest {
         this._merchantCapabilities = ['supports3DS']
         this._total = null
         this._lineItems = []
-        this._requiredBillingContactFields = this._requiredShippingContactFields = [
+        this._requiredContactFields = [
             "postalAddress",
             "name",
             "phone",
@@ -30,8 +30,8 @@ export class PaymentRequest {
             merchantCapabilities: this._merchantCapabilities,
             total: this._total,
             lineItems: this._lineItems,
-            requiredBillingContactFields: this._requiredBillingContactFields,
-            requiredShippingContactFields: this._requiredShippingContactFields,
+            requiredBillingContactFields: this._requiredContactFields,
+            requiredShippingContactFields: this._requiredContactFields,
             shippingType: this._shippingType,
             shippingMethods: this._shippingMethods
         }

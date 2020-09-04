@@ -179,7 +179,7 @@ export default class ApplePayService {
             const {total, items} = this._getLineItems()
             console.error('_onShippingContactSelected', error)
             this._session.completeShippingContactSelection({
-                errors: [new window.ApplePayError('unknown','','An error has occured while updating the shipping address')],
+                errors: [new window.ApplePayError('unknown')],
                 newShippingMethods: this._getShippingMethods(),
                 newTotal: total, 
                 newLineItems: items 
@@ -210,7 +210,9 @@ export default class ApplePayService {
     _onPaymentAuthorized(event){
         console.log('_onPaymentAuthorized', event)
         const payment = event.payment
-        this.repository.process(payment.token, payment.billingAddress, payment.shippingAddress).then(res => {
+        payment.token.paymentData = JSON.stringify(payment.token.paymentData)
+        this.repository.process(payment.token, payment.billingContact, payment.shippingContact)
+        .then(res => {
             this._session.completePayment({
                 status: window.ApplePaySession.STATUS_SUCCESS,
             })
@@ -218,7 +220,7 @@ export default class ApplePayService {
         }).catch(error => {
             this._session.completePayment({
                 status: window.ApplePaySession.STATUS_FAILURE,
-                errors: [new window.ApplePayError('unknown','','An error has occured while processing the cart')]
+                errors: [new window.ApplePayError('unknown')]
             })
             this._callbacks.onError(new ProcessPaymentError('Failed to process payment', error))
         })
