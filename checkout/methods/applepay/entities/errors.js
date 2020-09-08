@@ -25,3 +25,10 @@ export class ProcessPaymentError extends ApplePayError {
         this.data = data
     }
 }
+
+export class ShippingAddressError extends ApplePayError {
+    constructor(message, data = null){
+        super(501, 'Shipping Address Error', message)
+        this.data = data
+    }
+}

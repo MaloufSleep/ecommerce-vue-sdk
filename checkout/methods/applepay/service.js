@@ -1,6 +1,6 @@
 import Dinero from 'dinero.js'
 import {PaymentRequest, LineItem, ShippingMethod} from './entities/PaymentRequest'
-import { MerchantValidationError, ProcessPaymentError } from './entities/errors'
+import { MerchantValidationError, ProcessPaymentError, ShippingAddressError } from './entities/errors'
 
 export default class ApplePayService {
 
@@ -195,6 +195,7 @@ export default class ApplePayService {
                 newTotal: total, 
                 newLineItems: items 
             })
+            this._callbacks.onError(new ShippingAddressError('Failed to set shipping address', error))
         })
     }
 
