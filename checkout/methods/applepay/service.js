@@ -52,8 +52,6 @@ export default class ApplePayService {
         if(!cart) throw "Apple Pay: cart undefined"
         if(!region) throw "Apple Pay: region undefined"
 
-        console.log(`Latest supported Apple Pay version: ${version}`)
-
         const paymentRequest = new PaymentRequest(
             region.country.alpha_code,
             region.currency.alpha_code
@@ -137,7 +135,6 @@ export default class ApplePayService {
      * @param {ApplePayValidateMerchantEvent} event 
      */
     _onValidateMerchant(event){
-        console.log('_onValidateMerchant', event)
         this.repository.verify(event.validationURL)
         .then(data => {
             if(data.session_object){
@@ -155,7 +152,6 @@ export default class ApplePayService {
      * @param {object} event 
      */
     _onPaymentMethodSelected(event){
-        console.log('_onPaymentMethodSelected', event)
         const {total, items} = this._getLineItems()
         this._session.completePaymentMethodSelection({
             newTotal: total,
@@ -168,7 +164,6 @@ export default class ApplePayService {
      * @param {object} event 
      */
     _onShippingContactSelected(event){
-        console.log('_onShippingContactSelected', event)
         // this event contains redacted address data only
         const contact = event.shippingContact
         const address = {
@@ -188,7 +183,6 @@ export default class ApplePayService {
             })
         }).catch(error => {
             const {total, items} = this._getLineItems()
-            console.error('_onShippingContactSelected', error)
             this._session.completeShippingContactSelection({
                 errors: this._getErrorsForResponse(error),
                 newShippingMethods: this._getShippingMethods(),
@@ -204,7 +198,6 @@ export default class ApplePayService {
      * @param {object} event 
      */
     _onShippingMethodSelected(event){
-        console.log('_onShippingMethodSelected', event)
         const method = event.shippingMethod
         this.repository.setShippingService(method.identifier)
         .then(res => {
@@ -221,7 +214,6 @@ export default class ApplePayService {
      * @param {object} event 
      */
     _onPaymentAuthorized(event){
-        console.log('_onPaymentAuthorized', event)
         const payment = event.payment
         payment.token.paymentData = JSON.stringify(payment.token.paymentData)
         this.repository.process(payment.token, payment.billingContact, payment.shippingContact)
