@@ -17,8 +17,8 @@ export default class CheckoutService {
     }
 
     getPaymentServices(){
-        return this.repository.getPaymentServices().map((item) => {
-            return item.types.map((type) => {
+        return this.repository.getPaymentServices().map(item => {
+            return item.types.map(type => {
                 return {
                     type: type.key,
                     merchant: item.gateway?.key,
@@ -26,6 +26,10 @@ export default class CheckoutService {
                 }
             })
         }).flat()
+    }
+
+    expressCheckoutAvailable(){
+        return this.applePay?.isAvailable()
     }
 
     getOrder(){

@@ -8,7 +8,8 @@ export default class ApplePayApi {
         return this.axios.post(`carts/${uuid}/payment/apple-pay/verify`, {url}).then(res => {
             return res.data
         }).catch(err => {
-            throw err.response.data
+            if(err.response?.data) throw err.response.data
+            throw err
         })
     }
 
@@ -16,7 +17,8 @@ export default class ApplePayApi {
         return this.axios.post(`carts/${uuid}/payment/apple-pay/shipping`, address).then(res => {
             return res.data
         }).catch(err => {
-            throw err.response.data
+            if(err.response?.data) throw err.response.data
+            throw err
         })
     }
 

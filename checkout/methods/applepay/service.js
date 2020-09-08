@@ -16,7 +16,7 @@ export default class ApplePayService {
     /**
      * Determines if Apple Pay is available for use
      */
-    checkAvailability(){
+    isAvailable(){
         return window.ApplePaySession && window.ApplePaySession.canMakePayments()
     }
 
@@ -123,21 +123,31 @@ export default class ApplePayService {
     }
 
     /**
+     * Build Apple Pay errors based on responses
+     * @param {*} response
+     */
+    _getErrorsForResponse(response){
+        return [
+            new window.ApplePayError('unknown')
+        ]
+    }
+
+    /**
      * Apple Pay session callback for handling the merchant validation step
      * @param {ApplePayValidateMerchantEvent} event 
      */
     _onValidateMerchant(event){
         console.log('_onValidateMerchant', event)
-        this.repository.verify(event.validationURL).then(data => {
-            console.log(data)
+        this.repository.verify(event.validationURL)
+        .then(data => {
             if(data.session_object){
                 return this._session.completeMerchantValidation(data.session_object)
             }
             this._session.abort()
-            this._callbacks.onError(new MerchantValidationError('Merchant validation request successful, but session object missing', data))
+            this._callbacks.onError(new MerchantValidationError('Merchant validation successful, session object missing', data))
         }).catch(error => {
             this._session.abort()
-            this._callbacks.onError(new MerchantValidationError('Merchant validation request failed', error))
+            this._callbacks.onError(new MerchantValidationError('Merchant validation failed', error))
         })
     }
     /**
@@ -168,7 +178,8 @@ export default class ApplePayService {
             country: contact.countryCode
         }
 
-        this.repository.setShippingAddress(address).then(res => {
+        this.repository.setShippingAddress(address)
+        .then(res => {
             const {total, items} = this._getLineItems()
             this._session.completeShippingContactSelection({
                 newShippingMethods: this._getShippingMethods(),
@@ -179,7 +190,7 @@ export default class ApplePayService {
             const {total, items} = this._getLineItems()
             console.error('_onShippingContactSelected', error)
             this._session.completeShippingContactSelection({
-                errors: [new window.ApplePayError('unknown')],
+                errors: this._getErrorsForResponse(error),
                 newShippingMethods: this._getShippingMethods(),
                 newTotal: total, 
                 newLineItems: items 
@@ -194,7 +205,8 @@ export default class ApplePayService {
     _onShippingMethodSelected(event){
         console.log('_onShippingMethodSelected', event)
         const method = event.shippingMethod
-        this.repository.setShippingService(method.identifier).then(res => {
+        this.repository.setShippingService(method.identifier)
+        .then(res => {
             const {total, items} = this._getLineItems()
             this._session.completeShippingMethodSelection({
                 newTotal: total,
@@ -220,7 +232,7 @@ export default class ApplePayService {
         }).catch(error => {
             this._session.completePayment({
                 status: window.ApplePaySession.STATUS_FAILURE,
-                errors: [new window.ApplePayError('unknown')]
+                errors: this._getErrorsForResponse(error)
             })
             this._callbacks.onError(new ProcessPaymentError('Failed to process payment', error))
         })
