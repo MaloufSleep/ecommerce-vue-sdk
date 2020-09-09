@@ -23,7 +23,7 @@ export default class ApplePayService {
         }
 
         if(window.ApplePaySession){
-            console.log('Checking if Apple Pay is available for use...')
+            // console.log('Checking if Apple Pay is available for use...')
             // return window.ApplePaySession.canMakePaymentsWithActiveCard(this.merchantId).then(value => {
             //     console.log(`Apple Pay is ${value ? '': 'not'} available`)
             //     ret.available = value

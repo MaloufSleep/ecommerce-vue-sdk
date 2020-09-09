@@ -96,13 +96,10 @@ export default {
         },
         checkAvailability(){
             if(window.ApplePaySession){
-                console.log('Apple Pay: checking for active card...')
                 window.ApplePaySession.canMakePaymentsWithActiveCard(this.merchantId).then(available => {
                     if(available){
-                        console.log('Active card found!')
                         this.$emit('canMakePayments')
                     }else if(window.ApplePaySession.openPaymentSetup){
-                        console.log('No active card found')
                         this.setup = true
                     }
                 })
