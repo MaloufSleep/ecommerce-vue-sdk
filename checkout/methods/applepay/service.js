@@ -17,7 +17,27 @@ export default class ApplePayService {
      * Determines if Apple Pay is available for use
      */
     isAvailable(){
-        return window.ApplePaySession && window.ApplePaySession.canMakePayments()
+        const ret = {
+            method: 'apple-pay',
+            available: false
+        }
+
+        if(window.ApplePaySession){
+            console.log('Checking if Apple Pay is available for use...')
+            // return window.ApplePaySession.canMakePaymentsWithActiveCard(this.merchantId).then(value => {
+            //     console.log(`Apple Pay is ${value ? '': 'not'} available`)
+            //     ret.available = value
+            //     return ret
+            // })
+            return new Promise((resolve, reject) => {
+                window.setTimeout(() => {
+                    ret.available = window.ApplePaySession.canMakePayments()
+                    resolve(ret)
+                }, 50)
+            })
+        }else{
+            return Promise.resolve(ret)
+        }
     }
 
     /**

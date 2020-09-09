@@ -29,7 +29,11 @@ export default class CheckoutService {
     }
 
     expressCheckoutAvailable(){
-        return this.applePay?.isAvailable()
+        return Promise.all([
+            this.applePay?.isAvailable()
+        ]).then(methods => {
+            return methods.filter(method => method.available).map(method => method.method)
+        })
     }
 
     getOrder(){

@@ -43,10 +43,6 @@ export default {
             type: Boolean,
             default: false
         },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
         styles: {
             type: [Object, Array],
             required: false
@@ -58,7 +54,6 @@ export default {
     },
     data() {
         return {
-            available: false,
             setup: false,
         };
     },
@@ -98,13 +93,24 @@ export default {
             }else{
                 this.$emit('click')
             }
+        },
+        checkAvailability(){
+            if(window.ApplePaySession){
+                console.log('Apple Pay: checking for active card...')
+                window.ApplePaySession.canMakePaymentsWithActiveCard(this.merchantId).then(available => {
+                    if(available){
+                        console.log('Active card found!')
+                        this.$emit('canMakePayments')
+                    }else if(window.ApplePaySession.openPaymentSetup){
+                        console.log('No active card found')
+                        this.setup = true
+                    }
+                })
+            }
         }
     },
     mounted() {
-        if(window.ApplePaySession && window.ApplePaySession.canMakePayments()){
-            this.available = true
-            this.$emit('canMakePayments')
-        }
+        this.checkAvailability()
     }
 };
 </script>
