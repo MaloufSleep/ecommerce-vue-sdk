@@ -107,6 +107,7 @@ export default class ApplePayService {
         if(cart.totals.discount > 0) items.push(new LineItem('Discounts', Dinero({amount: cart.totals.discount}).toFormat('-0.00')))
         items.push(new LineItem('Shipping', Dinero({amount: cart.totals.shipping}).toFormat('0.00')))
         items.push(new LineItem('Tax', Dinero({amount: cart.totals.tax}).toFormat('0.00')))
+        if(cart.totals.fees > 0) items.push(new LineItem('Fees', Dinero({amount: cart.totals.fees}).toFormat('0.00')))
         
         return { total, items }
     }
