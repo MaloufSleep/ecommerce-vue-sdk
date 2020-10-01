@@ -32,8 +32,8 @@ export default class ApplePayRepository {
     setShippingAddress(address){
         const cart = this.cartRepository.get()
         return this.api.shipping(cart?.uuid, address).then(data => {
-            this.cartRepository.set(data.data)
-            return data.data
+            this.cartRepository.set(data)
+            return data
         })
     }
 
