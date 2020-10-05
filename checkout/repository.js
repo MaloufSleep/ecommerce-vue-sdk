@@ -18,7 +18,7 @@ export default class CheckoutRepository {
 
         this.loading = true
         return this.api.setShippingAddress(this.store.state.cart.cart.uuid, address, subscribe).then(res => {
-            return this.cartRepository.set(res.data.data)
+            return this.cartRepository.set(res.data)
         }).finally(() => this.loading = false)
     }
 
@@ -31,7 +31,7 @@ export default class CheckoutRepository {
 
         this.loading = true
         return this.api.setShippingService(this.store.state.cart.cart.uuid, id).then(res => {
-            return this.cartRepository.set(res.data.data)
+            return this.cartRepository.set(res.data)
         }).finally(() => this.loading = false)
     }
 

@@ -17,7 +17,7 @@ export default class CartRepository {
         if((now.getTime() - modified.getTime()) < (20 * 60 * 1000)) return Promise.resolve(this.store.state.cart.cart)
 
         return this.api.get(this.store.state.cart.cart.uuid).then(res => {
-            this.store.commit('cart/set', res.data.data)
+            this.store.commit('cart/set', res.data)
             return this.store.state.cart.cart
         }).catch(err => {
             // TODO: verify this error means cart should be deleted
@@ -39,10 +39,10 @@ export default class CartRepository {
 
     addItems(items){
         return this.api.addItems(this.store.state.cart.cart?.uuid, items).then(res => {
-            return this.set(res.data.data)
+            return this.set(res.data)
         }).catch(err => {
-            if(err.response?.data?.data?.cart){
-                this.set(err.response.data.data.cart)
+            if(err.response?.data?.cart){
+                this.set(err.response.data.cart)
             }
             throw err.response?.data
         })
@@ -50,10 +50,10 @@ export default class CartRepository {
 
     updateItem(id, updates){
         return this.api.updateItem(this.store.state.cart.cart.uuid, id, updates).then(res => {
-            return this.set(res.data.data)
+            return this.set(res.data)
         }).catch(err => {
             if(err.response?.data?.data?.cart){
-                this.set(err.response.data.data.cart)
+                this.set(err.response.data.cart)
             }
             throw err.response?.data
         })
@@ -61,7 +61,7 @@ export default class CartRepository {
 
     removeItems(ids){
         return this.api.removeItems(this.store.state.cart.cart.uuid, ids).then(res => {
-            return this.set(res.data.data)
+            return this.set(res.data)
         })
     }
 }
