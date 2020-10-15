@@ -10,29 +10,37 @@
         <div v-if="!cart.itemCount" class="mc-empty-cart">
           <p>There are no items in your cart!</p>
         </div>
-        <div v-else v-for="(item, i) in cart.getItems()" :key="item.id" class="mc-item">
-          <button class="mc-btn-remove" @click="removeItem(item)"><span class="sr-only">Remove</span></button>
-          <div class="mc-item-img-wrap">
-            <g-link :to="item.link">
-              <img :src="item.image">
-            </g-link>
-          </div>
-          <div class="mc-item-info">
-            <g-link :to="item.link">
-              <h4>{{ item.product.properties.ShortTitle || item.product.properties.Title || item.product.name }}</h4>
-            </g-link>
-            <div class="mc-variation-list">
-              {{ getVariationString(item) }}
+        <div v-else v-for="(item, i) in cart.getItems()" :key="item.id" class="mc-item-wrap">
+          <div class="mc-item">
+            <button class="mc-btn-remove" @click="removeItem(item)"><span class="sr-only">Remove</span></button>
+            <div class="mc-item-img-wrap">
+              <g-link :to="item.link">
+                <img :src="item.image">
+              </g-link>
             </div>
-            <div class="mc-qty-wrap">
-              <div class="mc-input-group">
-                <span>Qty</span>
-                <button class="mc-qty-btn mc-cart-btn mc-btn-minus" @click="adjustQuantity(item, -1)"><span class="sr-only">Decrease</span></button>
-                <label :for="`mc-qty_${i}`" class="sr-only">Item Quantity</label>
-                <input v-mask="'###'" type="text" class="mc-form-control" :id="`mc-qty_${i}`" @change="updateQuantity($event, item.id)" :value="item.quantity">
-                <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
+            <div class="mc-item-info">
+              <g-link :to="item.link">
+                <h4>{{ item.product.properties.ShortTitle || item.product.properties.Title || item.product.name }}</h4>
+              </g-link>
+              <div class="mc-variation-list">
+                {{ getVariationString(item) }}
               </div>
-              <p class="mc-product-price">{{ item.prices.active | currency }}</p>
+              <div class="mc-qty-wrap">
+                <div class="mc-input-group">
+                  <span>Qty</span>
+                  <button class="mc-qty-btn mc-cart-btn mc-btn-minus" @click="adjustQuantity(item, -1)"><span class="sr-only">Decrease</span></button>
+                  <label :for="`mc-qty_${i}`" class="sr-only">Item Quantity</label>
+                  <input v-mask="'###'" type="text" class="mc-form-control" :id="`mc-qty_${i}`" @change="updateQuantity($event, item.id)" :value="item.quantity">
+                  <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
+                </div>
+                <p class="mc-product-price">{{ item.prices.active | currency }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="mc-item-alerts">
+            <div class="alert alert-warning mt-3 mb-0" v-if="item.backorder_quantity">
+              <span class="font-weight-bold">{{ item.backorder_quantity }}</span> {{ item.backorder_quantity > 1 ? 'items' : 'item' }} will be backordered.
+              <br>Order now for {{ getRestockDate(item.product.properties.RestockDate) }} delivery.
             </div>
           </div>
         </div>
@@ -127,6 +135,15 @@ export default {
 
           return ''
         },
+
+        getRestockDate(restockDate = null){
+          if(!restockDate){
+            let now = new Date()
+            now.setDate(now.getDate() + 21) // add 3 weeks by default
+            return now.toLocaleString('default', {month: 'long', day: 'numeric'})
+          }
+          return restockDate
+        }
     }
 }
 </script>
@@ -139,14 +156,17 @@ export default {
   position: relative;
   padding: 14px;
 
-  & .mc-item {
+  & .mc-item-wrap {
     border: 1px solid gray;
+    padding: 14px;
+    margin-bottom: 1rem;
+  }
+
+  & .mc-item {
     display: flex;
     align-items: center;
     flex-direction: row;
     position: relative;
-    padding: 14px;
-    margin-bottom: 1rem;
 
     & h4 {
       font-size: 18px;
