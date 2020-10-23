@@ -38,9 +38,9 @@
             </div>
           </div>
           <div class="mc-item-alerts">
-            <div class="alert alert-warning mt-3 mb-0" v-if="item.backorder_quantity">
-              <span class="font-weight-bold">{{ item.backorder_quantity }}</span> {{ item.backorder_quantity > 1 ? 'items' : 'item' }} will be backordered.
-              <br>Order now for {{ getRestockDate(item.product.properties.RestockDate) }} delivery.
+            <div class="alert alert-info mt-3 mb-0" v-if="item.backorder_quantity">
+              This item is on backorder.<br>
+              Order now for {{ getRestockDate(item.product.properties.RestockDate) }} delivery.
             </div>
           </div>
         </div>
