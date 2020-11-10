@@ -33,7 +33,8 @@
                   <input v-mask="'###'" type="text" class="mc-form-control" :id="`mc-qty_${i}`" @change="updateQuantity($event, item.id)" :value="item.quantity">
                   <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
                 </div>
-                <p class="mc-product-price">{{ item.prices.active | currency }}</p>
+                <p class="mc-product-price" v-if="(item.totals.active - item.totals.discount) == 0">FREE</p>
+                <p class="mc-product-price" v-else>{{ item.prices.active | currency }}</p>
               </div>
             </div>
           </div>
