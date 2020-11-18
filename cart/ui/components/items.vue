@@ -10,7 +10,7 @@
         <div v-if="!cart.itemCount" class="mc-empty-cart">
           <p>There are no items in your cart!</p>
         </div>
-        <div v-else v-for="(item, i) in cart.getItems()" :key="item.id" class="mc-item-wrap">
+        <div v-else v-for="(item, i) in sortedItems" :key="item.id" class="mc-item-wrap">
           <div class="mc-item">
             <button class="mc-btn-remove" @click="removeItem(item)"><span class="sr-only">Remove</span></button>
             <div class="mc-item-img-wrap">
@@ -90,6 +90,14 @@ export default {
     computed: {
         cart(){
             return this.$ecommerce.cart.getCart()
+        },
+        sortedItems(){
+          // sorts items so that free items always show at bottom
+          return this.cart.getItems().sort((a,b) => {
+            if(a.totals?.active - a.totals?.discount <= 0) return 1
+            if(b.totals?.active - b.totals?.discount <= 0) return -1
+            return a.id - b.id
+          })
         }
     },
     methods: {
