@@ -4,8 +4,8 @@ export default class CheckoutService {
         this.repository = repository
     }
 
-    setShippingAddress(address, subscribe = false){
-        return this.repository.setShippingAddress(address, subscribe)
+    setShippingAddress(address, subscribe = false, subscribeSms = false){
+        return this.repository.setShippingAddress(address, subscribe, subscribeSms)
     }
 
     setShippingService(service_id){

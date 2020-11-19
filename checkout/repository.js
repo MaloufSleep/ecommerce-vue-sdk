@@ -12,12 +12,13 @@ export default class CheckoutRepository {
      * Set the shipping address for the cart
      * @param {object} address address object to pass to api
      * @param {bool} subscribe newsletter subscription boolean
+     * @param {bool} subscribeSms sms subscription boolean
      */
-    setShippingAddress(address, subscribe){
+    setShippingAddress(address, subscribe, subscribeSms){
         if(this.loading) return Promise.reject('Another request is in progress')
 
         this.loading = true
-        return this.api.setShippingAddress(this.store.state.cart.cart.uuid, address, subscribe).then(res => {
+        return this.api.setShippingAddress(this.store.state.cart.cart.uuid, address, subscribe, subscribeSms).then(res => {
             return this.cartRepository.set(res.data)
         }).finally(() => this.loading = false)
     }
