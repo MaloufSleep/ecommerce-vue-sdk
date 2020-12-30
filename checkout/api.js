@@ -11,11 +11,12 @@ export default class CheckoutApi {
      * @param {boolean} subscribe - newsletter subscription boolean
      * @param {boolean} subscribeSms - sms subscription boolean
      */
-    setShippingAddress(uuid, address, subscribe, subscribeSms){
+    setShippingAddress(uuid, address, subscribe, subscribeSms, requestsMattressRemoval){
         return this.axios.post(`carts/${uuid}/shipping/address`, {
             address,
             subscribe,
-            subscribe_sms: subscribeSms
+            subscribe_sms: subscribeSms,
+            mattress_removal: requestsMattressRemoval,
         })
     }
 
