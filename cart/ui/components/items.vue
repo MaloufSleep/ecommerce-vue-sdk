@@ -71,7 +71,7 @@
 <script>
 import {mask} from 'vue-the-mask'
 import { startCase } from 'lodash'
-import LoadingIcon from './LoadingIcon'
+import LoadingIcon from './LoadingIcon.vue'
 
 export default {
     name: 'ec-cart-items',
