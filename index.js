@@ -27,9 +27,11 @@ class Ecommerce {
         })
 
         // make filters available
-        Object.values(Filters).forEach(filter => {
-            Vue.use(filter)
-        })
+        if(this.config.includeFilters){
+            Object.values(Filters).forEach(filter => {
+                Vue.use(filter)
+            })
+        }
     }
 
     registerModule(module){
