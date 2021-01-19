@@ -32,7 +32,7 @@ export default class CheckoutService {
         return Promise.all([
             this.applePay?.isAvailable()
         ]).then(methods => {
-            return methods.filter(method => method.available).map(method => method.method)
+            return methods.filter(method => method?.available).map(method => method?.method)
         })
     }
 
