@@ -5,18 +5,27 @@ export default class CheckoutApi {
     }
 
     /**
+     * Send mattress recycle email
+     * @param {object} uuid - customer contact information
+     */
+    sendRecycleEmail(customer){
+        return this.axios.post(`compliance/emails/recycle/send`, {
+            customer
+        })
+    }
+
+    /**
      * Set the shipping address for the cart
      * @param {string} uuid - cart uuid
      * @param {object} address - shipping address
      * @param {boolean} subscribe - newsletter subscription boolean
      * @param {boolean} subscribeSms - sms subscription boolean
      */
-    setShippingAddress(uuid, address, subscribe, subscribeSms, requestsMattressRemoval){
+    setShippingAddress(uuid, address, subscribe, subscribeSms){
         return this.axios.post(`carts/${uuid}/shipping/address`, {
             address,
             subscribe,
-            subscribe_sms: subscribeSms,
-            mattress_removal: requestsMattressRemoval,
+            subscribe_sms: subscribeSms
         })
     }
 

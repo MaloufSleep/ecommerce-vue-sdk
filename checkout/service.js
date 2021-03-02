@@ -4,8 +4,20 @@ export default class CheckoutService {
         this.repository = repository
     }
 
-    setShippingAddress(address, subscribe = false, subscribeSms = false, requestsMattressRemoval = false){
-        return this.repository.setShippingAddress(address, subscribe, subscribeSms, requestsMattressRemoval)
+    sendRecycleEmail(customer){
+        return this.repository.sendRecycleEmail(customer)
+    }
+
+    setRecycleEmail(needsEmail) {
+        return this.repository.setRecycleEmail(needsEmail)
+    }
+
+    getRecycleEmail(){
+        return this.repository.getRecycleEmail()
+    }
+
+    setShippingAddress(address, subscribe = false, subscribeSms = false){
+        return this.repository.setShippingAddress(address, subscribe, subscribeSms)
     }
 
     setShippingService(service_id){

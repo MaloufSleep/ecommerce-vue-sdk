@@ -1,12 +1,16 @@
 const state = () => { 
     return {
-        order: {}
+        order: {},
+        needsRecycleEmail: false
     }
 }
 const getters = {}
 const mutations = {
     setOrder(state, order){
         state.order = Object.assign({}, state.order, order)
+    },
+    setRecycleEmail(state, needsEmail) {
+        state.needsRecycleEmail = needsEmail
     }
 }
 const actions = {}
