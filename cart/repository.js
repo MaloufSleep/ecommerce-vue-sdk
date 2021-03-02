@@ -64,4 +64,20 @@ export default class CartRepository {
             return this.set(res.data)
         })
     }
+
+    applyPromotion(code){
+        return this.api.applyPromotion(this.store.state.cart.cart.uuid, code).then(res => {
+            return this.set(res.data)
+        }).catch(err => {
+            throw err.response?.data
+        })
+    }
+
+    removePromotion(promotion_id){
+        return this.api.removePromotion(this.store.state.cart.cart.uuid, promotion_id).then(res => {
+            return this.set(res.data)
+        }).catch(err => {
+            throw err.response?.data
+        })
+    }
 }

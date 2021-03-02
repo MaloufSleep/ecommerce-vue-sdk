@@ -4,8 +4,8 @@ export default class NewsletterService {
         this.api = api
     }
 
-    subscribe(phoneNumber, first_name = null, last_name = null){
-        return this.api.subscribe(phoneNumber, first_name, last_name)
+    subscribe(phoneNumber, email = null, first_name = null, last_name = null, visitor_id = null){
+        return this.api.subscribe(phoneNumber, email, first_name, last_name, visitor_id)
     }
 
     unsubscribe(phoneNumber){

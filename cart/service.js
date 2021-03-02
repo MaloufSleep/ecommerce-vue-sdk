@@ -22,4 +22,12 @@ export default class CartService {
         return this.repository.removeItems(items)
     }
 
+    applyPromotion(code){
+        return this.repository.applyPromotion(code)
+    }
+
+    removePromotion(promotion_id){
+        return this.repository.removePromotion(promotion_id)
+    }
+
 }

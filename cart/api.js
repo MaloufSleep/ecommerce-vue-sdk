@@ -48,4 +48,22 @@ export default class CartAPI {
         return this.axios.post(`carts/${uuid}/items/remove`, {items: ids})
     }
 
+    /**
+     * Applies a promotion to the cart
+     * @param {string} uuid - cart uuid
+     * @param {string} code - code string
+     */
+    applyPromotion(uuid, code){
+        return this.axios.post(`carts/${uuid}/promotions/apply`, {code})
+    }
+
+    /**
+     * Removes a promotion from the cart
+     * @param {string} uuid - cart uuid
+     * @param {int} promotion_id - promotion id
+     */
+    removePromotion(uuid, promotion_id){
+        return this.axios.post(`carts/${uuid}/promotions/remove`, {promotion_id})
+    }
+
 }
