@@ -4,18 +4,18 @@ export default class ProductsService {
         this.api = api
     }
 
-    getById(id){
-        return this.getByIds([id])
+    getById(id, options = {}){
+        return this.getByIds([id], options)
     }
 
-    getByIds(ids){
-        return this.api.getByIds(ids).then(res => {
+    getByIds(ids, options = {}){
+        return this.api.getByIds(ids, options).then(res => {
             return res.data
         })
     }
 
-    getBySlug(slug){
-        return this.api.getBySlug(slug).then(res => {
+    getBySlug(slug, options = {}){
+        return this.api.getBySlug(slug, options).then(res => {
             return res.data
         })
     }

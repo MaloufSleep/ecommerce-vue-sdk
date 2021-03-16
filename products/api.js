@@ -6,18 +6,20 @@ export default class ProductsAPI {
 
     /**
      * Get products by IDs 
-     * @param {array} product_ids 
+     * @param {array} product_ids
+     * @param {object} options
      */
-    getByIds(product_ids){
-        return this.axios.post('products', { product_ids })
+    getByIds(product_ids, options = {}){
+        return this.axios.post('products', {product_ids, ...options})
     }
 
     /**
      * Get the product by slug
      * @param {string} slug - product slug
+     * @param {object} options
      */
-    getBySlug(slug){
-        return this.axios.get(`products/slug/${slug}`)
+    getBySlug(slug, options = {}){
+        return this.axios.post(`products/slug/${slug}`, {...options})
     }
 
 }
