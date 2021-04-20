@@ -5,7 +5,7 @@ export default class TrackingAPI {
   }
 
   /**
-   * Subscribe to newsletter
+   * Track website event
    * @param {string} event
    * @param {object} eventData 
    */
