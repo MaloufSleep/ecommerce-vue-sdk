@@ -6,7 +6,9 @@ export default class CartRepository {
         this.store = store
         this.api = api
 
-        this.verify()
+        this.verify().catch(err => {
+            console.debug(`Cart verification failed, status: ${err.response?.status}, error: ${err.response?.data?.message}`)
+        })
     }
 
     verify(){
@@ -20,10 +22,7 @@ export default class CartRepository {
             this.store.commit('cart/set', res.data)
             return this.store.state.cart.cart
         }).catch(err => {
-            // TODO: verify this error means cart should be deleted
-            if(err.response){
-                this.store.commit('cart/delete')
-            }
+            if(err.response?.status == 404) this.store.commit('cart/delete')
             throw err
         })
     }
