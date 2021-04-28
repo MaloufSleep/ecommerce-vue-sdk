@@ -7,19 +7,21 @@ export default class ChargeAfterService {
         this.chargeafter = chargeafter
         this.onSuccess = null
         this.onError = null
+        this.onExit = null
     }
 
-    checkout(onSuccess, onError){
+    checkout(onSuccess, onError, onExit){
         const cart = this.repository.getCart()
         if(cart.itemCount <= 0) return Promise.reject('Cart does not contain items.')
 
         this.onSuccess = onSuccess
         this.onError = onError
+        this.onExit = onExit
 
         // params to send to ChargeAfter
         let params = {
-            onDataUpdate: this.onDataUpdate,
-            callback: this.onComplete,
+            onDataUpdate: this.onDataUpdate.bind(this),
+            callback: this.onComplete.bind(this),
             cartDetails: {
                 items: cart.getItems().map(item => {
                     return {
@@ -46,7 +48,7 @@ export default class ChargeAfterService {
                 mobilePhoneNumber: shippingAddress.phone,
                 shippingAddress: {
                     line1: shippingAddress.street_1,
-                    line2: shippingAddress.street_2,
+                    line2: shippingAddress.street_2 || '',
                     city: shippingAddress.locality,
                     zipCode: shippingAddress.postcode,
                     state: shippingAddress.region
@@ -61,7 +63,7 @@ export default class ChargeAfterService {
             const billingAddress = cart.billing_address
             params.consumerDetails.billingAddress = {
                 line1: billingAddress.street_1,
-                line2: billingAddress.street_2,
+                line2: billingAddress.street_2 || '',
                 city: billingAddress.locality,
                 zipCode: billingAddress.postcode,
                 state: billingAddress.region
@@ -104,12 +106,18 @@ export default class ChargeAfterService {
             email: data.email,
             mobilePhoneNumber: data.mobilePhoneNumber,
             lender: data.lender,
+            shippingAmount: data.shippingAmount,
+            taxAmount: data.taxAmount,
+            totalAmount: data.totalAmount,
         }
 
-        console.debug('ChargeAfter - Success: ', params)
+        console.debug('ChargeAfter - Success: ', data, params)
 
         this.repository.process(params).then(response => {
+            console.debug('ChargeAfter - Order Processed')
             this.onSuccess(response)
+        }).catch(err => {
+            this.onError(err)
         })
     }
 }
