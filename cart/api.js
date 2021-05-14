@@ -24,9 +24,13 @@ export default class CartAPI {
      * Add an item to the cart
      * @param {string} uuid - cart uuid
      * @param {object[]} items - items to be added
+     * @param {object|null} customer - partial customer data to associate cart with
      */
-    addItems(uuid, items){
-        return this.axios.post(`carts/${uuid || ''}`, {items})
+    addItems(uuid, items, customer = null){
+        return this.axios.post(`carts/${uuid || ''}`, {
+            items,
+            customer
+        })
     }
 
     /**

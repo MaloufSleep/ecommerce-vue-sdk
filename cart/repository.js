@@ -37,7 +37,8 @@ export default class CartRepository {
     }
 
     addItems(items){
-        return this.api.addItems(this.store.state.cart.cart?.uuid, items).then(res => {
+        return this.api.addItems(this.store.state.cart.cart?.uuid, items, this.store.state.cart.customer).then(res => {
+            this.store.commit('cart/resetCustomer')
             return this.set(res.data)
         }).catch(err => {
             if(err.response?.data?.cart){

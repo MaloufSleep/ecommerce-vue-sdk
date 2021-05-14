@@ -1,6 +1,7 @@
 const state = () => { 
     return {
-        cart: {}
+        cart: {},
+        customer: {}
     }
 }
 const getters = {}
@@ -10,6 +11,12 @@ const mutations = {
     },
     delete(state){
         state.cart = {}
+    },
+    setCustomer(state, customer){
+        state.customer = Object.assign({}, state.customer, customer)
+    },
+    resetCustomer(state){
+        state.customer = {}
     }
 }
 const actions = {}
