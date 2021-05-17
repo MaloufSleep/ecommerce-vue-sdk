@@ -80,4 +80,11 @@ export default class CartRepository {
             throw err.response?.data
         })
     }
+
+    loadCart(uuid){
+        return this.api.get(uuid).then(res => {
+            this.store.commit('cart/set', res.data)
+            return this.store.state.cart.cart
+        })
+    }
 }

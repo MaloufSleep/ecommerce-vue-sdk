@@ -30,4 +30,8 @@ export default class CartService {
         return this.repository.removePromotion(promotion_id)
     }
 
+    loadCart(uuid){
+        return this.repository.loadCart(uuid)
+    }
+
 }
