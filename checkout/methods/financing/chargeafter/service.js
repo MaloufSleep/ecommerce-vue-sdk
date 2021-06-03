@@ -5,53 +5,22 @@ export default class ChargeAfterService {
     constructor(repository, chargeafter){
         this.repository = repository
         this.chargeafter = chargeafter
+
         this.onSuccess = null
         this.onError = null
         this.onExit = null
-        this.shouldUpdateShipping = false
     }
 
     /**
-     * Starts the checkout process using ChargeAfter
-     * @param {function} onSuccess Callback when transaction and order processed successfully
-     * @param {function} onError Callback when an error has occurred
-     * @param {function} onExit Callback when the user has exited/cancelled the transaction
-     * @param {boolean} shouldUpdateShipping Indicates if the order should be updated with the shipping address received from ChargeAfter
-     * @returns {void}
+     * Creates the consumer details object using the cart
+     * @param {object} cart
+     * @returns {object}
      */
-    checkout(onSuccess, onError, onExit, shouldUpdateShipping = false){
-        const cart = this.repository.getCart()
-        if(cart.itemCount <= 0) return Promise.reject('Cart does not contain items.')
-
-        this.onSuccess = onSuccess
-        this.onError = onError
-        this.onExit = onExit
-        this.shouldUpdateShipping = shouldUpdateShipping
-
-        // params to send to ChargeAfter
-        let params = {
-            onDataUpdate: this.onDataUpdate.bind(this),
-            callback: this.onComplete.bind(this),
-            cartDetails: {
-                items: cart.getItems().map(item => {
-                    return {
-                        name: item.product?.name,
-                        price: Dinero({amount: item.prices.active}).toUnit(),
-                        sku: item.product.sku,
-                        quantity: item.quantity,
-                        leasable: false,
-                        productCategory: item.product.properties?.Category,
-                    }
-                }),
-                taxAmount: Dinero({amount: cart.totals.tax}).toUnit(),
-                shippingAmount: Dinero({amount: cart.totals.shipping}).toUnit(),
-                totalAmount: Dinero({amount: cart.totals.total}).toUnit(),
-            }
-        }
-
+    _getConsumerDetails(cart){
+        let consumerDetails = {}
         if(cart?.shipping_address){
             const shippingAddress = cart.shipping_address
-            params.consumerDetails = {
+            consumerDetails = {
                 firstName: shippingAddress.first_name,
                 lastName: shippingAddress.last_name,
                 email: shippingAddress.email,
@@ -66,12 +35,12 @@ export default class ChargeAfterService {
             }
 
             // default to billing address same as shipping
-            params.consumerDetails.billingAddress = Object.assign({}, params.consumerDetails.shippingAddress)
+            consumerDetails.billingAddress = Object.assign({}, consumerDetails.shippingAddress)
         }
 
         if(cart?.billing_address){
             const billingAddress = cart.billing_address
-            params.consumerDetails.billingAddress = {
+            consumerDetails.billingAddress = {
                 line1: billingAddress.street_1,
                 line2: billingAddress.street_2 || '',
                 city: billingAddress.locality,
@@ -80,16 +49,7 @@ export default class ChargeAfterService {
             }
         }
 
-        if(cart?.promotions?.length){
-            params.cartDetails.discounts = cart.promotions.map(promotion => {
-                return {
-                    amount: Dinero({amount: promotion.discount}).toUnit(),
-                    name: promotion?.promotion?.name
-                }
-            })
-        }
-
-        this.chargeafter.launchCheckout(params)
+        return consumerDetails
     }
 
     /**
@@ -98,28 +58,31 @@ export default class ChargeAfterService {
      * @param {function} callback Callback function that should be invoked if nothing is returned
      * @returns {object|void}
      */
-    onDataUpdate(data, callback){
+     _onCheckoutDataUpdate(data, callback){
         console.debug('ChargeAfter callback data:', data)
-        if(this.shouldUpdateShipping){
-            this.repository.updateShipping(data.consumerDetails).then(cart => {
-                callback({
-                    taxAmount: Dinero({amount: cart.totals.tax}).toUnit(),
-                    shippingAmount: Dinero({amount: cart.totals.shipping}).toUnit(),
-                    totalAmount: Dinero({amount: cart.totals.total}).toUnit(),
-                })
-            }).catch(err => {
-                console.error('Failed to update order details', err)
-                callback()
+        this.repository.updateShipping(data.consumerDetails).then(cart => {
+            callback({
+                taxAmount: Dinero({amount: cart.totals.tax}).toUnit(),
+                shippingAmount: Dinero({amount: cart.totals.shipping}).toUnit(),
+                totalAmount: Dinero({amount: cart.totals.total}).toUnit(),
             })
-        }else{
-            return {}
-        }
+        }).catch(err => {
+            console.error('Failed to update order details', err)
+            callback()
+        })
     }
 
-    onComplete(token, data, error){
+    /**
+     * Called when the checkout flow has completed, exited, or errored
+     * @param {*} token a confirmation token that can be used to commit a charge
+     * @param {*} data information that was collected before and during the checkout flow
+     * @param {*} error an error object containing details about the failure
+     * @returns {void}
+     */
+    _onCheckoutComplete(token, data, error){
         // handle error
         if(error){
-            console.log(error)
+            console.error(error)
             switch(error.code){
                 case 'BACK_TO_STORE':
                 case 'CONSUMER_CANCELLED': {
@@ -154,7 +117,7 @@ export default class ChargeAfterService {
             totalAmount: data.totalAmount,
         }
 
-        console.debug('ChargeAfter - Success: ', data, params)
+        console.debug('ChargeAfter - Checkout Successful', data, params)
 
         this.repository.process(params).then(response => {
             console.debug('ChargeAfter - Order Processed')
@@ -163,4 +126,110 @@ export default class ChargeAfterService {
             this.onError(err)
         })
     }
+
+    /**
+     * Called when the application flow has completed, exited, or errored
+     * @param {*} data information that was collected before and during the application flow
+     * @param {*} error an error object containing details about the failure
+     * @returns {void}
+     */
+    _onApplicationComplete(data, error){
+        // handle error
+        if(error){
+            console.error(error)
+            switch(error.code){
+                case 'CONSUMER_CANCELLED': {
+                    this.onExit()
+                    break;
+                }
+                default: {
+                    this.onError(error)
+                    break;
+                }
+            }
+            return
+        }
+
+        if(!data){
+            this.onExit()
+            return
+        }
+
+        console.debug('ChargeAfter - Application Completed', data)
+        this.onSuccess(data)
+    }
+
+    /**
+     * Starts the checkout process using ChargeAfter
+     * https://docs.chargeafter.com/docs/present
+     * @param {function} onSuccess Callback when transaction and order processed successfully
+     * @param {function} onError Callback when an error has occurred
+     * @param {function} onExit Callback when the user has exited/cancelled the transaction
+     * @returns {void}
+     */
+    checkout(onSuccess, onError, onExit){
+        const cart = this.repository.getCart()
+        if(cart.itemCount <= 0) return Promise.reject('Cart does not contain items.')
+
+        this.onSuccess = onSuccess
+        this.onError = onError
+        this.onExit = onExit
+
+        // params to send to ChargeAfter
+        let params = {
+            onDataUpdate: this._onCheckoutDataUpdate.bind(this),
+            callback: this._onCheckoutComplete.bind(this),
+            cartDetails: {
+                items: cart.getItems().map(item => {
+                    return {
+                        name: item.product?.name,
+                        price: Dinero({amount: item.prices.active}).toUnit(),
+                        sku: item.product.sku,
+                        quantity: item.quantity,
+                        leasable: false,
+                        productCategory: item.product.properties?.Category,
+                    }
+                }),
+                taxAmount: Dinero({amount: cart.totals.tax}).toUnit(),
+                shippingAmount: Dinero({amount: cart.totals.shipping}).toUnit(),
+                totalAmount: Dinero({amount: cart.totals.total}).toUnit(),
+            },
+            consumerDetails: this._getConsumerDetails(cart)
+        }
+
+        if(cart?.promotions?.length){
+            params.cartDetails.discounts = cart.promotions.map(promotion => {
+                return {
+                    amount: Dinero({amount: promotion.discount}).toUnit(),
+                    name: promotion?.promotion?.name
+                }
+            })
+        }
+
+        this.chargeafter.launchCheckout(params)
+    }
+
+    /**
+     * Starts the application process using ChargeAfter
+     * https://docs.chargeafter.com/docs/add-an-application-button
+     * @param {function} onSuccess Callback when application processed successfully
+     * @param {function} onError Callback when an error has occurred
+     * @param {function} onExit Callback when the user has exited/cancelled the application process
+     * @returns {void}
+     */
+    apply(onSuccess, onError, onExit){
+        const cart = this.repository.getCart()
+
+        this.onSuccess = onSuccess
+        this.onError = onError
+        this.onExit = onExit
+
+        let params = {
+            callback: this._onApplicationComplete.bind(this),
+            consumerDetails: this._getConsumerDetails(cart)
+        }
+
+        this.chargeafter.launchApplication(params)
+    }
+    
 }

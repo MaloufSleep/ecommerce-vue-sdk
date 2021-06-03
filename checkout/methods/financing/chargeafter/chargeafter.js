@@ -71,4 +71,12 @@ export default class ChargeAfter {
             resolve(true)
         })
     }
+
+    launchApplication(params){
+        if(!window.ChargeAfter?.apply?.present) return Promise.reject('ChargeAfter not loaded.')
+        return new Promise((resolve, reject) => {
+            window.ChargeAfter.apply.present(params)
+            resolve(true)
+        })
+    }
 }
