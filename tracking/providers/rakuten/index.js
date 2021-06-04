@@ -5,7 +5,7 @@ export default class RakutenTracker extends SiteTracker {
   constructor(context, rakutenConfig){
     super(context, rakutenConfig)
     
-    if (isClient) {
+    if (typeof window !== 'undefined') {
       window.__rmcp2 = []
     }
 
@@ -24,6 +24,8 @@ export default class RakutenTracker extends SiteTracker {
   }
 
   trackConversion(data){
-    submit(window, document, data)
+    if (isClient) {
+      submit(window, document, data)
+    }
   }
 }
