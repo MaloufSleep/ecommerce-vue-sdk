@@ -7,6 +7,8 @@ export default class FacebookTracker extends SiteTracker {
         this.fbid = fbConfig.id
 
         if(!this.fbid && process.env.NODE_ENV !== 'production') console.warn(`Facebook tracking ID not found.`);
+
+        context.tracking.facebook = this
     }
 
     optIn(){

@@ -8,6 +8,8 @@ export default class GtagTracker extends SiteTracker {
         this.gtagConfig = gtagConfig?.config
 
         if(!this.gtagConfig?.config && process.env.NODE_ENV !== 'production') console.warn(`Gtag config object not found.`);
+
+        context.tracking.gtag = this
     }
 
     optIn(){

@@ -7,6 +7,8 @@ export default class PinterestTracker extends SiteTracker {
         this.pid = pinterestConfig.id
 
         if(!this.pid && process.env.NODE_ENV !== 'production') console.warn(`Pinterest ID not found.`);
+
+        context.tracking.pinterest = this
     }
 
     optIn(){

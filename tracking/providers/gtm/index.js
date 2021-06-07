@@ -8,6 +8,8 @@ export default class GtmTracker extends SiteTracker {
     this.config = gtmConfig?.config
 
     if(!this.config && process.env.NODE_ENV !== 'production') console.warn(`GTM config object not found.`);
+
+    context.tracking.gtm = this
   }
 
   optIn(){

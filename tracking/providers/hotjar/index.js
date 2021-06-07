@@ -7,6 +7,8 @@ export default class HotjarTracker extends SiteTracker {
         this.settings = hotjarConfig?.settings
 
         if(!this.settings && process.env.NODE_ENV !== 'production') console.warn(`Hotjar settings object not found.`);
+
+        context.tracking.hotjar = this
     }
 
     optIn(){
