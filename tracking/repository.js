@@ -42,6 +42,12 @@ export default class TrackingRepository {
     })
   }
 
+  optOut () {
+    this.trackers.forEach(tracker => {
+      tracker.optOut()
+    })
+  }
+
   getTrackingServices (type) {
     return this.trackers
   }

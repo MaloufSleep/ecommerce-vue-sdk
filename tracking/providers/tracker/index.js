@@ -6,4 +6,16 @@ export default class SiteTracker {
     this.type = trackerConfig.type
     this.name = trackerConfig.name
   }
+
+  optIn () {
+    if(!isClient()) return Promise.resolve(true)
+
+    return Promise.resolve(true)
+  }
+
+  optOut () {
+    if(!isClient()) return Promise.resolve(true)
+
+    return Promise.resolve(true)
+  }
 }

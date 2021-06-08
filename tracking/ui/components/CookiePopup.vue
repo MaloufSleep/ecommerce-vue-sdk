@@ -11,8 +11,8 @@
           <span v-html="bodyCopy" />
           <div class="ec-vertical-separator" />
           <div class="ec-button-container">
-            <button @click="acceptTracking" class="btn mr-sm-3 mr-md-0 mr-lg-3" :class="buttonClasses.accept">Accept</button>
-            <button @click="declineTracking" class="btn ml-sm-3 ml-md-0 ml-lg-3" :class="buttonClasses.deny">Deny</button>
+            <button @click="declineTracking" class="btn mr-sm-3 mr-md-0 mr-lg-3" :class="buttonClasses.deny">Deny</button>
+            <button @click="acceptTracking" class="btn ml-sm-3 ml-md-0 ml-lg-3" :class="buttonClasses.accept">Accept</button>
           </div>
         </div>
       </slot>
@@ -57,7 +57,9 @@ export default {
   mounted () {
     if(this.getCookieAccept){
       if (this.getCookieAccept === 'accept') {
-        this.loadTrackers()
+        this.optIn()
+      } else {
+        this.optOut()
       }
     } else {
       this.showModal()
@@ -76,23 +78,22 @@ export default {
 
     declineTracking(){
       this.$ecommerce.tracking.setCookieAccept('decline')
-      // this.setRakutenGlobalObject(false)
+      this.optOut()
       this.closeModal()
     },
 
     acceptTracking(){
       this.$ecommerce.tracking.setCookieAccept()
-      this.loadTrackers()
-      // this.setRakutenGlobalObject()
+      this.optIn()
       this.closeModal()
     },
 
-    loadTrackers () {
+    optIn () {
       this.$ecommerce.tracking.optIn()
     },
 
-    setRakutenGlobalObject(accept = true){
-      window.__rmcp2 = accept ? [1,2,3,4,5,6,7,8,9,10] : []
+    optOut () {
+      this.$ecommerce.tracking.optOut()
     },
 
     closeModal () {
@@ -143,11 +144,13 @@ export default {
   }
 
   & .ec-button-container {
+    flex-direction: column-reverse;
+
     @media screen and (min-width: $sm){
       flex-direction: row;
     }
     @media screen and (min-width: $md) {
-      flex-direction: column;
+      flex-direction: column-reverse;
     }
     @media screen and (min-width: $lg) {
       flex-direction: row;
@@ -160,7 +163,7 @@ export default {
     width: 150px;
 
     @media screen and (min-width: $md) {
-      &:first-of-type {
+      &:last-of-type {
         margin-top: 0;
       }
     }

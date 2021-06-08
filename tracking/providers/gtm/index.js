@@ -13,7 +13,7 @@ export default class GtmTracker extends SiteTracker {
   }
 
   optIn(){
-    if(!isClient()) return Promise.resolve(true)
+    super.optIn()
 
     return new Promise((resolve, reject) => {
         this.context.Vue.use(VueGtm, this.config)

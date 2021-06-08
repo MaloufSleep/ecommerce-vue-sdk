@@ -20,6 +20,10 @@ export default class TrackingService {
     return this.repository.optIn()
   }
 
+  optOut () {
+    return this.repository.optOut()
+  }
+
   getTrackingService (type) {
     return this.repository.getTrackingServices().filter(tracker => tracker.type === type)
   }

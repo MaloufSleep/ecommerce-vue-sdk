@@ -4,18 +4,24 @@ import SiteTracker from '../tracker'
 export default class RakutenTracker extends SiteTracker {
   constructor(context, rakutenConfig){
     super(context, rakutenConfig)
-    
-    if (typeof window !== 'undefined') {
-      window.__rmcp2 = []
-    }
 
     context.tracking.rakuten = this
   }
 
   optIn(){
-    if(!isClient()) return Promise.resolve(true)
+    super.optIn()
     
-    window.__rmcp2 = [1,2,3,4,5,6,7,8,9,10]
+    if (window) {
+      window.__rmcp2 = [1,2,3,4,5,6,7,8,9,10]
+    }
+  }
+
+  optOut() {
+    super.optOut()
+
+    if (window) {
+      window.__rmcp2 = []
+    }
   }
 
   submit(a, b, c) {

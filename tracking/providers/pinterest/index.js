@@ -12,7 +12,8 @@ export default class PinterestTracker extends SiteTracker {
     }
 
     optIn(){
-        if(!isClient()) return Promise.resolve(true)
+        super.optIn()
+        
         const innerHTML = `!function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(
         Array.prototype.slice.call(arguments))};var
         n=window.pintrk;n.queue=[],n.version="3.0";var

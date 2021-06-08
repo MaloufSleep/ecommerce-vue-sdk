@@ -8,7 +8,8 @@ export default class MiscTracker extends SiteTracker {
   }
 
   optIn(){
-      if(!isClient()) return Promise.resolve(true)
+      super.optIn()
+      
       const innerHTML = this.config.innerHTML
       const src = this.config.src
 
