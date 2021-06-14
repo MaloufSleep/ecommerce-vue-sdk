@@ -146,7 +146,7 @@ export default {
   & .ec-button-container {
     flex-direction: column-reverse;
 
-    @media screen and (min-width: $sm){
+    @media screen and (min-width: 370px){
       flex-direction: row;
     }
     @media screen and (min-width: $md) {
@@ -162,6 +162,11 @@ export default {
     white-space: nowrap;
     width: 150px;
 
+    @media screen and (min-width: 370px) and (max-width: $sm - 1px) {
+      &:first-of-type {
+        margin-right: 2rem;
+      }
+    }
     @media screen and (min-width: $md) {
       &:last-of-type {
         margin-top: 0;
