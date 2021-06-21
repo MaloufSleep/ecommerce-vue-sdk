@@ -25,6 +25,9 @@ export default class ChargeAfterRepository {
             this.cartRepository.set(res.data.cart)
             this.checkoutRepository.setOrder(res.data.order)
             return res.data
+        }).catch(err => {
+            if(err.response?.data) throw err.response?.data 
+            else throw err
         })
     }
 }
