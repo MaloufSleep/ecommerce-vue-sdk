@@ -193,9 +193,11 @@ export default class ChargeAfterService {
                 taxAmount: Dinero({amount: cart.totals.tax}).toUnit(),
                 shippingAmount: Dinero({amount: cart.totals.shipping}).toUnit(),
                 totalAmount: Dinero({amount: cart.totals.total}).toUnit(),
-            },
-            consumerDetails: this._getConsumerDetails(cart)
+            }
         }
+
+        let consumerDetails = this._getConsumerDetails(cart)
+        if(consumerDetails && Object.keys(consumerDetails).length) params.consumerDetails = consumerDetails
 
         if(cart?.promotions?.length){
             params.cartDetails.discounts = cart.promotions.map(promotion => {
@@ -225,9 +227,11 @@ export default class ChargeAfterService {
         this.onExit = onExit
 
         let params = {
-            callback: this._onApplicationComplete.bind(this),
-            consumerDetails: this._getConsumerDetails(cart)
+            callback: this._onApplicationComplete.bind(this)
         }
+
+        let consumerDetails = this._getConsumerDetails(cart)
+        if(consumerDetails && Object.keys(consumerDetails).length) params.consumerDetails = consumerDetails
 
         this.chargeafter.launchApplication(params)
     }
