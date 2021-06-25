@@ -235,5 +235,12 @@ export default class ChargeAfterService {
 
         this.chargeafter.launchApplication(params)
     }
+
+    /**
+     * Updates the prices for the promotional widget
+     */
+    updateWidgetPrices(items = []){
+        return this.chargeafter.updateWidgetPrices(items)
+    }
     
 }

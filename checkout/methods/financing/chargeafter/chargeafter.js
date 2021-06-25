@@ -7,9 +7,14 @@ export default class ChargeAfter {
         this.storeId = storeId
         this.environment = environment
 
-        this.loadScript()
-        this.loadWidgetScript().then(res => {
-            console.log('widget loaded')
+        this.scriptLoaded = false
+        this.widgetScriptLoaded = false
+
+        this.loadScript().then(() => {
+            this.scriptLoaded = true
+        })
+        this.loadWidgetScript(() => {
+            this.widgetScriptLoaded = true
         })
     }
 
@@ -76,6 +81,14 @@ export default class ChargeAfter {
         if(!window.ChargeAfter?.apply?.present) return Promise.reject('ChargeAfter not loaded.')
         return new Promise((resolve, reject) => {
             window.ChargeAfter.apply.present(params)
+            resolve(true)
+        })
+    }
+
+    updateWidgetPrices(items){
+        if(!window.ChargeAfter?.promotionalWidget?.update) return Promise.reject('ChargeAfter widget not loaded.')
+        return new Promise((resolve, reject) => {
+            window.ChargeAfter.promotionalWidget.update({ items })
             resolve(true)
         })
     }
