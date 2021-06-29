@@ -71,6 +71,23 @@ shvl@^2.0.0:
   resolved "https://registry.yarnpkg.com/shvl/-/shvl-2.0.0.tgz#55fd550b6e81bf7574f2f576b8b5c1ffae74e10f"
   integrity sha512-WbpzSvI5XgVGJ3A4ySGe8hBxj0JgJktfnoLhhJmvITDdK21WPVWwgG8GPlYEh4xqdti3Ff7PJ5G0QrRAjNS0Ig==
 
+url-search-params-polyfill@^8.1.0:
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/url-search-params-polyfill/-/url-search-params-polyfill-8.1.1.tgz#9e69e4dba300a71ae7ad3cead62c7717fd99329f"
+  integrity sha512-KmkCs6SjE6t4ihrfW9JelAPQIIIFbJweaaSLTh/4AO+c58JlDcb+GbdPt8yr5lRcFg4rPswRFRRhBGpWwh0K/Q==
+
+vue-gtag@1.16.1:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/vue-gtag/-/vue-gtag-1.16.1.tgz#edb2f20ab4f6c4d4d372dfecf8c1fcc8ab890181"
+  integrity sha512-5vs0pSGxdqrfXqN1Qwt0ZFXG0iTYjRMu/saddc7QIC5yp+DKgjWQRpGYVa7Pq+KbThxwzzMfo0sGi7ISa6NowA==
+
+vue-gtm@3.5.0-vue2:
+  version "3.5.0-vue2"
+  resolved "https://registry.yarnpkg.com/vue-gtm/-/vue-gtm-3.5.0-vue2.tgz#a0ad7ba0923cd009bbd4ecf2653b961faa36b667"
+  integrity sha512-XuOCkRaoGQjChcY9Tn7TAziR2/ppWwwJQhC/Xh8t/DZjo6MC7QsOVTw9Wr8XDyyHAW8qR41ZnaBbo5IAi4b/Fw==
+  dependencies:
+    url-search-params-polyfill "^8.1.0"
+
 vue-meta@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/vue-meta/-/vue-meta-2.3.3.tgz#2a097f62817204b0da78be4d62aee0cb566eaee0"

@@ -1,11 +1,31 @@
 export default class TrackingService {
 
-  constructor(api){
-    this.api = api
+  constructor(repository){
+    this.repository = repository
   }
 
   trackEvent(event, eventData){
-      return this.api.trackEvent(event, eventData)
+    return this.repository.trackEvent(event, eventData)
+  }
+
+  getCookieAccept () {
+    return this.repository.getCookieAccept()
+  }
+
+  setCookieAccept(accept) {
+    return this.repository.setCookieAccept(accept)
+  }
+
+  optIn () {
+    return this.repository.optIn()
+  }
+
+  optOut () {
+    return this.repository.optOut()
+  }
+
+  getTrackingService (type) {
+    return this.repository.getTrackingServices().filter(tracker => tracker.type === type)
   }
 
 }
