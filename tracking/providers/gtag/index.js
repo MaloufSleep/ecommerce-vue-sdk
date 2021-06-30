@@ -19,6 +19,7 @@ export default class GtagTracker extends SiteTracker {
 
         return new Promise((resolve, reject) => {
             this.context.Vue.use(VueGtag, this.gtagConfig.config, this.gtagConfig.router)
+            resolve()
         })
     }
 
