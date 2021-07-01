@@ -1,5 +1,4 @@
 import VueGtm from "vue-gtm"
-import isClient from '../../../common/utils/isClient'
 import SiteTracker from '../tracker'
 
 export default class GtmTracker extends SiteTracker {
@@ -15,7 +14,7 @@ export default class GtmTracker extends SiteTracker {
   }
 
   loadScript() {
-    if(!isClient || this.context.Vue.gtm) return Promise.resolve(true)
+    if(typeof window === 'undefined' || this.context.Vue.gtm) return Promise.resolve(true)
 
     return new Promise((resolve, reject) => {
       this.context.Vue.use(VueGtm, this.config)
