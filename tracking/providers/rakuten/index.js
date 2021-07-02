@@ -30,8 +30,8 @@ export default class RakutenTracker extends SiteTracker {
   }
 
   trackConversion(data){
-    if (isClient) {
-      submit(window, document, data)
+    if (typeof window !== 'undefined') {
+      this.submit(window, document, data)
     }
   }
 }
