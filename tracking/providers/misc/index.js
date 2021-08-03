@@ -20,7 +20,7 @@ export default class MiscTracker extends SiteTracker {
           script.onerror = reject
           script.async = true
           script.defer = true
-          script.id = 'hotjar'
+          script.id = 'misc'
 
           if (innerHTML) {
             script.innerHTML = innerHTML

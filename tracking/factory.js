@@ -1,4 +1,5 @@
 import Facebook from './providers/facebook'
+import Drip from './providers/drip'
 import Hotjar from './providers/hotjar'
 import Gtag from './providers/gtag'
 import Gtm from './providers/gtm'
@@ -9,6 +10,9 @@ import Rakuten from './providers/rakuten'
 export default function(context, trackerConfig){
 
     switch(trackerConfig.type){
+        case 'drip': {
+            return new Drip(context, trackerConfig)
+        }
         case 'facebook': {
             return new Facebook(context, trackerConfig)
         }

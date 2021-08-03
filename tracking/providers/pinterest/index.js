@@ -29,7 +29,7 @@ export default class PinterestTracker extends SiteTracker {
             script.onerror = reject
             script.async = true
             script.defer = true
-            script.id = 'hotjar'
+            script.id = 'pinterest'
             script.innerHTML = innerHTML
         })
     }
