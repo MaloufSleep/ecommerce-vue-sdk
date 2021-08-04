@@ -77,15 +77,15 @@ export default {
     },
 
     declineTracking(){
+      this.closeModal()
       this.$ecommerce.tracking.setCookieAccept('decline')
       this.optOut()
-      this.closeModal()
     },
 
     acceptTracking(){
+      this.closeModal()
       this.$ecommerce.tracking.setCookieAccept()
       this.optIn()
-      this.closeModal()
     },
 
     optIn () {
