@@ -33,8 +33,10 @@
                   <input v-mask="'###'" type="text" class="mc-form-control" :id="`mc-qty_${i}`" @change="updateQuantity($event, item.id)" :value="item.quantity">
                   <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
                 </div>
-                <p class="mc-product-price" v-if="(item.totals.active - item.totals.discount) == 0">FREE</p>
-                <p class="mc-product-price" v-else>{{ item.prices.active | currency }}</p>
+                <div class="mc-product-pricing">
+                  <p class="mc-product-price" v-if="checkFreeItem(item.totals.active, item.totals.discount)">FREE</p>
+                  <p class="mc-product-price" :class="checkFreeItem(item.totals.active, item.totals.discount) ? ' striked-price' : ''">{{ item.prices.active | currency }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -152,6 +154,11 @@ export default {
             return now.toLocaleString('default', {month: 'long', day: 'numeric'})
           }
           return restockDate
+        },
+
+        checkFreeItem(total, discount) {
+          let free = (total - discount) == 0
+          return free
         }
     }
 }
@@ -191,6 +198,7 @@ export default {
     display: flex;
     flex-direction: column;
     padding-left: 1rem;
+    padding-right: 4rem;
     flex: 1;
   }
 }
@@ -331,6 +339,19 @@ export default {
   & .mc-form-control {
     font-size: 0.9rem;
     width: 35px;
+  }
+
+  & .mc-product-pricing {
+    position: absolute;
+    text-align: right;
+    bottom: 0.25rem;
+    right: 0.75rem;
+    flex-direction: column;
+
+    & .striked-price {
+      color: grey;
+      text-decoration: line-through;
+    }
   }
 }
 
