@@ -13,7 +13,7 @@
         <div v-else v-for="(item, i) in sortedItems" :key="item.id" class="mc-item-wrap">
           <div class="mc-item-promotions" v-for="cartPromotion in cart.promotions" :key="cartPromotion.id">
             <span v-for="discount in item.discounts" :key="discount.id">
-              <strong><p class="mc-item-promo" v-if="discount.promotion_id == cartPromotion.promotion.id">{{adjustPromotion(discount.discount)}}{{cartPromotion.promotion.description}}</p></strong>
+              <strong><p class="mc-item-promo" v-if="discount.promotion_id == cartPromotion.promotion.id">{{cartPromotion.promotion.description}}</p></strong>
             </span>
           </div>
           <div class="mc-item">
@@ -170,12 +170,6 @@ export default {
         checkFreeItem(total, discount) {
           let free = (total - discount) == 0
           return free
-        },
-
-        adjustPromotion(promotionValue) {
-          console.log('promovalue', promotionValue)
-          // this.cart.totals.subtotal -= promotionValue
-          this.cart.totals.discount -= promotionValue
         }
     }
 }
