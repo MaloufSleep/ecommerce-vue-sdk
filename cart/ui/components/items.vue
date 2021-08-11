@@ -11,6 +11,11 @@
           <p>There are no items in your cart!</p>
         </div>
         <div v-else v-for="(item, i) in sortedItems" :key="item.id" class="mc-item-wrap">
+          <div class="mc-item-promotions" v-for="cartPromotion in cart.promotions" :key="cartPromotion.id">
+            <span v-for="discount in item.discounts" :key="discount.id">
+              <strong><p class="mc-item-promo" v-if="discount.promotion_id == cartPromotion.promotion.id">{{adjustPromotion(discount.discount)}}{{cartPromotion.promotion.description}}</p></strong>
+            </span>
+          </div>
           <div class="mc-item">
             <button class="mc-btn-remove" @click="removeItem(item)"><span class="sr-only">Remove</span></button>
             <div class="mc-item-img-wrap">
@@ -34,12 +39,17 @@
                   <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
                 </div>
                 <div class="mc-product-pricing">
-                  <p class="mc-product-price" v-if="checkFreeItem(item.totals.active, item.totals.discount)">FREE</p>
-                  <p class="mc-product-price" :class="checkFreeItem(item.totals.active, item.totals.discount) ? ' striked-price' : ''">{{ item.prices.active | currency }}</p>
-                </div>
-              </div>
+                    <p class="mc-product-price" v-if="checkFreeItem(item.totals.active, item.totals.discount)">FREE</p>
+                    <p class="mc-product-price" :class="checkFreeItem(item.totals.active, item.totals.discount) ? ' striked-price' : ''">{{ item.prices.active | currency }}</p>
+                </div>          
+              </div>      
             </div>
           </div>
+          <!-- <div class="mc-item-promotions" v-for="cartPromotion in cart.promotions" :key="cartPromotion.id">
+            <span v-for="discount in item.discounts" :key="discount.id">
+              <strong><p class="mc-item-promo" v-if="discount.promotion_id == cartPromotion.promotion.id">{{adjustPromotion(discount.discount)}}{{cartPromotion.promotion.description}}</p></strong>
+            </span>
+          </div> -->
           <div class="mc-item-alerts">
             <div class="alert alert-info mt-3 mb-0" v-if="item.backorder_quantity">
               This item is on backorder.<br>
@@ -86,7 +96,8 @@ export default {
     data(){
         return {
             loading: false,
-            error: null
+            error: null,
+            temp: 0
         }
     },
     computed: {
@@ -159,6 +170,12 @@ export default {
         checkFreeItem(total, discount) {
           let free = (total - discount) == 0
           return free
+        },
+
+        adjustPromotion(promotionValue) {
+          console.log('promovalue', promotionValue)
+          // this.cart.totals.subtotal -= promotionValue
+          this.cart.totals.discount -= promotionValue
         }
     }
 }
@@ -200,6 +217,23 @@ export default {
     padding-left: 1rem;
     padding-right: 4rem;
     flex: 1;
+  }
+
+  & .mc-item-promotions {
+    text-align: center;
+    align-items: center;
+    flex-direction: row;
+    position: relative;
+    padding-bottom: 1rem;
+
+    & p {
+      margin: 0;
+      padding: 0.25rem 1.5rem;
+      width: 100%;
+      background-color: $primaryColor;
+      color: white;
+      font-size: 13px;
+    }
   }
 }
 
