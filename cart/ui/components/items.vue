@@ -11,11 +11,6 @@
           <p>There are no items in your cart!</p>
         </div>
         <div v-else v-for="(item, i) in sortedItems" :key="item.id" class="mc-item-wrap">
-          <div class="mc-item-promotions" v-for="cartPromotion in cart.promotions" :key="cartPromotion.id">
-            <span v-for="discount in item.discounts" :key="discount.id">
-              <strong><p class="mc-item-promo" v-if="discount.promotion_id == cartPromotion.promotion.id">{{cartPromotion.promotion.description}}</p></strong>
-            </span>
-          </div>
           <div class="mc-item">
             <button class="mc-btn-remove" @click="removeItem(item)"><span class="sr-only">Remove</span></button>
             <div class="mc-item-img-wrap">
@@ -45,11 +40,11 @@
               </div>      
             </div>
           </div>
-          <!-- <div class="mc-item-promotions" v-for="cartPromotion in cart.promotions" :key="cartPromotion.id">
+          <div class="mc-item-promotions" v-for="cartPromotion in cart.promotions" :key="cartPromotion.id">
             <span v-for="discount in item.discounts" :key="discount.id">
-              <strong><p class="mc-item-promo" v-if="discount.promotion_id == cartPromotion.promotion.id">{{adjustPromotion(discount.discount)}}{{cartPromotion.promotion.description}}</p></strong>
+              <strong><p class="mc-item-promo" v-if="discount.promotion_id == cartPromotion.promotion.id">{{cartPromotion.promotion.description}}</p></strong>
             </span>
-          </div> -->
+          </div>
           <div class="mc-item-alerts">
             <div class="alert alert-info mt-3 mb-0" v-if="item.backorder_quantity">
               This item is on backorder.<br>
@@ -214,17 +209,18 @@ export default {
   }
 
   & .mc-item-promotions {
-    text-align: center;
+    display:flex;
     align-items: center;
     flex-direction: row;
     position: relative;
-    padding-bottom: 1rem;
+    padding-top: 1rem;
 
     & p {
       margin: 0;
       padding: 0.25rem 1.5rem;
-      width: 100%;
-      background-color: $primaryColor;
+      width: auto;
+      background-color: $linkBlue;
+      border-radius: 4px;
       color: white;
       font-size: 13px;
     }
