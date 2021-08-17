@@ -92,7 +92,6 @@ export default {
         return {
             loading: false,
             error: null,
-            temp: 0
         }
     },
     computed: {
@@ -217,10 +216,7 @@ export default {
 
     & p {
       margin: 0;
-      font-family: 'gotham_boldregular';
-      // padding: 0.25rem 1.5rem;
       width: auto;
-      // background-color: $linkBlue;
       border-radius: 4px;
       color: $linkBlue;
       font-size: 13px;
