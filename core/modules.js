@@ -5,6 +5,7 @@ import marketing from '../marketing'
 import tracking from '../tracking'
 import products from '../products'
 import fraud from '../fraud'
+import search from '../search'
 
 // export all modules, they are registered in the order of this array
 export default [
@@ -14,5 +15,6 @@ export default [
     marketing,
     tracking,
     products,
-    fraud
+    fraud,
+    search
 ]
