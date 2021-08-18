@@ -218,7 +218,6 @@ export default {
       margin: 0;
       width: auto;
       border-radius: 4px;
-      color: $linkBlue;
       font-size: 13px;
     }
   }
