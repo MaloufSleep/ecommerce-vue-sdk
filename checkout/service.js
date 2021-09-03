@@ -42,7 +42,8 @@ export default class CheckoutService {
 
     expressCheckoutAvailable(){
         return Promise.all([
-            this.applePay?.isAvailable()
+            this.applePay?.isAvailable(),
+            this.paypal?.isAvailable()
         ]).then(methods => {
             return methods.filter(method => method?.available).map(method => method?.method)
         })

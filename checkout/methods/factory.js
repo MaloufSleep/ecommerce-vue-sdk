@@ -1,6 +1,7 @@
 import cardFactory from './card/factory'
 import financingFactory from './financing/factory'
 import applePay from './applepay'
+import paypal from './paypal'
 
 export default function(context, paymentServices){
 
@@ -12,6 +13,10 @@ export default function(context, paymentServices){
             }
             case 'apple-pay': {
                 applePay(context, paymentService)
+                break
+            }
+            case 'paypal': {
+                paypal(context, paymentService)
                 break
             }
             case 'financing': {
