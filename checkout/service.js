@@ -1,3 +1,5 @@
+import { exception } from "vue-gtag"
+
 export default class CheckoutService {
 
     constructor(repository){
@@ -43,7 +45,7 @@ export default class CheckoutService {
     expressCheckoutAvailable(){
         return Promise.all([
             this.applePay?.isAvailable(),
-            this.paypal?.isAvailable()
+            this.paypal?.isAvailable(),
         ]).then(methods => {
             return methods.filter(method => method?.available).map(method => method?.method)
         })

@@ -11,5 +11,7 @@ export default function(context){
     const service = new Service(repository)
     context.checkout = service
 
+    console.log('main index.js context', context)
+
     paymentMethodsFactory(context, service.getPaymentServices())
 }

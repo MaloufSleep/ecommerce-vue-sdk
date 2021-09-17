@@ -5,34 +5,35 @@ export default class PayPalApi {
     }
 
     verify(uuid, url){
-        // return this.axios.post(`carts/${uuid}/payment/apple-pay/verify`, {url}).then(res => {
-        //     return res.data
-        // }).catch(err => {
-        //     if(err.response?.data) throw err.response.data
-        //     throw err
-        // })
+        return this.axios.post(`carts/${uuid}/payment/paypal/verify`, {url}).then(res => {
+            console.log(res.data)
+            return res.data
+        }).catch(err => {
+            if(err.response?.data) throw err.response.data
+            throw err
+        })
     }
 
     shipping(uuid, address){
-        // return this.axios.post(`carts/${uuid}/payment/apple-pay/shipping`, address).then(res => {
-        //     return res.data
-        // }).catch(err => {
-        //     if(err.response?.data) throw err.response.data
-        //     throw err
-        // })
+        return this.axios.post(`carts/${uuid}/payment/paypal/shipping`, address).then(res => {
+            return res.data
+        }).catch(err => {
+            if(err.response?.data) throw err.response.data
+            throw err
+        })
     }
 
     process(uuid, token, billingContact, shippingContact){
-        // return this.axios.post(`carts/${uuid}/payment/apple-pay/process`, {
-        //     token,
-        //     billingContact,
-        //     shippingContact
-        // }).then(res => {
-        //     return res.data
-        // }).catch(err => {
-        //     if(err.response?.data) throw err.response.data
-        //     throw err
-        // })
+        return this.axios.post(`carts/${uuid}/payment/paypal/process`, {
+            token,
+            billingContact,
+            shippingContact
+        }).then(res => {
+            return res.data
+        }).catch(err => {
+            if(err.response?.data) throw err.response.data
+            throw err
+        })
     }
 
 }

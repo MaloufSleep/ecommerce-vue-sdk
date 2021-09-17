@@ -1,4 +1,4 @@
-export default class ApplePayRepository {
+export default class PayPalRepository {
 
     constructor(store, api, siteRepository, cartRepository, checkoutRepository){
         this.store = store
@@ -38,7 +38,7 @@ export default class ApplePayRepository {
     }
 
     /**
-     * Process the cart via Apple Pay
+     * Process the cart via PayPal
      * @param {object} token 
      * @param {object} billingAddress 
      * @param {object} shippingAddress 
