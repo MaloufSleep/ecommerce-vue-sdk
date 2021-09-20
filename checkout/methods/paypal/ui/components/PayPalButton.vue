@@ -10,7 +10,6 @@
 </template>
 
 <script>
-
 export default {
     name: "ec-paypal-btn",
     data() {
@@ -24,158 +23,60 @@ export default {
     },
     methods: {
         style() {
-            return({
+            return {
                 layout: 'vertical',
-                color: 'blue',
-                shape: 'rect',
-                label: 'paypal',
-                size: 'responsive'
-            })
-        },
-        purchase_units() {
-            return({
-                amount: {
-                    
-                }
-            })
-        },
-        orderContent() {
-            return({
-                intent: 'CAPTURE',
-                payer: {
-                    email_address: 'taylorjohndoe@gmail.com',
-                    name: {
-                        given_name: 'Taylor',
-                        surname: 'Laing'
-                    },
-                    phone: {
-                        phone_number: '8889990000'
-                    },
-                    address: {
-                        address_line_1: '2081 N 200 E',
-                        address_line_2: '',
-                        postal_code: '84414',
-                        country_code: 'US'
-                    }
-                },
-                purchase_units: [{
-                    amount: {
-                        value: '10.00'
-                    }
-                }],
-                application_context: {
-                    brand_name: "Dr. Oz Sleep",
-                    user_action: 'PAY_NOW'
-                }
-            })
+                color:  'blue',
+                shape:  'rect',
+                label:  'paypal'
+            }
         },
         createOrder() {
-            const params = {
-                "intent": "CAPTURE",
-                "application_context": {
-                    "return_url": "https://example.com",
-                    "cancel_url": "https://example.com",
-                    "brand_name": "EXAMPLE INC",
-                    "locale": "en-US",
-                    "landing_page": "BILLING",
-                    "shipping_preference": "SET_PROVIDED_ADDRESS",
-                    "user_action": "CONTINUE"
-                },
-                "purchase_units": [
-                    {
-                    "reference_id": "PUHF",
-                    "description": "Sporting Goods",
-
-                    "custom_id": "CUST-HighFashions",
-                    "soft_descriptor": "HighFashions",
-                    "amount": {
-                        "currency_code": "USD",
-                        "value": "230.00",
-                        "breakdown": {
-                        "item_total": {
-                            "currency_code": "USD",
-                            "value": "180.00"
-                        },
-                        "shipping": {
-                            "currency_code": "USD",
-                            "value": "30.00"
-                        },
-                        "handling": {
-                            "currency_code": "USD",
-                            "value": "10.00"
-                        },
-                        "tax_total": {
-                            "currency_code": "USD",
-                            "value": "20.00"
-                        },
-                        "shipping_discount": {
-                            "currency_code": "USD",
-                            "value": "10"
-                        }
-                        }
-                    },
-                    "items": [
-                        {
-                        "name": "T-Shirt",
-                        "description": "Green XL",
-                        "sku": "sku01",
-                        "unit_amount": {
-                            "currency_code": "USD",
-                            "value": "90.00"
-                        },
-                        "tax": {
-                            "currency_code": "USD",
-                            "value": "10.00"
-                        },
-                        "quantity": "1",
-                        "category": "PHYSICAL_GOODS"
-                        },
-                        {
-                        "name": "Shoes",
-                        "description": "Running, Size 10.5",
-                        "sku": "sku02",
-                        "unit_amount": {
-                            "currency_code": "USD",
-                            "value": "45.00"
-                        },
-                        "tax": {
-                            "currency_code": "USD",
-                            "value": "5.00"
-                        },
-                        "quantity": "2",
-                        "category": "PHYSICAL_GOODS"
-                        }
-                    ],
-                    "shipping": {
-                        "method": "United States Postal Service",
-                        "address": {
-                        "name": {
-                            "full_name":"John",
-                            "surname":"Doe"
-                        },
-                        "address_line_1": "123 Townsend St",
-                        "address_line_2": "Floor 6",
-                        "admin_area_2": "San Francisco",
-                        "admin_area_1": "CA",
-                        "postal_code": "94107",
-                        "country_code": "US"
-                        }
+            var that = this
+            return ( function() {
+                return fetch(`/checkout/paypal/createOrder`, {
+                    method: 'post',
+                    headers: {
+                        'content-type': 'application/json'
                     }
-                    }
-                ]
-            };
-
-            return {
-                createOrder: function(data, actions) {
-                    return actions.order.create(params)
-                }
-            };
+                }).then(res => {
+                    that.$emit('success')
+                    return res
+                }).then(data => {
+                    return data.id
+                })
+            })
         },
-        renderButton() {
-            this.paypal.Buttons( this.createOrder() ).render('#paypal-button');
+        onApprove() {
+            var that = this
+            return ( function(data) {
+                return fetch(`/checkout/paypal/captureOrder`, {
+                    headers: {
+                        'content-type': 'applicaton/json'
+                    },
+                    body: JSON.stringify({
+                        orderID: data.orderID
+                    })
+                }).then(res => {
+                    return res
+                }).then(details => {
+                    alert('Transaction funds captures from ' + details.payer_given_name)
+                })
+            })
         },
         onClick() {
-            this.$emit('click')
+            var that = this
+            return( function() {
+                that.$emit('click')
+            })
+        },
+        renderButton() {
+            this.paypal.Buttons({
+                fundingSource: paypal.FUNDING.PAYPAL,
+                style: this.style(),
+                createOrder: this.createOrder(),
+                onApprove: this.onApprove(),
+                onClick: this.onClick(),
+            }).render('#paypal-button');            
         },
     }
 }

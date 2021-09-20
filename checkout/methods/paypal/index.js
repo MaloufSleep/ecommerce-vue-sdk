@@ -19,6 +19,6 @@ export default function(context, paymentService){
     Object.values(Components).forEach(component => {
         context.Vue.use(component)
     })
-
+    
     context.checkout.paypal = service
 }

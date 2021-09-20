@@ -5,6 +5,7 @@ export default class PayPalApi {
     }
 
     verify(uuid, url){
+        console.log('VERIFY api.js')
         return this.axios.post(`carts/${uuid}/payment/paypal/verify`, {url}).then(res => {
             console.log(res.data)
             return res.data

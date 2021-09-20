@@ -16,6 +16,11 @@ export default class PayPalRepository {
         return this.siteRepository.getRegion()
     }
 
+    createOrder() {
+        const cart = this.cartRepository.get()
+        return this.api.createOrder()
+    }
+
     /**
      * Verify the Apple Pay merchant and retreive a new Apple Pay session
      * @param {string} url 

@@ -7,7 +7,6 @@ export default class PayPalService {
     constructor(repository, environment = 'development'){
         this.repository = repository
         this.environment = environment
-
         this._session = null
         this._callbacks = null
     }
@@ -32,6 +31,11 @@ export default class PayPalService {
         }
     }
 
+    verify() {
+        console.log('VERIFY service.js')
+        this.repository.verify()
+    }
+
     /**
      * Starts an Apple Pay payment session
      * @param {function} onSuccess Callback when the transaction succeeds 
@@ -47,6 +51,9 @@ export default class PayPalService {
 
         const cart = this.repository.getCart()
         const region = this.repository.getRegion()
+
+        console.log('cart service', cart)
+        console.log('region service', region)
 
         if(!cart) throw "PayPal: cart undefined"
         if(!region) throw "PayPal: region undefined"
@@ -66,16 +73,7 @@ export default class PayPalService {
 
         this._session = window.paypal
 
-        console.log('buttons', this._session.Buttons())
-
-        // this._session = new window.ApplePaySession(version, paymentRequest.output)
-        // this._session.onvalidatemerchant = this._onValidateMerchant.bind(this)
-        // this._session.onpaymentmethodselected = this._onPaymentMethodSelected.bind(this)
-        // this._session.onshippingcontactselected = this._onShippingContactSelected.bind(this)
-        // this._session.onshippingmethodselected = this._onShippingMethodSelected.bind(this)
-        // this._session.onpaymentauthorized = this._onPaymentAuthorized.bind(this)
-        // this._session.oncancel = this._onCancel.bind(this)
-        // this._session.begin()
+        console.log('buttons', this._session)
     }
 
     /**
