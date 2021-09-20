@@ -42,7 +42,7 @@
           </div>
           <div class="mc-item-promotions" v-for="cartPromotion in cart.promotions" :key="cartPromotion.id">
             <span v-for="discount in item.discounts" :key="discount.id">
-              <em><p class="mc-item-promo" v-if="discount.promotion_id == cartPromotion.promotion.id">{{cartPromotion.promotion.description}}</p></em>
+              <em v-if="discount.promotion_id == cartPromotion.promotion.id"><p class="mc-item-promo">{{cartPromotion.promotion.description}}</p></em>
             </span>
           </div>
           <div class="mc-item-alerts">
