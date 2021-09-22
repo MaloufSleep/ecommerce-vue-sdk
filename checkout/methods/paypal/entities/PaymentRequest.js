@@ -101,11 +101,11 @@ export class ShippingMethod {
      * @param {string} selected
      * @param {Object} amount
      */
-    constructor(id, label, type = "shipping", selected = false, amount, currencyCode){
+    constructor(id, label, type = "shipping", selected = false, value, currency_code){
         this.id = id
         this.label = label
         this.type = type
         this.selected = selected
-        this.amount = {amount, currencyCode}
+        this.amount = {value, currency_code}
     }
 }

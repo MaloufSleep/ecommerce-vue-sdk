@@ -1,11 +1,4 @@
 <template>
-    <!-- <button @click="onClick">
-        <template>
-            <span class="text">Buy with</span>
-            <span class="logo" />
-        </template>
-        <div id="paypal-button"></div>
-    </button> -->
     <div id="paypal-button"></div>
 </template>
 
@@ -14,11 +7,9 @@ export default {
     name: "ec-paypal-btn",
     data() {
         return {
-            paypal
         }
     },
     mounted() {
-        this.paypal = window.paypal
         this.renderButton()
     },
     methods: {
@@ -30,52 +21,23 @@ export default {
                 label:  'paypal'
             }
         },
-        createOrder() {
-            var that = this
-            return ( function() {
-                return fetch(`/checkout/paypal/createOrder`, {
-                    method: 'post',
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(res => {
-                    that.$emit('success')
-                    return res
-                }).then(data => {
-                    return data.id
-                })
-            })
-        },
-        onApprove() {
-            var that = this
-            return ( function(data) {
-                return fetch(`/checkout/paypal/captureOrder`, {
-                    headers: {
-                        'content-type': 'applicaton/json'
-                    },
-                    body: JSON.stringify({
-                        orderID: data.orderID
-                    })
-                }).then(res => {
-                    return res
-                }).then(details => {
-                    alert('Transaction funds captures from ' + details.payer_given_name)
-                })
-            })
-        },
         onClick() {
-            var that = this
-            return( function() {
-                that.$emit('click')
-            })
+            this.$emit('click')
+        },
+        onCancel() {
+            this.$emit('cancel')
+        },
+        onError(error) {
+            this.$emit('error', error)
         },
         renderButton() {
-            this.paypal.Buttons({
-                fundingSource: paypal.FUNDING.PAYPAL,
+            if(!window.paypal) return
+            window.paypal.Buttons({
+                ...this.$ecommerce.checkout.paypal.getHandlers(),
                 style: this.style(),
-                createOrder: this.createOrder(),
-                onApprove: this.onApprove(),
-                onClick: this.onClick(),
+                onCancel: this.onCancel.bind(this),
+                onClick: this.onClick.bind(this),
+                onError: this.onError.bind(this),
             }).render('#paypal-button');            
         },
     }

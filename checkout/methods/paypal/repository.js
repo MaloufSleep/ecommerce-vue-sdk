@@ -16,20 +16,6 @@ export default class PayPalRepository {
         return this.siteRepository.getRegion()
     }
 
-    createOrder() {
-        const cart = this.cartRepository.get()
-        return this.api.createOrder()
-    }
-
-    /**
-     * Verify the Apple Pay merchant and retreive a new Apple Pay session
-     * @param {string} url 
-     */
-    verify(url){
-        const cart = this.cartRepository.get()
-        return this.api.verify(cart?.uuid, url)
-    }
-
     /**
      * Set the shipping address
      * @param {object} address 
@@ -42,15 +28,24 @@ export default class PayPalRepository {
         })
     }
 
-    /**
-     * Process the cart via PayPal
-     * @param {object} token 
-     * @param {object} billingAddress 
-     * @param {object} shippingAddress 
-     */
-    process(token, billingAddress, shippingAddress){
+    // createOrder(){
+    //     const cart = this.cartRepository.get()
+
+    //     return this.api.createOrder(cart?.uuid)
+    //     .then(data => {
+    //         this.cartRepository.set(data.cart)
+    //         this.checkoutRepository.setOrder(data.order)
+    //         return data
+    //     }).catch(err => {
+    //         if(err.cart) this.cartRepository.set(err.cart)
+    //         throw err
+    //     })
+    // }
+
+    process(authorizationId){
         const cart = this.cartRepository.get()
-        return this.api.process(cart?.uuid, token, billingAddress, shippingAddress)
+
+        return this.api.process(cart?.uuid, authorizationId)
         .then(data => {
             this.cartRepository.set(data.cart)
             this.checkoutRepository.setOrder(data.order)
