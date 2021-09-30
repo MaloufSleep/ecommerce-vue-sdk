@@ -1,5 +1,5 @@
 import Dinero from 'dinero.js'
-import {PaymentRequest, LineItem, ShippingMethod} from './entities/PaymentRequest'
+import { exception } from 'vue-gtag'
 // import { MerchantValidationError, ProcessPaymentError, ShippingAddressError } from './entities/errors'
 
 export default class PayPalService {
@@ -9,69 +9,15 @@ export default class PayPalService {
         this.clientId = clientId
         this.environment = environment
 
-        this._session = null
         this._callbacks = null
         this.loadScript()
     }
 
     /**
-     * Determines if PayPal is available for use
-     */
-     isAvailable(){
-        return Promise.resolve({
-            method: 'paypal',
-            available: window.paypal ? true : false
-        })
-    }
-
-    /**
-     * Provide callback methods to handle PayPal functionality
-     */
-    getHandlers(){
-        return {
-            fundingSource: window.paypal.FUNDING.PAYPAL,
-            createOrder: this._createOrder.bind(this),
-            onApprove: this._onApprove.bind(this),
-            onShippingChange: this._updateShipping.bind(this),
-        }
-    }
-
-    _createOrder(data, actions){
-        const cart = this.repository.getCart()
-
-        let params = { intent: 'AUTHORIZE'}
-
-        if(cart.shipping_address){
-            params.payer = {}
-            if(cart.shipping_address.email) params.payer.email_address = cart.shipping_address.email
-        }
-
-        return actions.order.create()
-    }
-
-    _onApprove(data, actions){
-        return actions.order.authorize().then(authorization => {
-            const authorizationID = authorization.purchase_units[0].payments.authorizations[0].id
-            return this.repository.process(authorizationID).then()
-        })
-    }
-
-    _updateShipping(data, actions){
-        return this.repository.setShippingService(data.selected_shipping_option_id).then(cart => {
-            return actions.order.patch([
-                {
-
-                }
-            ])
-        })
-    }
-    
-
-    /**
      * Loads the PayPal JS SDK
      */
-    loadScript(){
-        const src = 'https://www.paypal.com/sdk/js?client-id=' + this.clientId
+     loadScript(){
+        const src = `https://www.paypal.com/sdk/js?client-id=${this.clientId}&intent=authorize`
         
         return new Promise((resolve, reject) => {
             const script = document.createElement('script')
@@ -85,22 +31,178 @@ export default class PayPalService {
     }
 
     /**
-     * Gets the total and line items (totals) for PayPal
+     * Determines if PayPal is available for use
      */
-    _getProducts(){
+    isAvailable(){
+        return Promise.resolve({
+            method: 'paypal',
+            available: window.paypal ? true : false
+        })
+    }
+
+    /**
+     * Creates and renders a PayPal button
+     */
+    renderButton(selector, callbacks, options = null){
+        if(!window.paypal) throw "PayPal not available."
+
+        let style = {
+            layout: 'vertical',
+            color:  'blue',
+            shape:  'rect',
+            label:  'paypal'
+        }
+
+        this._callbacks = {
+            onCancel: callbacks.onCancel,
+            onClick: callbacks.onClick,
+            onError: callbacks.onError,
+            onSuccess: callbacks.onSuccess
+        }
+        
+        window.paypal.Buttons({
+            fundingSource: options.fundingSource || window.paypal.FUNDING.PAYPAL,
+            style: options.style || style,
+            createOrder: this._createOrder.bind(this),
+            onApprove: this._onApprove.bind(this),
+            onShippingChange: this._updateShipping.bind(this),
+            onCancel: this._onCancel.bind(this),
+            onClick: this._onClick.bind(this),
+            onError: this._onError.bind(this)
+        }).render(selector);
+    }
+
+    _createOrder(data, actions){
         const cart = this.repository.getCart()
         const region = this.repository.getRegion()
+        const address = cart.shipping_address
 
-        const total = new LineItem(region.site.name, Dinero({amount: cart.total}).toFormat('0.00'))
-        const items = []
+        let params = { intent: 'AUTHORIZE'}
 
-        items.push(new LineItem('Subtotal', Dinero({amount: cart.totals.subtotal}).toFormat('0.00')))
-        if(cart.totals.discount > 0) items.push(new LineItem('Discounts', Dinero({amount: cart.totals.discount}).toFormat('-0.00')))
-        items.push(new LineItem('Shipping', Dinero({amount: cart.totals.shipping}).toFormat('0.00')))
-        items.push(new LineItem('Tax', Dinero({amount: cart.totals.tax}).toFormat('0.00')))
-        if(cart.totals.fees > 0) items.push(new LineItem('Fees', Dinero({amount: cart.totals.fees}).toFormat('0.00')))
-        
-        return { total, items }
+        params.application_context = {
+            shipping_preference: 'GET_FROM_FILE',
+            user_action: 'CONTINUE'
+        }
+
+        params.purchase_units = [
+            {
+                amount: this._formatAmount(cart),
+                items: cart.items.active.map(item => {return this._formatPurchaseUnits(item)}),
+                shipping: {
+                    options: this._getShippingMethods()
+                }
+            }
+        ]
+
+        if(address){
+            params.payer = {
+                email_address: address.email,
+                given_name:address.first_name,
+                surname: address.last_name,
+                address: this._formatAddress(address)
+            }
+
+            params.purchase_units[0].shipping.name = { full_name: address.name }
+            params.purchase_units[0].shipping.address = this._formatAddress(cart.shipping_address)
+        }
+
+        return actions.order.create(params)
+    }
+
+    _formatAmount(cart) {
+        return {
+            currency_code: 'USD',
+            value: Dinero({amount: cart.totals.total}).toFormat('0.00'),
+            breakdown: {
+                item_total: this._formatValue(cart.totals.subtotal), 
+                shipping: this._formatValue(cart.totals.shipping), 
+                handling: this._formatValue(cart.totals.fees),
+                tax_total: this._formatValue(cart.totals.tax), 
+                discount: this._formatValue(cart.totals.discount), 
+            } 
+        }
+    }
+
+    _formatAddress(address) {
+        return {
+            address_line_1: address.street_1,
+            address_line_2: address.street_2,
+            admin_area_1: address.region,
+            admin_area_2: address.locality,
+            postal_code: address.postcode,
+            country_code: address.country
+        }
+    }
+
+    _formatPurchaseUnits(item) {
+        return {
+            name: item.product.name,
+            unit_amount: this._formatValue(item.prices.active),
+            quantity: item.quantity,
+            sku: item.product.sku,
+            category: item.product.properties.category
+        }
+    }
+
+    _formatValue(value) {
+        return {
+            currency_code: 'USD',
+            value: Dinero({amount: value}).toFormat('0.00')
+        }
+    }
+
+    _onApprove(data, actions){
+        return actions.order.authorize().then(authorization => {
+            const authorizationID = authorization.purchase_units[0].payments.authorizations[0].id
+            return this.repository.process(data.orderID, authorizationID).then(data => {
+                console.log('success')
+                this._onSuccess.bind(this)
+            })
+        })
+    }
+
+    _updateShipping(data, actions){
+        console.log(data)
+        const contact = data.shipping_address
+        const address = {
+            locality: contact.city,
+            region: contact.state,
+            postcode: contact.postal_code,
+            country: contact.country_code
+        }
+
+        this.repository.setShippingAddress(address, data.selected_shipping_option.id).then(cart => {
+            // Make changes to patch in
+            const amount = this._formatAmount(cart)
+
+            console.log(cart)
+
+            return actions.order.patch([
+                {
+                    op: 'replace',
+                    path: '/purchase_units/@reference_id==\'default\'/amount',
+                    value: amount,
+                },
+            ])
+        }).catch(err => {
+            console.log("ERROR: ", err)
+        })
+    }
+
+    _onClick(){
+        if(this._callbacks.onClick) this._callbacks.onClick()
+    }
+
+    _onCancel(){
+        if(this._callbacks.onCancel) this._callbacks.onCancel()
+    }
+
+    _onError(error){
+        if(this._callbacks.onError) this._callbacks.onError()
+    }
+
+    _onSuccess(){
+        if(this._callbacks.onSuccess) this._callbacks.onSuccess()
     }
 
     /**
@@ -120,16 +222,13 @@ export default class PayPalService {
         }
 
         region.shipping_services.forEach(service => {
-            methods.push(
-                new ShippingMethod(
-                    service.id,
-                    service.name,
-                    service.type,
-                    service.default == 0 ? false : true,
-                    Dinero({amount: service.price}).toFormat('0.00'),
-                    region.currency.alpha_code 
-                )
-            )
+            methods.push({
+                id: service.id,
+                label: service.name,
+                type: 'SHIPPING',
+                selected: cart.shipping_service.id == service.id ? true : false,
+                amount: this._formatValue(service.price)
+            })
         })
         return methods
     }

@@ -13,22 +13,11 @@ export default class PayPalApi {
         })
     }
 
-    // createOrder(uuid){
-    //     return this.axios.post(`carts/${uuid}/payment/paypal/createOrder`, {
-    //     }).then(res => {
-    //         return res.data
-    //     }).catch(err => {
-    //         if(err.response?.data) throw err.response.data
-    //         throw err
-    //     })
-    // }
-
-    process(uuid, authorizationId){
-        return this.axios.post(`carts/${uuid}/payment/paypal/process`,
-            { 
-                authorization_id: authorizationId 
-            }
-        ).then(res => {
+    process(uuid, orderId, authorizationId){
+        return this.axios.post(`carts/${uuid}/payment/paypal/process`, { 
+            order_id: orderId,
+            authorization_id: authorizationId
+        }).then(res => {
             return res.data
         }).catch(err => {
             if(err.response?.data) throw err.response.data

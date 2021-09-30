@@ -19,33 +19,33 @@ export default class PayPalRepository {
     /**
      * Set the shipping address
      * @param {object} address 
+     * Set the shipping service
+     * @param service_id
      */
-    setShippingAddress(address){
-        const cart = this.cartRepository.get()
-        return this.api.shipping(cart?.uuid, address).then(data => {
-            this.cartRepository.set(data)
-            return data
-        })
+    setShippingAddress(address, service_id){
+        const cart = this.getCart()
+
+        if (cart.shipping_address == null) {
+            return this.api.shipping(cart.uuid, address).then(data => {
+                this.cartRepository.set(data)
+                return data
+            })
+        }
+
+        if(cart.shipping_service.id != service_id) {
+            return this.checkoutRepository.setShippingService(service_id).then(cart => {
+                return this.api.shipping(cart?.uuid, address).then(data => {
+                    this.cartRepository.set(data)
+                    return data
+                })
+            })
+        }
     }
 
-    // createOrder(){
-    //     const cart = this.cartRepository.get()
+    process(orderId, authorizationId){
+        const cart = this.getCart()
 
-    //     return this.api.createOrder(cart?.uuid)
-    //     .then(data => {
-    //         this.cartRepository.set(data.cart)
-    //         this.checkoutRepository.setOrder(data.order)
-    //         return data
-    //     }).catch(err => {
-    //         if(err.cart) this.cartRepository.set(err.cart)
-    //         throw err
-    //     })
-    // }
-
-    process(authorizationId){
-        const cart = this.cartRepository.get()
-
-        return this.api.process(cart?.uuid, authorizationId)
+        return this.api.process(cart?.uuid, orderId, authorizationId)
         .then(data => {
             this.cartRepository.set(data.cart)
             this.checkoutRepository.setOrder(data.order)
@@ -55,13 +55,4 @@ export default class PayPalRepository {
             throw err
         })
     }
-
-    /**
-     * Set the shipping service
-     * @param {int} service_id
-     */
-    setShippingService(service_id){
-        return this.checkoutRepository.setShippingService(service_id)
-    }
-
 }

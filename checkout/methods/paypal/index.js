@@ -17,6 +17,9 @@ export default function(context, paymentService){
         context.checkout.repository
     )
 
+    console.log(repository.getCart())
+    console.log(repository.getRegion())
+
     const service = new Service(clientId, repository, context.config.paymentEnvironment)
 
     // register components

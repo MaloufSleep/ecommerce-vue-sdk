@@ -5,21 +5,30 @@
 <script>
 export default {
     name: "ec-paypal-btn",
-    data() {
-        return {
+
+    props: {
+        pStyle: {
+            type: Object,
+            default(){
+                return {
+                    layout: 'vertical',
+                    color:  'blue',
+                    shape:  'rect',
+                    label:  'paypal'
+                }
+            }
         }
+    },
+
+    data() {
+        return {}
     },
     mounted() {
         this.renderButton()
     },
     methods: {
-        style() {
-            return {
-                layout: 'vertical',
-                color:  'blue',
-                shape:  'rect',
-                label:  'paypal'
-            }
+        onSuccess() {
+            this.$emit('success')
         },
         onClick() {
             this.$emit('click')
@@ -31,14 +40,21 @@ export default {
             this.$emit('error', error)
         },
         renderButton() {
-            if(!window.paypal) return
-            window.paypal.Buttons({
-                ...this.$ecommerce.checkout.paypal.getHandlers(),
-                style: this.style(),
-                onCancel: this.onCancel.bind(this),
-                onClick: this.onClick.bind(this),
-                onError: this.onError.bind(this),
-            }).render('#paypal-button');            
+            this.$ecommerce.checkout.paypal.isAvailable().then(res => {
+                if(!res.available) return
+                return this.$ecommerce.checkout.paypal.renderButton(
+                    '#paypal-button', 
+                    {
+                        onSuccess: this.onSuccess.bind(this),
+                        onCancel: this.onCancel.bind(this),
+                        onClick: this.onClick.bind(this),
+                        onError: this.onError.bind(this)
+                    }, 
+                    {
+                        style: this.pStyle,
+                    }
+                )
+            })        
         },
     }
 }
