@@ -141,7 +141,7 @@ export default {
           if (variations && variations.length > 0) {
             for (let [ind, variation] of variations.entries()) {
               varString += startCase(variation)
-              if (ind < variations.length - 1) {
+              if (ind < variations.length - 1 && variation.length > 0) {
                 varString += ', '
               }
             }
