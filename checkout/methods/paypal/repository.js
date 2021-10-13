@@ -25,21 +25,12 @@ export default class PayPalRepository {
     setShippingAddress(address, service_id){
         const cart = this.getCart()
 
-        if (cart.shipping_address == null) {
-            return this.api.shipping(cart.uuid, address).then(data => {
+        return this.checkoutRepository.setShippingService(service_id).then(cart => {
+            return this.api.shipping(cart?.uuid, address).then(data => {
                 this.cartRepository.set(data)
                 return data
             })
-        }
-
-        if(cart.shipping_service.id != service_id) {
-            return this.checkoutRepository.setShippingService(service_id).then(cart => {
-                return this.api.shipping(cart?.uuid, address).then(data => {
-                    this.cartRepository.set(data)
-                    return data
-                })
-            })
-        }
+        })
     }
 
     process(orderId, authorizationId){

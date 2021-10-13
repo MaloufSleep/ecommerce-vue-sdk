@@ -28,6 +28,8 @@ export default {
     },
     methods: {
         onSuccess() {
+            console.log('ecom success')
+            console.log(this, this.$emit)
             this.$emit('success')
         },
         onClick() {

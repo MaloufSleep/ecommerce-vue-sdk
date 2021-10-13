@@ -1,5 +1,7 @@
 import Dinero from 'dinero.js'
 import { exception } from 'vue-gtag'
+import isClient from '../../../common/utils/isClient'
+
 // import { MerchantValidationError, ProcessPaymentError, ShippingAddressError } from './entities/errors'
 
 export default class PayPalService {
@@ -17,6 +19,7 @@ export default class PayPalService {
      * Loads the PayPal JS SDK
      */
      loadScript(){
+        if(!isClient() || window.paypal) return Promise.resolve(true)
         const src = `https://www.paypal.com/sdk/js?client-id=${this.clientId}&intent=authorize`
         
         return new Promise((resolve, reject) => {
@@ -167,7 +170,7 @@ export default class PayPalService {
         return actions.order.authorize().then(authorization => {
             const authorizationID = authorization.purchase_units[0].payments.authorizations[0].id
             return this.repository.process(data.orderID, authorizationID).then(data => {
-                this._onSuccess().bind(this)
+                this._onSuccess()
             })
         })
     }
@@ -181,7 +184,7 @@ export default class PayPalService {
             country: contact.country_code
         }
 
-        this.repository.setShippingAddress(address, data.selected_shipping_option.id).then(cart => {
+        return this.repository.setShippingAddress(address, data.selected_shipping_option.id).then(cart => {
             // Make changes to patch in
             const amount = this._formatAmount(cart)
 
