@@ -115,12 +115,24 @@ export default class PayPalService {
             value: Dinero({amount: cart.totals.total}).toFormat('0.00'),
             breakdown: {
                 item_total: this._formatValue(cart.totals.subtotal), 
-                shipping: this._formatValue(cart.totals.shipping), 
+                shipping: this._formatValue(cart.totals.shipping),
                 handling: this._formatValue(cart.totals.fees),
                 tax_total: this._formatValue(cart.totals.tax), 
                 discount: this._formatValue(cart.totals.discount), 
             } 
         }
+    }
+
+    _shippingDiscount(cart) {
+        var discount = 0
+
+        cart.promotions.map(promo => {
+            if(promo.shippingDiscount > 0) {
+                discount += promo.shippingDiscount
+            }
+        })
+
+        return discount
     }
 
     _formatAddress(address) {
@@ -155,14 +167,12 @@ export default class PayPalService {
         return actions.order.authorize().then(authorization => {
             const authorizationID = authorization.purchase_units[0].payments.authorizations[0].id
             return this.repository.process(data.orderID, authorizationID).then(data => {
-                console.log('success')
-                this._onSuccess.bind(this)
+                this._onSuccess().bind(this)
             })
         })
     }
 
     _updateShipping(data, actions){
-        console.log(data)
         const contact = data.shipping_address
         const address = {
             locality: contact.city,
@@ -174,8 +184,6 @@ export default class PayPalService {
         this.repository.setShippingAddress(address, data.selected_shipping_option.id).then(cart => {
             // Make changes to patch in
             const amount = this._formatAmount(cart)
-
-            console.log(cart)
 
             return actions.order.patch([
                 {
@@ -213,7 +221,6 @@ export default class PayPalService {
         const region = this.repository.getRegion()
         const methods = []
 
-        // The first shipping method will be the 'pre-selected' option on the Apple Pay payment sheet.
         // This is checking if the cart has a shipping service applied and moving it to the first element of the array.
         if(cart.shipping_service){
             region.shipping_services.sort((a,b) => {
@@ -222,12 +229,14 @@ export default class PayPalService {
         }
 
         region.shipping_services.forEach(service => {
+            var amount = (service.price > 0) ? (service.price - this._shippingDiscount(cart)) : service.price
+
             methods.push({
                 id: service.id,
                 label: service.name,
                 type: 'SHIPPING',
                 selected: cart.shipping_service.id == service.id ? true : false,
-                amount: this._formatValue(service.price)
+                amount: this._formatValue(amount)
             })
         })
         return methods
