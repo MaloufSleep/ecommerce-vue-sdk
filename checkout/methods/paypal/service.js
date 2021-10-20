@@ -196,7 +196,7 @@ export default class PayPalService {
                 },
             ])
         }).catch(err => {
-            console.log("ERROR: ", err)
+            // console.log("ERROR: ", err)
         })
     }
 
