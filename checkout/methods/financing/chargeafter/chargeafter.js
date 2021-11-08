@@ -13,7 +13,7 @@ export default class ChargeAfter {
         this.loadScript().then(() => {
             this.scriptLoaded = true
         })
-        this.loadWidgetScript(() => {
+        this.loadWidgetScript().then(() => {
             this.widgetScriptLoaded = true
         })
     }
