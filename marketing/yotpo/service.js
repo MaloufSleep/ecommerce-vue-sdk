@@ -5,7 +5,11 @@ export default class YotpoService {
     constructor(repository) {
         this.repository = repository
         this.appKey = this.repository.getAppKey()
-        this.loadScript()
+        if(this.appKey) {
+            this.loadScript()
+        } else {
+            console.warn("Yotpo App Key Not Found")
+        }
     }
 
     /**

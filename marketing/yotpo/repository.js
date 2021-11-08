@@ -1,4 +1,4 @@
-export default class NewsletterRepository {
+export default class YotpoRepository {
 
     constructor(store, reviewsConfig, api){
         this.store = store
