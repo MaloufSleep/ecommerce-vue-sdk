@@ -19,10 +19,9 @@ export default class SetPayRepository {
         return cart?.shipping_address
     }
 
-    authenticate(){
+    getFormData(){
         const cart = this.cartRepository.get()
-        return this.api.authenticate(cart?.uuid).then(res => {
-            if(res.data?.cart) this.cartRepository.set(res.data.cart)
+        return this.api.getFormData(cart?.uuid).then(res => {
             return res
         })
     }
