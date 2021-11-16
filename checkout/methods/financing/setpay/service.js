@@ -27,12 +27,15 @@ export default class SetPayService {
             custZipCode: shippingAddress.postcode || ''
         }
 
-        this.setpay.loadScript(amount.toUnit()).then(res => {
-            return params
-        }).catch(error => {
-            console.log(`Load Script Error: ${error}`)
-            return null
-        })
+        this.setpay.loadScript(amount.toUnit())
+        
+        return params
+        // .then(res => {
+        //     return params
+        // }).catch(error => {
+        //     console.log(`Load Script Error: ${error}`)
+        //     return null
+        // })
     }
 
     handleResponse(){
