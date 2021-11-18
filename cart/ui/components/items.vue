@@ -115,7 +115,10 @@ export default {
             this.setLoading(true)
             this.$ecommerce.cart.updateItem(item.id, {quantity: item.quantity + amount}).catch(err => {
               this.error = err.message
-            }).finally(this.setLoading)
+            }).finally(() => {
+              this.setLoading
+              this.$emit('quantityUpdated')
+            })
         },
         updateQuantity(event, id){
             this.error = null
@@ -127,7 +130,10 @@ export default {
             this.setLoading(true)
             this.$ecommerce.cart.updateItem(id, {quantity: quantity}).catch(err => {
               this.error = err.message
-            }).finally(this.setLoading)
+            }).finally(() => {
+              this.setLoading
+              this.$emit('quantityUpdated')
+            })
         },
         removeItem(item){
             this.setLoading(true)
