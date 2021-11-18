@@ -117,7 +117,7 @@ export default {
               this.error = err.message
             }).finally(() => {
               this.setLoading
-              this.$emit('quantityUpdated')
+              this.$emit('cartUpdated')
             })
         },
         updateQuantity(event, id){
@@ -132,12 +132,15 @@ export default {
               this.error = err.message
             }).finally(() => {
               this.setLoading
-              this.$emit('quantityUpdated')
+              this.$emit('cartUpdated')
             })
         },
         removeItem(item){
             this.setLoading(true)
-            this.$ecommerce.cart.removeItems(item.id).finally(this.setLoading)
+            this.$ecommerce.cart.removeItems(item.id).finally(() => {
+              this.setLoading
+              this.$emit('cartUpdated')
+            })
         },
         getVariationString(item) {
           const variations = item.product.variations ? Object.values(item.product.variations) : []
