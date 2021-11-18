@@ -28,24 +28,21 @@ export default class SetPayService {
         }
 
         this.setpay.loadScript(amount.toUnit())
-        
+        this.handleResponse(); //.then (call the status api inquiry using the transId data variable)
+
         return params
-        // .then(res => {
-        //     return params
-        // }).catch(error => {
-        //     console.log(`Load Script Error: ${error}`)
-        //     return null
-        // })
     }
 
     handleResponse(){
         return new Promise((resolve, reject) => {
             function handler(event){
                 if(typeof event.data === 'string' && (event.data === 'Close Model' || event.data == 'Return To Partner Shipping')){
+                    console.log("********************************EVENT LISTENER REMOVE*************************************")
                     window.removeEventListener('message', handler)
                     resolve(true)
                 }
             }
+            console.log("********************************EVENT LISTENER ADDED*************************************")
             window.addEventListener('message', handler)
         })
     }
