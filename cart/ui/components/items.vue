@@ -108,6 +108,7 @@ export default {
     },
     methods: {
         setLoading(value = false){
+          console.log(value);
             this.loading = value
         },
         adjustQuantity(item, amount){
@@ -116,7 +117,7 @@ export default {
             this.$ecommerce.cart.updateItem(item.id, {quantity: item.quantity + amount}).catch(err => {
               this.error = err.message
             }).finally(() => {
-              this.setLoading
+              this.setLoading()
               this.$emit('cartUpdated')
             })
         },
@@ -131,14 +132,14 @@ export default {
             this.$ecommerce.cart.updateItem(id, {quantity: quantity}).catch(err => {
               this.error = err.message
             }).finally(() => {
-              this.setLoading
+              this.setLoading()
               this.$emit('cartUpdated')
             })
         },
         removeItem(item){
             this.setLoading(true)
             this.$ecommerce.cart.removeItems(item.id).finally(() => {
-              this.setLoading
+              this.setLoading()
               this.$emit('cartUpdated')
             })
         },
