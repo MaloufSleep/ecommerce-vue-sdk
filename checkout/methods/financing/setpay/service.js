@@ -3,9 +3,18 @@ export default class SetPayService {
     constructor(repository, setpay){
         this.repository = repository
         this.setpay = setpay
+
+        this._setLoad = null
     }
 
-    getFormData(transId) {
+    /**
+     * Starts an Apple Pay payment session
+     * @param {string} transId Transaction Id
+     * @param {function} onLoad Callback when the script loads to set load display 
+     * */
+    getFormData(transId, setLoad) {
+        this._setLoad = setLoad
+
         const amount = this.repository.getCartTotal()
         const shippingAddress = this.repository.getShippingAddress()
         if(!amount) return Promise.reject('Cart total amount not defined')
@@ -27,10 +36,14 @@ export default class SetPayService {
             custZipCode: shippingAddress.postcode || ''
         }
 
-        this.setpay.loadScript(amount.toUnit())
-        this.handleResponse(); //.then (call the status api inquiry using the transId data variable)
-
-        return params
+        return this.setpay.loadScript(amount.toUnit()).then(res => {
+            this._setLoad();
+            this.handleResponse();
+            return params
+        }).catch(err => {   
+            this._setLoad();
+            throw new Error();
+        })
     }
 
     handleResponse(){
