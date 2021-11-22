@@ -38,21 +38,12 @@ export default class SetPayService {
 
         return this.setpay.loadScript(amount.toUnit()).then(res => {
             this._setLoad();
-            console.log("PROMISE STEP ONE")
             return params
-        }).then((res) => {
-            console.log("PROMISE STEP TWO", res)
-            return this.handleResponse()
-                .then(data => {
-                    console.log("PROMISE HANDLE STEP ONE", data)
-                }).catch(err => {
-                    console.log("PROMISE HANDLE REJECT", err)
-                });
-        }).then(data => {
-            console.log("PROMISE STEP THREE", data)
         }).catch(err => {   
             this._setLoad();
             throw new Error();
+        }).finally(() => {
+            this.handleResponse();
         })
     }
 
