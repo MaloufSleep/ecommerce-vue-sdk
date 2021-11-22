@@ -37,13 +37,21 @@ export default class SetPayService {
         }
 
         return this.setpay.loadScript(amount.toUnit()).then(res => {
+            console.log("******************** STEP 1 ********************")
             this._setLoad();
             return params
         }).catch(err => {   
+            console.log("******************** EERRRROOORRR ********************")
             this._setLoad();
             throw new Error();
         }).finally(() => {
-            this.handleResponse();
+            console.log("******************** FINALLY1 ********************")
+            this.handleResponse()
+                .then(data => {
+                    console.log('HANDLE DATA', data)
+                }).catch(err => {
+                    console.log('HANDLE ERROR', err)
+                });
         })
     }
 
