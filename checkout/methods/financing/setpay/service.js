@@ -38,8 +38,13 @@ export default class SetPayService {
 
         return this.setpay.loadScript(amount.toUnit()).then(res => {
             this._setLoad();
-            this.handleResponse();
+            console.log("PROMISE STEP ONE")
             return params
+        }).then((res) => {
+            console.log("PROMISE STEP TWO", res)
+            return this.handleResponse();
+        }).then(data => {
+            console.log("PROMISE STEP THREE", data)
         }).catch(err => {   
             this._setLoad();
             throw new Error();
@@ -49,7 +54,7 @@ export default class SetPayService {
     handleResponse(){
         return new Promise((resolve, reject) => {
             function handler(event){
-                if (typeof event.data == 'string' && (event.data == 'Close Model' || event.data == 'Return To Partner Shipping')) {
+                if(typeof event.data === 'string' && (event.data === 'Close Model' || event.data == 'Return To Merchant Shipping')){
                     console.log('SYNCHRONY MODAL CLOSED', event)
                     window.removeEventListener('message', handler)
                     resolve(true)
@@ -59,5 +64,4 @@ export default class SetPayService {
             window.addEventListener('message', handler)
         })
     }
-
 }
