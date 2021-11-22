@@ -49,13 +49,13 @@ export default class SetPayService {
     handleResponse(){
         return new Promise((resolve, reject) => {
             function handler(event){
-                if(typeof event.data === 'string' && (event.data === 'Close Model' || event.data == 'Return To Partner Shipping')){
-                    console.log("********************************EVENT LISTENER REMOVE*************************************")
+                if (typeof event.data == 'string' && (event.data == 'Close Model' || event.data == 'Return To Partner Shipping')) {
+                    console.log('SYNCHRONY MODAL CLOSED', event)
                     window.removeEventListener('message', handler)
                     resolve(true)
                 }
             }
-            console.log("********************************EVENT LISTENER ADDED*************************************")
+            console.log("SYNCHRONY MODAL EVENT LISTENER ADDED")
             window.addEventListener('message', handler)
         })
     }
