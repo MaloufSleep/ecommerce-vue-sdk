@@ -42,7 +42,12 @@ export default class SetPayService {
             return params
         }).then((res) => {
             console.log("PROMISE STEP TWO", res)
-            return this.handleResponse();
+            return this.handleResponse()
+                .then(data => {
+                    console.log("PROMISE HANDLE STEP ONE", data)
+                }).catch(err => {
+                    console.log("PROMISE HANDLE REJECT", err)
+                });
         }).then(data => {
             console.log("PROMISE STEP THREE", data)
         }).catch(err => {   
