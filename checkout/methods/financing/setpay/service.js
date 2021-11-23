@@ -37,22 +37,36 @@ export default class SetPayService {
         }
 
         return this.setpay.loadScript(amount.toUnit()).then(res => {
-            console.log("******************** STEP 1 ********************")
             this._setLoad();
-            return params
+        }).then(() => {
+            this.loadForm(params);
+            this.handleResponse()
+            .then(data => {
+                console.log('HANDLE DATA', data)
+                return data
+            })
+        }).then(data => {
+            console.log(data);
         }).catch(err => {   
-            console.log("******************** EERRRROOORRR ********************")
             this._setLoad();
             throw new Error();
-        }).finally(() => {
-            console.log("******************** FINALLY1 ********************")
-            this.handleResponse()
-                .then(data => {
-                    console.log('HANDLE DATA', data)
-                }).catch(err => {
-                    console.log('HANDLE ERROR', err)
-                });
         })
+    }
+
+    loadForm(params) {
+        let form = document.createElement("form")
+        form.setAttribute("id", "setpay-form")
+        let formParams = {}
+
+        for(const [key, val] of Object.entries(params)) {
+            formParams[key] = document.createElement("input")
+            formParams[key].setAttribute("type", "hidden")
+            formParams[key].setAttribute("name", key)
+            formParams[key].setAttribute("value", val)
+            form.append(formParams[key])
+        }
+
+        document.getElementsByTagName("body")[0].appendChild(form);
     }
 
     handleResponse(){

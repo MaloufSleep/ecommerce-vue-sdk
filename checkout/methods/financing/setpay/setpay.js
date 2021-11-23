@@ -38,14 +38,4 @@ export default class SetPay {
             script.src = src
         })
     }
-
-    launchModal(params, process){
-        params.processInd = process
-        params.partnerId = this.partnerId
-        return new Promise((resolve, reject) => {
-            window.syfDBuy.calldBuyProcess(null, params)
-            resolve(true)
-        })
-    }
-
 }
