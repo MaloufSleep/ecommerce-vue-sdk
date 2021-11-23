@@ -12,7 +12,7 @@ export default class SetPayService {
      * @param {string} transId Transaction Id
      * @param {function} onLoad Callback when the script loads to set load display 
      * */
-    getFormData(transId, setLoad) {
+    launchWidget(transId, setLoad) {
         this._setLoad = setLoad
 
         const amount = this.repository.getCartTotal()
@@ -58,6 +58,8 @@ export default class SetPayService {
         form.setAttribute("id", "setpay-form")
         let formParams = {}
 
+        console.log(params);
+
         for(const [key, val] of Object.entries(params)) {
             formParams[key] = document.createElement("input")
             formParams[key].setAttribute("type", "hidden")
@@ -66,7 +68,7 @@ export default class SetPayService {
             form.append(formParams[key])
         }
 
-        document.getElementsByTagName("body")[0].appendChild(form);
+        document.getElementById("setpay-pay-div").appendChild(form);
     }
 
     handleResponse(){
