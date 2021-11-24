@@ -41,12 +41,11 @@ export default class SetPayService {
         }).then(() => {
             this.loadForm(params);
             this.handleResponse()
-            .then(data => {
-                console.log('HANDLE DATA', data)
-                return data
-            })
-        }).then(data => {
-            console.log(data);
+        }).then(res => {
+            console.log('handleResponse', res);
+            // return this.repository.getStatus(params.transId)
+        }).then(res => {
+            // return this.repository.process(params.transId)
         }).catch(err => {   
             this._setLoad();
             throw new Error();
@@ -57,8 +56,6 @@ export default class SetPayService {
         let form = document.createElement("form")
         form.setAttribute("id", "setpay-form")
         let formParams = {}
-
-        console.log(params);
 
         for(const [key, val] of Object.entries(params)) {
             formParams[key] = document.createElement("input")
@@ -74,13 +71,13 @@ export default class SetPayService {
     handleResponse(){
         return new Promise((resolve, reject) => {
             function handler(event){
-                if(typeof event.data === 'string' && (event.data === 'Close Model' || event.data == 'Return To Merchant Shipping')){
+                if(typeof event.data.event == 'string' && (event.data.event == 'Close Model' || event.data.event == 'Return To Partner Shipping')) {
                     console.log('SYNCHRONY MODAL CLOSED', event)
                     window.removeEventListener('message', handler)
                     resolve(true)
                 }
             }
-            console.log("SYNCHRONY MODAL EVENT LISTENER ADDED")
+            console.log('SYNCHRONY MODAL OPENED')
             window.addEventListener('message', handler)
         })
     }
