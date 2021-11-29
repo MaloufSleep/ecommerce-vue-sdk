@@ -12,7 +12,8 @@ export default class SetPayService {
      * @param {string} transId Transaction Id
      * @param {function} onLoad Callback when the script loads to set load display 
      * */
-    launchWidget(transId, setLoad) {
+    launchWidget(setLoad) {
+        const setpayConfig = this.repository.getSetpayConfig();
         this._setLoad = setLoad
 
         const amount = this.repository.getCartTotal()
@@ -21,9 +22,8 @@ export default class SetPayService {
         if(!shippingAddress) return Promise.reject('Shippping address not defined')
 
         const params = {
-            partnerID: this.setpay.partnerId,
-            merchantID: this.setpay.merchantId,
-            clientTransId: transId,
+            partnerID: setpayConfig.partnerId,
+            merchantID: setpayConfig.merchantId,
             purchAmount: amount.toUnit(),
             custFirstName: shippingAddress.first_name || '',
             custLastName: shippingAddress.last_name || '',
@@ -36,17 +36,25 @@ export default class SetPayService {
             custZipCode: shippingAddress.postcode || ''
         }
 
-        return this.setpay.loadScript(amount.toUnit()).then(res => {
+        let accessToken = '';
+
+        return this.repository.authenticate().then(res => {
+            accessToken = res.data.accessToken
+            params.clientTransId = res.data.clientTransId
+            return this.setpay.loadScript(amount.toUnit())
+        }).then(res => {
             this._setLoad();
-        }).then(() => {
             this.loadForm(params);
-            this.handleResponse()
+            return this.handleResponse()
         }).then(res => {
-            console.log('handleResponse', res);
-            // return this.repository.getStatus(params.transId)
+            this._setLoad(true);
+            console.log('HandleResponse Res', res);
+            // return this.repository.getStatus(accessToken, params.clientTransId)
         }).then(res => {
-            // return this.repository.process(params.transId)
-        }).catch(err => {   
+            console.log('GetStatus Res', res);
+            // return this.repository.process(params.clientTransId)
+        }).catch(err => {
+            console.log("ERROR: ", err);
             this._setLoad();
             throw new Error();
         })
@@ -71,8 +79,8 @@ export default class SetPayService {
     handleResponse(){
         return new Promise((resolve, reject) => {
             function handler(event){
-                if(typeof event.data.event == 'string' && (event.data.event == 'Close Model' || event.data.event == 'Return To Partner Shipping')) {
-                    console.log('SYNCHRONY MODAL CLOSED', event)
+                if(typeof event.data.event == 'string' && (event.data.event === 'close-modal' || event.data.event === 'back-to-partner')) {
+                    console.log('SYNCHRONY MODAL CLOSED', event.data)
                     window.removeEventListener('message', handler)
                     resolve(true)
                 }

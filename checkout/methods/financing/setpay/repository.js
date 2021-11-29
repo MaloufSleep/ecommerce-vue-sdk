@@ -2,11 +2,25 @@ import Dinero from 'dinero.js'
 
 export default class SetPayRepository {
 
-    constructor(store, api, cartRepository, checkoutRepository){
+    constructor(store, api, cartRepository, checkoutRepository, setpayConfig){
         this.store = store
         this.api = api
         this.cartRepository = cartRepository
         this.checkoutRepository = checkoutRepository
+        this.setpayConfig = setpayConfig
+    }
+
+    getSetpayConfig() {
+        return this.setpayConfig;
+    }
+
+    authenticate(){
+        const cart = this.cartRepository.get()
+        return this.api.authenticate(cart?.uuid).then(res => {
+            if(res.data?.cart) this.cartRepository.set(res.data.cart)
+            console.log(res);
+            return res
+        })
     }
 
     getCartTotal(){
@@ -19,21 +33,14 @@ export default class SetPayRepository {
         return cart?.shipping_address
     }
 
-    getFormData(){
+    getStatus(token, clientTransId){
         const cart = this.cartRepository.get()
-        return this.api.getFormData(cart?.uuid).then(res => {
-            return res
-        })
+        return this.api.getStatus(cart?.uuid, token, clientTransId)
     }
 
-    getStatus(token){
+    process(clientTransId){
         const cart = this.cartRepository.get()
-        return this.api.getStatus(cart?.uuid, token)
-    }
-
-    process(token){
-        const cart = this.cartRepository.get()
-        return this.api.process(cart?.uuid, token).then(res => {
+        return this.api.process(cart?.uuid, clientTransId).then(res => {
             this.cartRepository.set(res.data.cart)
             this.checkoutRepository.setOrder(res.data.order)
             return res

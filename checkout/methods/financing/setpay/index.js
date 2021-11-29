@@ -6,7 +6,7 @@ import SetPay from './setpay'
 export default function(context, paymentService){
 
     const api = new Api(context.api)
-    const repository = new Repository(context.store, api, context.cart.repository, context.checkout.repository)
+    const repository = new Repository(context.store, api, context.cart.repository, context.checkout.repository, context.config.setpayConfig)
     const setpay = SetPay.fromPaymentService(paymentService, context.config.paymentEnvironment)
     const service = new Service(repository, setpay)
 

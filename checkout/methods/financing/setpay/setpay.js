@@ -21,10 +21,6 @@ export default class SetPay {
     }
 
     loadScript(amount){
-        // let setpayScript = document.createElement('script')
-        // setpayScript.setAttribute('src', `https://qbnpl.syf.com/widget/syf-widget-loader.js?partnerId=${this.partnerId}&purchaseAmount=${amount}`)
-        // document.body.appendChild(setpayScript)
-
         if(!isClient()) return Promise.resolve(true)
         const src = this.environment === 'production' ? '' : `https://qbnpl.syf.com/widget/syf-widget-loader.js?partnerId=${this.partnerId}&purchaseAmount=${amount}`
         
