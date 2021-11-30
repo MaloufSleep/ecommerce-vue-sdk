@@ -47,10 +47,10 @@ export default class SetPayService {
             this.loadForm(params);
             return this.handleResponse()
         }).then(res => {
-            this._setLoad(true);
             console.log('HandleResponse Res', res);
-            // return this.repository.getStatus(accessToken, params.clientTransId)
+            return this.repository.getStatus(accessToken, params.clientTransId)
         }).then(res => {
+            // if(res.status = false) window.location.reload(); // Reload page if the getStatus call shows the transaction did not go through (so if they canceled it or didn't get approved)
             console.log('GetStatus Res', res);
             // return this.repository.process(params.clientTransId)
         }).catch(err => {
