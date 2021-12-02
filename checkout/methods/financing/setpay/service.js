@@ -12,7 +12,7 @@ export default class SetPayService {
      * @param {string} transId Transaction Id
      * @param {function} onLoad Callback when the script loads to set load display 
      * */
-    launchWidget(setLoad) {
+    launchWidget(setLoad, onSuccess) {
         const setpayConfig = this.repository.getSetpayConfig();
         this._setLoad = setLoad
 
@@ -50,9 +50,14 @@ export default class SetPayService {
             console.log('HandleResponse Res', res);
             return this.repository.getStatus(accessToken, params.clientTransId)
         }).then(res => {
+            // if(/*** TRANSACTION HAS FAILED ***/) {
+                // return false;
+            // } else if (/*** TRANSACTION SUCCEEDED & PROCESSED ***/) {
+                // return this.repository.process(accessToken, params.clientTransId).then(res => { onSuccess() })
+            // }
             // if(res.status = false) window.location.reload(); // Reload page if the getStatus call shows the transaction did not go through (so if they canceled it or didn't get approved)
             console.log('GetStatus Res', res);
-            // return this.repository.process(params.clientTransId)
+            // 
         }).catch(err => {
             console.log("ERROR: ", err);
             this._setLoad();
@@ -61,6 +66,10 @@ export default class SetPayService {
     }
 
     loadForm(params) {
+        // Remove pre-exisiting form if exists
+        let prevForm = document.getElementById("setpay-form")
+        if(prevForm) prevForm.parentNode.removeChild(prevForm)
+
         let form = document.createElement("form")
         form.setAttribute("id", "setpay-form")
         let formParams = {}

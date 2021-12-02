@@ -38,9 +38,9 @@ export default class SetPayRepository {
         return this.api.getStatus(cart?.uuid, token, clientTransId)
     }
 
-    process(clientTransId){
+    process(token){
         const cart = this.cartRepository.get()
-        return this.api.process(cart?.uuid, clientTransId).then(res => {
+        return this.api.process(cart?.uuid, token).then(res => {
             this.cartRepository.set(res.data.cart)
             this.checkoutRepository.setOrder(res.data.order)
             return res
