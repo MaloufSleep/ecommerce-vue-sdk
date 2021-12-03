@@ -44,37 +44,26 @@ export default class SetPayService {
             params.clientTransId = res.data.clientTransId
             return this.setpay.loadScript(amount.toUnit())
         }).then(res => {
-            this.test(accessToken).then(res => console.log("RES", res));
-        });
-        //     this._setLoad();
-        //     this.loadForm(params);
-        //     return this.handleResponse()
-        // }).then(res => {
-        //     console.log('HandleResponse Res', res);
-        //     return this.repository.getStatus(accessToken, params.clientTransId)
-        // }).then(res => {
-        //     // if(/*** TRANSACTION HAS FAILED ***/) {
-        //         // return false;
-        //     // } else if (/*** TRANSACTION SUCCEEDED & PROCESSED ***/) {
-        //         // return this.repository.process(accessToken, params.clientTransId).then(res => { onSuccess() })
-        //     // }
-        //     // if(res.status = false) window.location.reload(); // Reload page if the getStatus call shows the transaction did not go through (so if they canceled it or didn't get approved)
-        //     console.log('GetStatus Res', res);
-        //     // 
-        // }).catch(err => {
-        //     console.log("ERROR: ", err);
-        //     this._setLoad();
-        //     throw new Error();
-        // })
-    }
-
-    test(accessToken){
-        const config = {
-            method: 'get', 
-            url: 'https://api-qa.syf.com/v1/dpos/utility/lookup/transaction/bbdi2253q1yyjpmpzf41vj9vk?lookupType=MERCHANT_NUMBER&lookupId=1234567891234567',
-            headers: { 'Authorization': `Bearer ${accessToken}` }
-        }
-        return axios(config)
+            this._setLoad();
+            this.loadForm(params);
+            return this.handleResponse()
+        }).then(res => {
+            console.log('HandleResponse Res', res);
+            return this.repository.getStatus(accessToken, params.clientTransId)
+        }).then(res => {
+            // if(/*** TRANSACTION HAS FAILED ***/) {
+                // return false;
+            // } else if (/*** TRANSACTION SUCCEEDED & PROCESSED ***/) {
+                // return this.repository.process(accessToken, params.clientTransId).then(res => { onSuccess() })
+            // }
+            // if(res.status = false) window.location.reload(); // Reload page if the getStatus call shows the transaction did not go through (so if they canceled it or didn't get approved)
+            console.log('GetStatus Res', res);
+            // 
+        }).catch(err => {
+            console.log("ERROR: ", err);
+            this._setLoad();
+            throw new Error();
+        })
     }
 
     loadForm(params) {

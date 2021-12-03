@@ -23,7 +23,6 @@ export default class SetPay {
     }
 
     loadScript(amount){
-        return Promise.resolve(true)
         if(!isClient()) return Promise.resolve(true)
         const src = this.environment === 'production' ? '' : `https://qbnpl.syf.com/widget/syf-widget-loader.js?partnerId=${this.partnerId}&purchaseAmount=${amount}`
         
