@@ -33,9 +33,9 @@ export default class SetPayRepository {
         return cart?.shipping_address
     }
 
-    getStatus(token, clientTransId){
+    getStatus(token, merchantNumber){
         const cart = this.cartRepository.get()
-        return this.api.getStatus(cart?.uuid, token, clientTransId)
+        return this.api.getStatus(cart?.uuid, token, merchantNumber)
     }
 
     process(token){

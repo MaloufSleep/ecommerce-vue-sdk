@@ -50,7 +50,7 @@ export default class SetPayService {
             return this.handleResponse()
         }).then(res => {
             console.log('EVENTLISTENER RES', res);
-            return this.repository.getStatus(accessToken, params.clientTransId)
+            return this.repository.getStatus(accessToken, this.setpay.merchantId)
         }).then(res => {
             console.log("STATUS RES", res);
             return this.repository.process(accessToken, params.clientTransId)
