@@ -44,21 +44,27 @@ export default class SetPayService {
             params.clientTransId = res.data.clientTransId
             return this.setpay.loadScript(amount.toUnit())
         }).then(res => {
+            console.log("AUTH RES", res);
             this._setLoad();
             this.loadForm(params);
             return this.handleResponse()
         }).then(res => {
-            console.log('HandleResponse Res', res);
+            console.log('EVENTLISTENER RES', res);
             return this.repository.getStatus(accessToken, params.clientTransId)
         }).then(res => {
+            console.log("STATUS RES", res);
+            return this.repository.process(accessToken, params.clientTransId)
             // if(/*** TRANSACTION HAS FAILED ***/) {
-                // return false;
+            //     return false;
             // } else if (/*** TRANSACTION SUCCEEDED & PROCESSED ***/) {
-                // return this.repository.process(accessToken, params.clientTransId).then(res => { onSuccess() })
+            //     return this.repository.process(accessToken, params.clientTransId).then(res => { onSuccess() })
             // }
             // if(res.status = false) window.location.reload(); // Reload page if the getStatus call shows the transaction did not go through (so if they canceled it or didn't get approved)
-            console.log('GetStatus Res', res);
+            // console.log('GetStatus Res', res);
             // 
+        }).then(res => {
+            console.log("PROCESS RES", res);
+            return res;
         }).catch(err => {
             console.log("ERROR: ", err);
             this._setLoad();
