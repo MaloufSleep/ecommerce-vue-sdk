@@ -44,16 +44,15 @@ export default class SetPayService {
             params.clientTransId = res.data.clientTransId
             return this.setpay.loadScript(amount.toUnit())
         }).then(res => {
-            console.log("AUTH RES", res);
             this._setLoad();
             this.loadForm(params);
             return this.handleResponse()
         }).then(res => {
             console.log('EVENTLISTENER RES', res);
-            return this.repository.getStatus(accessToken, this.setpay.merchantId)
+            return this.repository.getStatus(this.setpay.merchantId)
         }).then(res => {
             console.log("STATUS RES", res);
-            return this.repository.process(accessToken, params.clientTransId)
+            return this.repository.process()
             // if(/*** TRANSACTION HAS FAILED ***/) {
             //     return false;
             // } else if (/*** TRANSACTION SUCCEEDED & PROCESSED ***/) {
