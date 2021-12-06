@@ -52,15 +52,12 @@ export default class SetPayService {
             return this.repository.getStatus(this.setpay.merchantId)
         }).then(res => {
             console.log("STATUS RES", res);
-            return this.repository.process()
-            // if(/*** TRANSACTION HAS FAILED ***/) {
-            //     return false;
-            // } else if (/*** TRANSACTION SUCCEEDED & PROCESSED ***/) {
-            //     return this.repository.process(accessToken, params.clientTransId).then(res => { onSuccess() })
-            // }
-            // if(res.status = false) window.location.reload(); // Reload page if the getStatus call shows the transaction did not go through (so if they canceled it or didn't get approved)
-            // console.log('GetStatus Res', res);
-            // 
+            // Check if application was accepted or declined
+            if(res.data.account_number) {
+                return this.repository.process()
+            } else {
+                window.location.reload();
+            }            
         }).then(res => {
             console.log("PROCESS RES", res);
             return res;
