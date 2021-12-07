@@ -93,12 +93,10 @@ export default class SetPayService {
         return new Promise((resolve, reject) => {
             function handler(event){
                 if(typeof event.data.event == 'string' && (event.data.event === 'close-modal' || event.data.event === 'back-to-partner')) {
-                    console.log('SYNCHRONY MODAL CLOSED', event.data)
                     window.removeEventListener('message', handler)
                     resolve(true)
                 }
             }
-            console.log('SYNCHRONY MODAL OPENED')
             window.addEventListener('message', handler)
         })
     }

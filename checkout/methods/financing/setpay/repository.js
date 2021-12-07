@@ -18,7 +18,6 @@ export default class SetPayRepository {
         const cart = this.cartRepository.get()
         return this.api.authenticate(cart?.uuid).then(res => {
             if(res.data?.cart) this.cartRepository.set(res.data.cart)
-            console.log(res);
             return res
         })
     }
