@@ -54,7 +54,7 @@ export default class SetPayService {
             console.log("STATUS RES", res);
             // Check if application was accepted or declined
             if(res.data.account_number) {
-                return this.repository.process()
+                return this.repository.process(params.clientTransId)
             } else {
                 window.location.reload();
             }            
