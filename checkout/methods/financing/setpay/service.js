@@ -6,6 +6,7 @@ export default class SetPayService {
         this.setpay = setpay
 
         this._setLoad = null
+        this._setTransProgress = null
     }
 
     /**
@@ -13,9 +14,10 @@ export default class SetPayService {
      * @param {string} transId Transaction Id
      * @param {function} onLoad Callback when the script loads to set load display 
      * */
-    launchWidget(setLoad, onSuccess) {
+    launchWidget(setLoad, setTransProgress) {
         const setpayConfig = this.repository.getSetpayConfig();
         this._setLoad = setLoad
+        this._setTransProgress = setTransProgress
 
         const amount = this.repository.getCartTotal()
         const shippingAddress = this.repository.getShippingAddress()
@@ -48,10 +50,9 @@ export default class SetPayService {
             this.loadForm(params);
             return this.handleResponse()
         }).then(res => {
-            console.log('EVENTLISTENER RES', res);
+            this._setTransProgress("Transaction in progress... Please do not refresh the page");
             return this.repository.getStatus(this.setpay.merchantId)
         }).then(res => {
-            console.log("STATUS RES", res);
             // Check if application was accepted or declined
             if(res.data.account_number) {
                 return this.repository.process(this.setpay.merchantId)
@@ -59,7 +60,7 @@ export default class SetPayService {
                 window.location.reload();
             }            
         }).then(res => {
-            console.log("PROCESS RES", res);
+            this._setTransProgress(null);
             return res;
         }).catch(err => {
             console.log("ERROR: ", err);
