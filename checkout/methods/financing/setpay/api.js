@@ -16,9 +16,9 @@ export default class SetPayApi {
         return this.axios.get(`carts/${uuid}/payment/setpay/status/${merchantNumber}`)
     }
 
-    process(uuid, merchantNumber){
+    process(uuid, token){
         return this.axios.post(`carts/${uuid}/payment/setpay/process`, {
-            merchantNumber
+            token
         })
     }
 
