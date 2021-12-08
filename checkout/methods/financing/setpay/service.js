@@ -7,6 +7,7 @@ export default class SetPayService {
 
         this._setLoad = null
         this._setTransProgress = null
+        this._onSuccess = null
     }
 
     /**
@@ -14,10 +15,11 @@ export default class SetPayService {
      * @param {string} transId Transaction Id
      * @param {function} onLoad Callback when the script loads to set load display 
      * */
-    launchWidget(setLoad, setTransProgress) {
+    launchWidget(setLoad, setTransProgress, onSuccess) {
         const setpayConfig = this.repository.getSetpayConfig();
         this._setLoad = setLoad
         this._setTransProgress = setTransProgress
+        this._onSuccess = onSuccess
 
         const amount = this.repository.getCartTotal()
         const shippingAddress = this.repository.getShippingAddress()
@@ -62,6 +64,7 @@ export default class SetPayService {
                 setTimeout(() => {window.location.reload()}, 3000)
             }            
         }).then(res => {
+            this._onSuccess()
             return res;
         }).catch(err => {
             console.log("ERROR: ", err);
