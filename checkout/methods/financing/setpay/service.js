@@ -52,20 +52,29 @@ export default class SetPayService {
             this.loadForm(params);
             return this.handleResponse()
         }).then(res => {
-            this._setTransProgress("Checking page status... Please do not refresh the page");
+            this._setTransProgress("Checking order status... Please do not refresh the page");
             return this.repository.getStatus(this.setpay.merchantId)
         }).then(res => {
             // Check if application was accepted or declined
             if(res.data.account_number) {
                 this._setTransProgress("Transaction in progress... Please do not refresh the page");
                 return this.repository.process(this.setpay.merchantId)
+            } else if (res.data.response_code == 404) {
+                window.location.reload()
             } else {
                 this._setTransProgress("Transaction failed... Page will refresh in 3 seconds.");
-                setTimeout(() => {window.location.reload()}, 3000)
+                return null
             }            
         }).then(res => {
-            this._onSuccess()
-            return res;
+            if(res) {
+                this._onSuccess()
+                return res
+            } else {
+                setTimeout(() => {
+                    window.location.reload()
+                    return null
+                }, 3000)
+            }
         }).catch(err => {
             console.log("ERROR: ", err);
             throw new Error();
