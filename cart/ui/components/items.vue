@@ -108,8 +108,7 @@ export default {
     },
     methods: {
         setLoading(value = false){
-          console.log(value);
-            this.loading = value
+          this.loading = value
         },
         adjustQuantity(item, amount){
             this.error = null
