@@ -9,10 +9,8 @@ export default class SetPay {
     }
 
     static fromPaymentService(service, setpayConfig, environment = 'development'){
-        // const partnerId = service.credentials?.find(item => item.type?.key == 'setpay-partner-id')?.value
-        // const merchantId = service.credentials?.find(item => item.type?.key == 'setpay-merchant-id')?.value
-        const partnerId = setpayConfig.partnerId
-        const merchantId = setpayConfig.merchantId
+        const partnerId = setpayConfig ? setpayConfig?.partnerId : null
+        const merchantId = setpayConfig ? setpayConfig?.merchantId : null
 
         if(!partnerId || !merchantId){
             console.error("Synchrony SetPay credentials missing or undefined")
