@@ -12,6 +12,8 @@ export default class SetPay {
         const partnerId = setpayConfig ? setpayConfig?.partnerId : null
         const merchantId = setpayConfig ? setpayConfig?.merchantId : null
 
+        console.log(partnerId, merchantId)
+
         if(!partnerId || !merchantId){
             console.error("Synchrony SetPay credentials missing or undefined")
             return null
@@ -22,7 +24,7 @@ export default class SetPay {
 
     loadScript(amount){
         if(!isClient()) return Promise.resolve(true)
-        const src = this.environment === 'production' ? '' : `https://qbnpl.syf.com/widget/syf-widget-loader.js?partnerId=${this.partnerId}&purchaseAmount=${amount}`
+        const src = this.environment === 'production' ? '' : `https://bnpl.syf.com/widget/syf-widget-loader.js?partnerId=${this.partnerId}&purchaseAmount=${amount}`
         
         return new Promise((resolve, reject) => {
             const script = document.createElement('script')
