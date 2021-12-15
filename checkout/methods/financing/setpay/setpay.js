@@ -26,7 +26,7 @@ export default class SetPay {
         console.log('load script', amount);
         if(!isClient()) return Promise.resolve(true)
         console.log('Is client load script')
-        const src = this.environment === 'production' ? '' : `https://bnpl.syf.com/widget/syf-widget-loader.js?partnerId=${this.partnerId}&purchaseAmount=${amount}`
+        const src = this.environment === 'production' ? `https://bnpl.syf.com/widget/syf-widget-loader.js?partnerId=${this.partnerId}&purchaseAmount=${amount}` : `https://qbnpl.syf.com/widget/syf-widget-loader.js?partnerId=${this.partnerId}&purchaseAmount=${amount}`
         console.log('source', src)
         return new Promise((resolve, reject) => {
             const script = document.createElement('script')
