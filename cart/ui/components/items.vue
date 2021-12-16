@@ -108,14 +108,17 @@ export default {
     },
     methods: {
         setLoading(value = false){
-            this.loading = value
+          this.loading = value
         },
         adjustQuantity(item, amount){
             this.error = null
             this.setLoading(true)
             this.$ecommerce.cart.updateItem(item.id, {quantity: item.quantity + amount}).catch(err => {
               this.error = err.message
-            }).finally(this.setLoading)
+            }).finally(() => {
+              this.setLoading()
+              this.$emit('cartUpdated')
+            })
         },
         updateQuantity(event, id){
             this.error = null
@@ -127,11 +130,17 @@ export default {
             this.setLoading(true)
             this.$ecommerce.cart.updateItem(id, {quantity: quantity}).catch(err => {
               this.error = err.message
-            }).finally(this.setLoading)
+            }).finally(() => {
+              this.setLoading()
+              this.$emit('cartUpdated')
+            })
         },
         removeItem(item){
             this.setLoading(true)
-            this.$ecommerce.cart.removeItems(item.id).finally(this.setLoading)
+            this.$ecommerce.cart.removeItems(item.id).finally(() => {
+              this.setLoading()
+              this.$emit('cartUpdated')
+            })
         },
         getVariationString(item) {
           const variations = item.product.variations ? Object.values(item.product.variations) : []
