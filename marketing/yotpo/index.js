@@ -3,6 +3,8 @@ import Repository from './repository'
 import Service from './service'
 
 export default function(context){
+
+    if(!context.config.reviewsConfig) return
     
     const api = new Api(context.api)
     const repository = new Repository(context.store, context.site.repository, context.config.reviewsConfig, api)
