@@ -34,16 +34,15 @@
                   <button class="mc-qty-btn mc-cart-btn mc-btn-plus" @click="adjustQuantity(item, 1)"><span class="sr-only">Increase</span></button>
                 </div>
                 <div class="mc-product-pricing">
-                    <p class="mc-product-price" v-if="checkFreeItem(item.totals.active, item.totals.discount)">FREE</p>
-                    <p class="mc-product-price" :class="checkFreeItem(item.totals.active, item.totals.discount) ? ' striked-price' : ''">{{ item.prices.active | currency }}</p>
+                  <p class="mc-product-price" v-if="checkFreeItem(item.totals.active, item.totals.discount)">FREE</p>
+                  <p class="mc-product-price" v-else-if="getSalePrice(cart, item)">{{ getSalePrice(cart, item) | currency }}</p>
+                  <p class="mc-product-price" :class="checkFreeItem(item.totals.active, item.totals.discount) || getSalePrice(cart, item) ? ' striked-price' : ''">{{ item.prices.active | currency }}</p>
                 </div>          
               </div>      
             </div>
           </div>
-          <div class="mc-item-promotions" v-for="cartPromotion in cart.promotions" :key="cartPromotion.id">
-            <span v-for="discount in item.discounts" :key="discount.id">
-              <em v-if="discount.promotion_id == cartPromotion.promotion.id"><p class="mc-item-promo">{{cartPromotion.promotion.description}}</p></em>
-            </span>
+          <div class="mc-item-promotions">
+            <em v-if="itemHasPromotion(cart.promotions, item.discounts)"><p class="mc-item-promo">{{itemHasPromotion(cart.promotions, item.discounts).promo.description}}</p></em>
           </div>
           <div class="mc-item-alerts">
             <div class="alert alert-info mt-3 mb-0" v-if="item.backorder_quantity">
@@ -96,7 +95,7 @@ export default {
     },
     computed: {
         cart(){
-            return this.$ecommerce.cart.getCart()
+          return this.$ecommerce.cart.getCart()
         },
         sortedItems(){
           // sorts items so that free items always show at bottom
@@ -109,14 +108,17 @@ export default {
     },
     methods: {
         setLoading(value = false){
-            this.loading = value
+          this.loading = value
         },
         adjustQuantity(item, amount){
             this.error = null
             this.setLoading(true)
             this.$ecommerce.cart.updateItem(item.id, {quantity: item.quantity + amount}).catch(err => {
               this.error = err.message
-            }).finally(this.setLoading)
+            }).finally(() => {
+              this.setLoading()
+              this.$emit('cartUpdated')
+            })
         },
         updateQuantity(event, id){
             this.error = null
@@ -128,11 +130,17 @@ export default {
             this.setLoading(true)
             this.$ecommerce.cart.updateItem(id, {quantity: quantity}).catch(err => {
               this.error = err.message
-            }).finally(this.setLoading)
+            }).finally(() => {
+              this.setLoading()
+              this.$emit('cartUpdated')
+            })
         },
         removeItem(item){
             this.setLoading(true)
-            this.$ecommerce.cart.removeItems(item.id).finally(this.setLoading)
+            this.$ecommerce.cart.removeItems(item.id).finally(() => {
+              this.setLoading()
+              this.$emit('cartUpdated')
+            })
         },
         getVariationString(item) {
           const variations = item.product.variations ? Object.values(item.product.variations) : []
@@ -161,9 +169,31 @@ export default {
           return restockDate
         },
 
+        itemHasPromotion(promotions, discounts) {
+          if (promotions && discounts) {
+            for (let promo of promotions) {
+              for (let discount of discounts) {
+                if(promo.promotion.id == discount.promotion_id) return { promo: promo.promotion, discount: discount }
+              }
+            }
+          }
+        },
+
         checkFreeItem(total, discount) {
           let free = (total - discount) == 0
           return free
+        },
+
+        getSalePrice(cart, item) {
+          let promotion = this.itemHasPromotion(cart.promotions, item.discounts)
+
+          if (promotion) {
+            if (promotion.promo.type_id == 5) {
+              return promotion.discount.unit_price
+            }
+          }
+          
+          return null
         }
     }
 }
