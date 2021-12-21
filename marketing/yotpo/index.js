@@ -4,6 +4,8 @@ import Service from './service'
 
 export default function(context){
 
+    console.log("yotpo index", context.config)
+
     if(!context.config.reviewsConfig) return
     
     const api = new Api(context.api)

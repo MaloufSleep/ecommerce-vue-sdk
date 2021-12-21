@@ -5,6 +5,7 @@ export default class YotpoService {
     constructor(repository) {
         this.repository = repository
         this.appKey = this.repository.getAppKey()
+        console.log("yotpoService", this.appKey)
         if(this.appKey) {
             this.loadScript()
         } else {
@@ -16,6 +17,7 @@ export default class YotpoService {
      * Loads the Yotpo Script
      */
     loadScript() {
+        console.log("Yotpo loadScript")
         if (!isClient()) return Promise.resolve(true)
 
         const src = `//staticw2.yotpo.com/${this.appKey}/widget.js`
