@@ -5,7 +5,6 @@ export default class YotpoService {
     constructor(repository) {
         this.repository = repository
         this.appKey = this.repository.getAppKey()
-        console.log("yotpoService", this.appKey)
         if(this.appKey) {
             this.loadScript()
         } else {
@@ -69,9 +68,6 @@ export default class YotpoService {
     trackEvent(event, eventData){
         return this.repository.trackEvent(event, eventData).then(res => {
             let order = this.$ecommerce.checkout.getOrder();
-
-            console.log('trackEvent Data', res.data);
-            console.log('order data', order);
             this.loadOrderScript(order);
         })
     }
