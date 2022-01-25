@@ -23,7 +23,7 @@ export default class SynchronyService {
             custCity: shippingAddress.locality,
             custState: shippingAddress.region,
             transPromo1: promotion,
-            transAmount1: Math.ceil(amount.toUnit())
+            transAmount1: amount.toUnit()
         }
 
         return this.repository.authenticate().then(res => {
