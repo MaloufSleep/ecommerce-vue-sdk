@@ -6,6 +6,7 @@ import Gtm from './providers/gtm'
 import Pinterest from './providers/pinterest'
 import Misc from './providers/misc'
 import Rakuten from './providers/rakuten'
+import Tiktok from './providers/tiktok'
 
 export default function(context, trackerConfig){
 
@@ -30,6 +31,9 @@ export default function(context, trackerConfig){
         }
         case 'rakuten': {
             return new Rakuten(context, trackerConfig)
+        }
+        case 'tiktok': {
+            return new Tiktok(context, trackerConfig)
         }
         case 'misc': {
             return new Misc(context, trackerConfig)
