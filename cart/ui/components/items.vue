@@ -173,7 +173,7 @@ export default {
           if (promotions && discounts) {
             for (let promo of promotions) {
               for (let discount of discounts) {
-                if(promo.promotion.id == discount.promotion_id) return { promo: promo.promotion, discount: discount }
+                if(promo.promotion.id == discount.promotion_id && !promo.code) return { promo: promo.promotion, discount: discount }
               }
             }
           }

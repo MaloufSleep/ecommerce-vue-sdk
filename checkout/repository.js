@@ -22,11 +22,11 @@ export default class CheckoutRepository {
      * @param {bool} subscribe newsletter subscription boolean
      * @param {bool} subscribeSms sms subscription boolean
      */
-    setShippingAddress(address, subscribe, subscribeSms){
+    setShippingAddress(address, subscribe, subscribeSms, signUpSourceId){
         if(this.loading) return Promise.reject('Another request is in progress')
 
         this.loading = true
-        return this.api.setShippingAddress(this.store.state.cart.cart.uuid, address, subscribe, subscribeSms).then(res => {
+        return this.api.setShippingAddress(this.store.state.cart.cart.uuid, address, subscribe, subscribeSms, signUpSourceId).then(res => {
             return this.cartRepository.set(res.data)
         }).finally(() => this.loading = false)
     }

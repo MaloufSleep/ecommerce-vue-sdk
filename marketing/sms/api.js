@@ -10,13 +10,13 @@ export default class NewsletterAPI {
      * @param {string|null} first_name 
      * @param {string|null} last_name 
      */
-    subscribe(phoneNumber, email = null, first_name = null, last_name = null, visitor_id = null){
+    subscribe(phoneNumber, email = null, first_name = null, last_name = null, signUpSourceId = null){
         return this.axios.post(`marketing/sms/subscribe`, {
             phone_number: phoneNumber,
             email,
             first_name,
             last_name,
-            visitor_id
+            signUpSourceId
         })
     }
 
