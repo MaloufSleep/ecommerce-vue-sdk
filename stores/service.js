@@ -10,8 +10,8 @@ export default class StoresService {
      * @param {number|null} lng longitude of center point
      * @param {int} distance distance (in miles) of search radius
      */
-    getStores(lat = null, lng = null, distance = 100){
-        return this.api.getStores(lat, lng, distance)
+    getStores(lat = null, lng = null, distance = 100, limit = 50){
+        return this.api.getStores(lat, lng, distance, limit)
     }
 
 }
