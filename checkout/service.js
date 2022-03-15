@@ -18,8 +18,8 @@ export default class CheckoutService {
         return this.repository.getRecycleEmail()
     }
 
-    setShippingAddress(address, subscribe = false, subscribeSms = false){
-        return this.repository.setShippingAddress(address, subscribe, subscribeSms)
+    setShippingAddress(address, subscribe = false, subscribeSms = false, signUpSourceId = null){
+        return this.repository.setShippingAddress(address, subscribe, subscribeSms, signUpSourceId)
     }
 
     setShippingService(service_id){
