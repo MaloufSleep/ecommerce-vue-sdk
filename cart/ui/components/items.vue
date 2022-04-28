@@ -14,13 +14,13 @@
           <div class="mc-item">
             <button class="mc-btn-remove" @click="removeItem(item)"><span class="sr-only">Remove</span></button>
             <div class="mc-item-img-wrap">
-              <g-link :to="item.link">
-                <img :src="item.image">
+              <g-link :to="item.link" aria-labelledby="mc-item-name">
+                <img :src="item.image" alt="">
               </g-link>
             </div>
             <div class="mc-item-info">
               <g-link :to="item.link">
-                <h4>{{ item.product.properties.ShortTitle || item.product.properties.Title || item.product.name }}</h4>
+                <h4 class="mc-item-name">{{ item.product.properties.ShortTitle || item.product.properties.Title || item.product.name }}</h4>
               </g-link>
               <div class="mc-variation-list">
                 {{ getVariationString(item) }}
