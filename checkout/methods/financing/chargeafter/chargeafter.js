@@ -13,9 +13,12 @@ export default class ChargeAfter {
         this.loadScript().then(() => {
             this.scriptLoaded = true
         })
-        this.loadWidgetScript().then(() => {
-            this.widgetScriptLoaded = true
-        })
+        setTimeout(() => {
+            
+            this.loadWidgetScript().then(() => {
+                this.widgetScriptLoaded = true
+            })
+        }, 1000);
     }
 
     static fromPaymentService(service, environment = 'development'){
@@ -41,7 +44,7 @@ export default class ChargeAfter {
         if(!isClient() || window.ChargeAfter) return Promise.resolve(true)
         this.setConfig()
 
-        const endpoint = this.environment === 'production' ? 'https://cdn.chargeafter.com/web/v1' : 'https://cdn-sandbox.ca-dev.co/web/v1'
+        const endpoint = this.environment === 'production' ? 'https://cdn.chargeafter.com/web/v2' : 'https://cdn-sandbox.ca-dev.co/web/v2'
         return new Promise((resolve, reject) => {
             !function(e,t,c,a,n){
                 var r, o = t.getElementsByTagName(c)[0];
@@ -57,7 +60,7 @@ export default class ChargeAfter {
         if(!isClient()) return Promise.resolve(true)
         this.setConfig()
 
-        const endpoint = this.environment === 'production' ? 'https://cdn.chargeafter.com/promotional-widget/v1' : 'https://cdn-sandbox.ca-dev.co/promotional-widget/v1'
+        const endpoint = this.environment === 'production' ? 'https://cdn.chargeafter.com/promotional-widget/v2' : 'https://cdn-sandbox.ca-dev.co/promotional-widget/v2'
         return new Promise((resolve, reject) => {
             !function(e,t,c,a,n){
                 var r,o=t.getElementsByTagName(c)[0];

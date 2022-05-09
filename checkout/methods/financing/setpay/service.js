@@ -20,6 +20,8 @@ export default class SetPayService {
         this._setLoad = setLoad
         this._setTransProgress = setTransProgress
         this._onSuccess = onSuccess
+        
+        this._setLoad(true)
 
         const amount = this.repository.getCartTotal()
         const shippingAddress = this.repository.getShippingAddress()
