@@ -14,11 +14,10 @@ export default class ChargeAfter {
             this.scriptLoaded = true
         })
         setTimeout(() => {
-            
             this.loadWidgetScript().then(() => {
                 this.widgetScriptLoaded = true
             })
-        }, 1000);
+        }, 500);
     }
 
     static fromPaymentService(service, environment = 'development'){
