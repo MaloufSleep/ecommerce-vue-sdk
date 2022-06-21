@@ -13,11 +13,9 @@ export default class ChargeAfter {
         this.loadScript().then(() => {
             this.scriptLoaded = true
         })
-        setTimeout(() => {
-            this.loadWidgetScript().then(() => {
-                this.widgetScriptLoaded = true
-            })
-        }, 500);
+        this.loadWidgetScript().then(() => {
+            this.widgetScriptLoaded = true
+        })
     }
 
     static fromPaymentService(service, environment = 'development'){
@@ -88,9 +86,9 @@ export default class ChargeAfter {
     }
 
     updateWidgetPrices(items){
-        if(!window.ChargeAfter?.promotionalWidget?.update) return Promise.reject('ChargeAfter widget not loaded.')
+        if(!window.ChargeAfter?.promotions?.update) return Promise.reject('ChargeAfter widget not loaded.')
         return new Promise((resolve, reject) => {
-            window.ChargeAfter.promotionalWidget.update({ items })
+            window.ChargeAfter.promotions.update({ items })
             resolve(true)
         })
     }
