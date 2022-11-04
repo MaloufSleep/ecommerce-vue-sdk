@@ -45,7 +45,7 @@
             <em v-if="itemHasPromotion(cart.promotions, item.discounts)"><p class="mc-item-promo">{{itemHasPromotion(cart.promotions, item.discounts).promo.description}}</p></em>
           </div>
           <div class="mc-item-alerts">
-            <div class="alert alert-info mt-3 mb-0" v-if="item.backorder_quantity">
+            <div class="alert alert-info mt-3 mb-0" v-if="item.backorder_quantity && showBackorderMessage(item.product.properties.ShowBackorderMsg)">
               This item is on backorder.<br>
               Order now for {{ getRestockDate(item.product.properties.RestockDate) }} delivery.
             </div>
@@ -167,6 +167,10 @@ export default {
             return now.toLocaleString('default', {month: 'long', day: 'numeric'})
           }
           return restockDate
+        },
+
+        showBackorderMessage(showMessage = true) {
+          return (showMessage === 'false') ? false : true
         },
 
         itemHasPromotion(promotions, discounts) {
