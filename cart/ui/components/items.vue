@@ -192,7 +192,7 @@ export default {
           let promotion = this.itemHasPromotion(cart.promotions, item.discounts)
 
           if (promotion) {
-            if (promotion.promo.type_id == 5) {
+            if (promotion.promo.type_id == 5 || promotion.promo.type_id == 3) {
               return promotion.discount.unit_price
             }
           }
