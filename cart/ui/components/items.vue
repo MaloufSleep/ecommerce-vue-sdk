@@ -20,7 +20,7 @@
             </div>
             <div class="mc-item-info">
               <g-link :to="item.link">
-                <h4 class="mc-item-name">{{ item.product.properties.ShortTitle || item.product.properties.Title || item.product.name }}</h4>
+                <h4 class="mc-item-name" v-html="item.product.properties.ShortTitle || item.product.properties.Title || item.product.name" />
               </g-link>
               <div class="mc-variation-list">
                 {{ getVariationString(item) }}
